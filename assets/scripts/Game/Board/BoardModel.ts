@@ -29,12 +29,15 @@ export class BoardModel implements ICheckWin {
         return this._currentShuffleCount < this._maxShuffleCount;
     }
 
-    actionExecuted(removedTiles: number): void {
+    increaseTurn(): void {
         this._currentTurns++;
+    }
+
+    increaseScore(removedTiles: number): void {
         this._currentScore += removedTiles * 2;
     }
 
-    shuffleExecuted(): void {
+    increaseShuffle(): void {
         this._currentShuffleCount++;
     }
 

@@ -14,7 +14,8 @@ export class BoardController implements IBoardController {
     constructor(board: IBoard, boardModel: BoardModel, batchSizeForDefaultAction: number) {
         this._board = board;
         this._boardModel = boardModel;
-        this._currentAction = this._defaultAction = new ActionRemoveBatchSameColor(batchSizeForDefaultAction);
+        this._defaultAction = new ActionRemoveBatchSameColor(batchSizeForDefaultAction);
+        this.setDefaultAction();
     }
 
     setAction(action: IAction): void {
@@ -26,7 +27,7 @@ export class BoardController implements IBoardController {
             return;
         }
         this._board.shuffle();
-        this._boardModel.shuffleExecuted();
+        this._boardModel.increaseShuffle();
     }
 
     reset(): void {
@@ -38,14 +39,20 @@ export class BoardController implements IBoardController {
     performeActionOnCellAt(x: number, y: number): void {
         let executedCells = this._currentAction.execute(this._board, x, y);
         if (executedCells.isExecuted) {
-            this._boardModel.actionExecuted(executedCells.executedCells.length);
+            this._boardModel.increaseScore(executedCells.executedCells.length);
+            this._boardModel.increaseTurn();
 
             // reaction on action
             console.log("executedCells", executedCells.executedCells);
+            this.setDefaultAction();
         }
         else {
             // reaction on no action
             console.log("no action");
         }
+    }
+
+    private setDefaultAction(): void {
+        this._currentAction = this._defaultAction;
     }
 }
