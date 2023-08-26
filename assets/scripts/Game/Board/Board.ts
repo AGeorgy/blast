@@ -16,6 +16,22 @@ export class Board implements IBoard {
         this._tiles = new Array(xMax * yMax);
     }
 
+    get xMax(): number {
+        return this._xMax;
+    }
+
+    get yMax(): number {
+        return this._yMax;
+    }
+
+    getTile(x: number, y: number): ITile {
+        return this._tiles[x + y * this._xMax];
+    }
+
+    removeTile(x: number, y: number): void {
+        this._tiles[x + y * this._xMax] = null;
+    }
+
     reset(): void {
         for (let y = 0; y < this._yMax; y++) {
             for (let x = 0; x < this._xMax; x++) {

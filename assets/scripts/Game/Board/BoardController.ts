@@ -19,6 +19,10 @@ export class BoardController implements IBoardController {
         this._currentShuffleCount = 0;
     }
 
+    setAction(action: IAction): void {
+        this._currentAction = action;
+    }
+
     shuffle(): void {
         if (this._currentShuffleCount >= this._maxShuffleCount) {
             return;
@@ -34,7 +38,15 @@ export class BoardController implements IBoardController {
     }
 
     performeCelAction(x: number, y: number): void {
-        throw new Error("Method not implemented.");
+        let executedCells = this._currentAction.execute(this._board, x, y);
+        if (executedCells) {
+            // reaction on action
+            console.log("executedCells", executedCells);
+        }
+        else {
+            // reaction on no action
+            console.log("no action");
+        }
     }
 
 

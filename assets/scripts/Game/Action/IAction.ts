@@ -1,5 +1,5 @@
 import { IBoard } from "../Board/IBoard";
 
 export interface IAction {
-    performeAction(board: IBoard): void;
+    execute(board: IBoard, x: number, y: number): { x: number, y: number }[];
 }
