@@ -1,4 +1,4 @@
-import { ActionRemoveBathSameColor } from "../Action/ActionRemoveBathSameColor";
+import { ActionRemoveBathSameColor as ActionRemoveBatchSameColor } from "../Action/ActionRemoveBatchSameColor";
 import { IAction } from "../Action/IAction";
 import { IBoard } from "./IBoard";
 import { IBoardController } from "./IBoardController";
@@ -6,7 +6,7 @@ import { IBoardController } from "./IBoardController";
 export class BoardController implements IBoardController {
     private _board: IBoard;
 
-    private _defaultAction: ActionRemoveBathSameColor;
+    private _defaultAction: ActionRemoveBatchSameColor;
     private _currentAction: IAction;
 
     private _maxShuffleCount: number;
@@ -14,7 +14,7 @@ export class BoardController implements IBoardController {
 
     constructor(board: IBoard, groupSizeForDefaultAction: number, maxShuffleCount: number) {
         this._board = board;
-        this._currentAction = this._defaultAction = new ActionRemoveBathSameColor(groupSizeForDefaultAction);
+        this._currentAction = this._defaultAction = new ActionRemoveBatchSameColor(groupSizeForDefaultAction);
         this._maxShuffleCount = maxShuffleCount;
         this._currentShuffleCount = 0;
     }

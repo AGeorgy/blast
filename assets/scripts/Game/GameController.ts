@@ -28,9 +28,9 @@ export class GameController implements IGameController {
                     this._state = state;
                     this._boardController.reset();
 
-                    this._sceneSwitcher.switchScene(this._gameScreenName, () => {
-                        console.log("GameScreen loaded");
-                    });
+                    // this._sceneSwitcher.switchScene(this._gameScreenName, () => {
+                    //     console.log("GameScreen loaded");
+                    // });
                 }
                 break;
             case GameState.Paused:
