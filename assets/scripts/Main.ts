@@ -8,8 +8,7 @@ import { IBoardController } from './Game/Board/IBoardController';
 import { BoardController } from './Game/Board/BoardController';
 import { Board } from './Game/Board/Board';
 import { IBoard } from './Game/Board/IBoard';
-import { IWinController } from './Game/Win/IWinController';
-import { WinController } from './Game/Win/WinController';
+import { BoardModel } from './Game/Board/BoardModel';
 const { ccclass, property } = _decorator;
 
 @ccclass('Main')
@@ -38,7 +37,6 @@ export class Main extends Component {
     private _colorPalette: IColorPalette;
     private _board: IBoard;
     private _boardController: IBoardController;
-    private _winController: IWinController;
 
     onLoad() {
         console.log("Main onLoad");
@@ -46,8 +44,8 @@ export class Main extends Component {
 
         this._colorPalette = new ColorPalette(this.tileColors);
         this._board = new Board(this.boardMaxX, this.boardMaxY, this._colorPalette)
-        this._winController = new WinController(this.maxTurns, this.targetScore, /* this._board */);
-        this._boardController = new BoardController(this._board, this.groupSizeForDefaultAction, this.maxShuffleCount);
+        let boardModel = new BoardModel(this.maxTurns, this.targetScore, this.maxShuffleCount);
+        this._boardController = new BoardController(this._board, boardModel, this.groupSizeForDefaultAction);
 
         this._sceneSwitcher = new SceneSwitcher(this.loadingScreenName);
         this._gameController = new GameController(this.gameScreenName, this._sceneSwitcher, this._boardController);

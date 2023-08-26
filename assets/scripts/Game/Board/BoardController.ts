@@ -1,22 +1,20 @@
 import { ActionRemoveBathSameColor as ActionRemoveBatchSameColor } from "../Action/ActionRemoveBatchSameColor";
 import { IAction } from "../Action/IAction";
+import { BoardModel } from "./BoardModel";
 import { IBoard } from "./IBoard";
 import { IBoardController } from "./IBoardController";
 
 export class BoardController implements IBoardController {
     private _board: IBoard;
+    private _boardModel: BoardModel;
 
     private _defaultAction: ActionRemoveBatchSameColor;
     private _currentAction: IAction;
 
-    private _maxShuffleCount: number;
-    private _currentShuffleCount: number;
-
-    constructor(board: IBoard, groupSizeForDefaultAction: number, maxShuffleCount: number) {
+    constructor(board: IBoard, boardModel: BoardModel, batchSizeForDefaultAction: number) {
         this._board = board;
-        this._currentAction = this._defaultAction = new ActionRemoveBatchSameColor(groupSizeForDefaultAction);
-        this._maxShuffleCount = maxShuffleCount;
-        this._currentShuffleCount = 0;
+        this._boardModel = boardModel;
+        this._currentAction = this._defaultAction = new ActionRemoveBatchSameColor(batchSizeForDefaultAction);
     }
 
     setAction(action: IAction): void {
@@ -24,22 +22,24 @@ export class BoardController implements IBoardController {
     }
 
     shuffle(): void {
-        if (this._currentShuffleCount >= this._maxShuffleCount) {
+        if (!this._boardModel.canShuffle) {
             return;
         }
         this._board.shuffle();
-        this._currentShuffleCount++;
+        this._boardModel.shuffleExecuted();
     }
 
     reset(): void {
         this._board.reset();
         this._currentAction = this._defaultAction;
-        this._currentShuffleCount = 0;
+        this._boardModel.reset();
     }
 
     performeActionOnCellAt(x: number, y: number): void {
         let executedCells = this._currentAction.execute(this._board, x, y);
         if (executedCells.isExecuted) {
+            this._boardModel.actionExecuted(executedCells.executedCells.length);
+
             // reaction on action
             console.log("executedCells", executedCells.executedCells);
         }
@@ -48,6 +48,4 @@ export class BoardController implements IBoardController {
             console.log("no action");
         }
     }
-
-
 }
