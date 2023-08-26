@@ -1,30 +1,32 @@
 import { Color } from "cc";
 import { IBoard } from "../Board/IBoard";
 import { IAction } from "./IAction";
+import { IActionResult } from "./IActionResult";
+import { ActionResult } from "./ActionResult";
 
-export class DefaultAction implements IAction {
-    private _minCellsCount: number;
+export class ActionRemoveBathSameColor implements IAction {
+    private _minCellsInBath: number;
 
-    constructor(minCellsCount: number) {
-        this._minCellsCount = minCellsCount;
+    constructor(minCellsInBath: number) {
+        this._minCellsInBath = minCellsInBath;
     }
 
-    execute(board: IBoard, x: number, y: number): { x: number, y: number }[] {
+    execute(board: IBoard, x: number, y: number): IActionResult {
         return this.removeTilesInRadiusWithColor(board, x, y);
     }
 
-    private removeTilesInRadiusWithColor(board: IBoard, x: number, y: number): { x: number, y: number }[] {
+    private removeTilesInRadiusWithColor(board: IBoard, x: number, y: number): IActionResult {
         let color = board.getTile(x, y).color;
         let tilesToRemove: { x: number, y: number }[] = this.getTilesInRadiusWithColor(board, x, y, color);
 
-        if (tilesToRemove.length >= this._minCellsCount) {
+        if (tilesToRemove.length >= this._minCellsInBath) {
             tilesToRemove.forEach(tile => {
                 board.removeTile(tile.x, tile.y);
             });
-            return tilesToRemove;
+            return new ActionResult(tilesToRemove);
         }
 
-        return null;
+        return new ActionResult();
     }
 
     private getTilesInRadiusWithColor(board: IBoard, x: number, y: number, color: Color): { x: number, y: number }[] {

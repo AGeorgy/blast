@@ -1,4 +1,4 @@
-import { DefaultAction } from "../Action/DefaultAction";
+import { ActionRemoveBathSameColor } from "../Action/ActionRemoveBathSameColor";
 import { IAction } from "../Action/IAction";
 import { IBoard } from "./IBoard";
 import { IBoardController } from "./IBoardController";
@@ -6,7 +6,7 @@ import { IBoardController } from "./IBoardController";
 export class BoardController implements IBoardController {
     private _board: IBoard;
 
-    private _defaultAction: DefaultAction;
+    private _defaultAction: ActionRemoveBathSameColor;
     private _currentAction: IAction;
 
     private _maxShuffleCount: number;
@@ -14,7 +14,7 @@ export class BoardController implements IBoardController {
 
     constructor(board: IBoard, groupSizeForDefaultAction: number, maxShuffleCount: number) {
         this._board = board;
-        this._currentAction = this._defaultAction = new DefaultAction(groupSizeForDefaultAction);
+        this._currentAction = this._defaultAction = new ActionRemoveBathSameColor(groupSizeForDefaultAction);
         this._maxShuffleCount = maxShuffleCount;
         this._currentShuffleCount = 0;
     }
@@ -37,11 +37,11 @@ export class BoardController implements IBoardController {
         this._currentShuffleCount = 0;
     }
 
-    performeCelAction(x: number, y: number): void {
+    performeActionOnCellAt(x: number, y: number): void {
         let executedCells = this._currentAction.execute(this._board, x, y);
-        if (executedCells) {
+        if (executedCells.isExecuted) {
             // reaction on action
-            console.log("executedCells", executedCells);
+            console.log("executedCells", executedCells.executedCells);
         }
         else {
             // reaction on no action
