@@ -1,8 +1,8 @@
-interface IGameController {
+export interface IGameController {
     setState(state: GameState): void;
 }
 
-enum GameState {
+export enum GameState {
     Start,
     Playing,
     Paused,

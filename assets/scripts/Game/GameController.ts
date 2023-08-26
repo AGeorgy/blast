@@ -1,11 +1,16 @@
-class GameController implements IGameController {
+import { IBoardController } from "./Board/IBoardController";
+import { GameState, IGameController } from "./IGameController";
+
+export class GameController implements IGameController {
     private _state: GameState;
     private _sceneSwitcher: ISceneSwitcher;
     private _gameScreenName: string;
+    private _boardController: IBoardController;
 
-    constructor(gameScreenName: string, sceneSwitcher: ISceneSwitcher) {
+    constructor(gameScreenName: string, sceneSwitcher: ISceneSwitcher, boardController: IBoardController) {
         this._sceneSwitcher = sceneSwitcher;
         this._gameScreenName = gameScreenName;
+        this._boardController = boardController;
 
         this._state = GameState.Start;
     }
@@ -16,6 +21,9 @@ class GameController implements IGameController {
                 break;
             case GameState.Playing:
                 if (this._state === GameState.Start) {
+                    this._state = state;
+                    this._boardController.resetBoard();
+
                     this._sceneSwitcher.switchScene(this._gameScreenName, () => {
                         console.log("GameScreen loaded");
                     });
