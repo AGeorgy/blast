@@ -22,6 +22,10 @@ export class Main extends Component {
     boardMaxY: number = 5;
     @property([Color])
     tileColors: Color[] = [];
+    @property(CCInteger)
+    groupSizeForDefaultAction: number = 2;
+    @property(CCInteger)
+    maxShuffleCount: number = 2;
 
     private _sceneSwitcher: ISceneSwitcher;
     private _gameController: IGameController;
@@ -35,7 +39,7 @@ export class Main extends Component {
 
         this._colorPalette = new ColorPalette(this.tileColors);
         this._board = new Board(this.boardMaxX, this.boardMaxY, this._colorPalette)
-        this._boardController = new BoardController(this._board);
+        this._boardController = new BoardController(this._board, this.groupSizeForDefaultAction, this.maxShuffleCount);
 
         this._sceneSwitcher = new SceneSwitcher(this.loadingScreenName);
         this._gameController = new GameController(this.gameScreenName, this._sceneSwitcher, this._boardController);
@@ -43,6 +47,8 @@ export class Main extends Component {
 
     start() {
         console.log("Main start");
-        this._gameController.setState(GameState.Playing);
+        this._gameController.setStateTo(GameState.Playing);
+
+        // this._gameController.shuffleBoard();
     }
 }

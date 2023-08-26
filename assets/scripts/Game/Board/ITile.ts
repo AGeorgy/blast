@@ -1,6 +1,6 @@
 import { Color } from "cc";
 
-export interface ICell {
+export interface ITile {
     readonly x: number;
     readonly y: number;
     readonly color: Color;

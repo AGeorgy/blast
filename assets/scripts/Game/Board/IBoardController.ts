@@ -1,5 +1,5 @@
 export interface IBoardController {
-    resetBoard(): void;
-    // populateBoard(): void;
+    reset(): void;
+    shuffle(): void;
     performeCelAction(x: number, y: number): void;
 }

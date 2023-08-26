@@ -15,14 +15,18 @@ export class GameController implements IGameController {
         this._state = GameState.Start;
     }
 
-    setState(state: GameState): void {
+    shuffleBoard(): void {
+        this._boardController.shuffle();
+    }
+
+    setStateTo(state: GameState): void {
         switch (state) {
             case GameState.Start:
                 break;
             case GameState.Playing:
                 if (this._state === GameState.Start) {
                     this._state = state;
-                    this._boardController.resetBoard();
+                    this._boardController.reset();
 
                     this._sceneSwitcher.switchScene(this._gameScreenName, () => {
                         console.log("GameScreen loaded");

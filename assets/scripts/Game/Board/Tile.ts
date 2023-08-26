@@ -1,7 +1,7 @@
 import { Color } from "cc";
-import { ICell } from "./ICell";
+import { ITile } from "./ITile";
 
-export class Cell implements ICell {
+export class Tile implements ITile {
     private _x: number;
     private _y: number;
     private _color: Color;

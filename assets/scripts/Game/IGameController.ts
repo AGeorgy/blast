@@ -1,5 +1,6 @@
 export interface IGameController {
-    setState(state: GameState): void;
+    shuffleBoard(): void;
+    setStateTo(state: GameState): void;
 }
 
 export enum GameState {
