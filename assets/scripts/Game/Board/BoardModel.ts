@@ -40,7 +40,7 @@ export class BoardModel implements ICheckWin {
 
     checkWin() {
         return this._currentScore >= this._targetScore
-            && this._currentTurns < this._maxTurns
-            && this.canShuffle;
+            && this._currentTurns < this._maxTurns;
+        // && this.canShuffle;
     }
 }
