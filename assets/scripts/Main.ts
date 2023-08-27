@@ -9,6 +9,12 @@ import { BoardController } from './Game/Board/BoardController';
 import { Board } from './Game/Board/Board';
 import { IBoard } from './Game/Board/IBoard';
 import { BoardModel } from './Game/Board/BoardModel';
+import { IStageController } from './Game/Stage/IStageController';
+import { StageController } from './Game/Stage/StageController';
+import { FillingStage } from './Game/Stage/FillingStage';
+import { AllowActionStage } from './Game/Stage/AllowActionStage';
+import { WaitStage } from './Game/Stage/WaitStage';
+import { NotifyViewStage } from './Game/Stage/NotifyViewStage';
 const { ccclass, property } = _decorator;
 
 @ccclass('Main')
@@ -36,7 +42,8 @@ export class Main extends Component {
     private _gameController: IGameController;
     private _colorPalette: IColorPalette;
     private _board: IBoard;
-    private _boardController: IBoardController;
+    private _boardController: BoardController;
+    private _stageController: IStageController;
 
     onLoad() {
         console.log("Main onLoad");
@@ -48,6 +55,7 @@ export class Main extends Component {
         this._boardController = new BoardController(this._board, boardModel, this.groupSizeForDefaultAction);
 
         this._sceneSwitcher = new SceneSwitcher(this.loadingScreenName);
+        this._stageController = this.getStageController(this._boardController);
         this._gameController = new GameController(this.gameScreenName, this._sceneSwitcher, this._boardController);
     }
 
@@ -56,5 +64,16 @@ export class Main extends Component {
         this._gameController.setStateTo(GameState.Playing);
 
         // this._gameController.shuffleBoard();
+    }
+
+    private getStageController(boardController: BoardController): IStageController {
+        let startStages = [
+            new AllowActionStage(false, boardController),
+            new FillingStage(boardController),
+            new NotifyViewStage(boardController),
+            new WaitStage(1),
+            new AllowActionStage(true, boardController),
+        ];
+        return new StageController(startStages, [], []);
     }
 }
