@@ -7,15 +7,15 @@ export class GameController implements IGameController {
     private _state: GameState;
     private _sceneSwitcher: ISceneSwitcher;
     private _gameScreenName: string;
-    private _boardController: IActionPerformer;
+    private _actionPerformer: IActionPerformer;
     private _startGameplay: IStartGameSequence;
     private _onEndGameSequence: IOnEndGameSequence;
 
-    constructor(gameScreenName: string, sceneSwitcher: ISceneSwitcher, boardController: IActionPerformer,
+    constructor(gameScreenName: string, sceneSwitcher: ISceneSwitcher, actionPerformer: IActionPerformer,
         startGameplay: IStartGameSequence, onEndGameSequence: IOnEndGameSequence) {
         this._sceneSwitcher = sceneSwitcher;
         this._gameScreenName = gameScreenName;
-        this._boardController = boardController;
+        this._actionPerformer = actionPerformer;
         this._startGameplay = startGameplay;
         this._onEndGameSequence = onEndGameSequence;
         this._onEndGameSequence.onEndGameSequence = () => { this.setStateTo(GameState.GameOver); }
@@ -31,7 +31,7 @@ export class GameController implements IGameController {
                 if (this._state === GameState.Start) {
                     this._state = state;
                     console.log("Game Start");
-                    this._boardController.reset();
+                    this._actionPerformer.reset();
                     this._startGameplay.startSequance();
 
                     // this._sceneSwitcher.switchScene(this._gameScreenName, () => {

@@ -16,6 +16,9 @@ import { WaitStage as WaitForTimeStage } from './Game/Stage/WaitForTimeStage';
 import { WaitForActionStage } from './Game/Stage/WaitForActionStage';
 import { IfWinStage } from './Game/Stage/IfWinStage';
 import { ShuffleIfCantContinueStage } from './Game/Stage/ShuffleIfCantContinueStage';
+import { Binder } from './Game/Binder';
+import { IReadStatsAndAddObserver } from './Game/Board/IReadStatsAndAddObserver';
+import { IBoardDataAndAddNotifier } from './Game/Board/IBoardDataAndAddNotifier';
 const { ccclass, property } = _decorator;
 
 @ccclass('Main')
@@ -52,13 +55,16 @@ export class Main extends Component {
 
         this._colorPalette = new ColorPalette(this.tileColors);
         this._board = new Board(this.boardMaxX, this.boardMaxY, this._colorPalette)
-        let boardModel = new BoardStats(this.maxTurns, this.targetScore, this.maxShuffleCount);
-        this._boardController = new ActionPerformer(this._board, boardModel, this.groupSizeForDefaultAction);
+        let boardStats = new BoardStats(this.maxTurns, this.targetScore, this.maxShuffleCount);
+        this._boardController = new ActionPerformer(this._board, boardStats, this.groupSizeForDefaultAction);
 
         this._sceneSwitcher = new SceneSwitcher(this.loadingScreenName);
         this._stageController = new StageController();
-        this.addStages(this._stageController, this._boardController, boardModel, this._board);
+        this.addStages(this._stageController, this._boardController, boardStats, this._board);
         this._gameController = new GameController(this.gameScreenName, this._sceneSwitcher, this._boardController, this._stageController, this._stageController);
+
+        Binder.getInstance().addBinding<IReadStatsAndAddObserver>(boardStats);
+        Binder.getInstance().addBinding<IBoardDataAndAddNotifier>(this._board);
     }
 
     start() {

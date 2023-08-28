@@ -1,7 +1,5 @@
-import { Color } from "cc";
+import { IReadTile } from "./IReadTile";
+import { ITileSetPosition } from "./ITileSetPosition";
 
-export interface ITile {
-    readonly x: number;
-    readonly y: number;
-    readonly color: Color;
+export interface ITile extends IReadTile, ITileSetPosition {
 }
