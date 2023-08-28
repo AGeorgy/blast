@@ -1,13 +1,13 @@
-import { IBoardController } from "./Board/IBoardController";
+import { IActionPerformer } from "./Board/IActionPerformer";
 import { GameState, IGameController } from "./IGameController";
 
 export class GameController implements IGameController {
     private _state: GameState;
     private _sceneSwitcher: ISceneSwitcher;
     private _gameScreenName: string;
-    private _boardController: IBoardController;
+    private _boardController: IActionPerformer;
 
-    constructor(gameScreenName: string, sceneSwitcher: ISceneSwitcher, boardController: IBoardController) {
+    constructor(gameScreenName: string, sceneSwitcher: ISceneSwitcher, boardController: IActionPerformer) {
         this._sceneSwitcher = sceneSwitcher;
         this._gameScreenName = gameScreenName;
         this._boardController = boardController;
@@ -15,9 +15,9 @@ export class GameController implements IGameController {
         this._state = GameState.Start;
     }
 
-    shuffleBoard(): void {
-        this._boardController.shuffle();
-    }
+    // shuffleBoard(): void {
+    //     this._boardController.shuffle();
+    // }
 
     setStateTo(state: GameState): void {
         switch (state) {
@@ -26,7 +26,7 @@ export class GameController implements IGameController {
             case GameState.Playing:
                 if (this._state === GameState.Start) {
                     this._state = state;
-                    // this._boardController.reset();
+                    this._boardController.reset();
 
                     // this._sceneSwitcher.switchScene(this._gameScreenName, () => {
                     //     console.log("GameScreen loaded");

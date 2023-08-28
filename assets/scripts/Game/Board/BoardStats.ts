@@ -1,6 +1,8 @@
+import { ICanShuffle } from "./ICanShuffle";
 import { ICheckWin } from "./ICheckWin";
+import { IIncreaseShuffle } from "./IIncreaseShuffle";
 
-export class BoardModel implements ICheckWin {
+export class BoardStats implements ICheckWin, ICanShuffle, IIncreaseShuffle {
     private _maxTurns: number;
     private _currentTurns: number;
 
@@ -41,9 +43,8 @@ export class BoardModel implements ICheckWin {
         this._currentShuffleCount++;
     }
 
-    checkWin() {
+    get ifWin() {
         return this._currentScore >= this._targetScore
             && this._currentTurns < this._maxTurns;
-        // && this.canShuffle;
     }
 }

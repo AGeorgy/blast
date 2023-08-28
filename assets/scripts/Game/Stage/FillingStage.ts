@@ -1,11 +1,11 @@
-import { IResetBoard } from "../Board/IResetBoard";
+import { IFillBoard } from "../Board/IFillBoard";
 import { IStage } from "./IStage";
 
 export class FillingStage implements IStage {
-    private _boardReseter: IResetBoard;
+    private _boardReseter: IFillBoard;
     private _doneCallback: () => void;
 
-    constructor(boardReseter: IResetBoard) {
+    constructor(boardReseter: IFillBoard) {
         this._boardReseter = boardReseter;
     }
 
@@ -14,7 +14,7 @@ export class FillingStage implements IStage {
     }
 
     execute(): void {
-        this._boardReseter.reset();
+        this._boardReseter.fillBoard();
         this._doneCallback();
     }
 }

@@ -1,3 +1,3 @@
 export interface ICheckWin {
-    checkWin(): boolean;
+    readonly ifWin: boolean;
 }

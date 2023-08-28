@@ -1,38 +1,41 @@
 import { ActionRemoveBathSameColor as ActionRemoveBatchSameColor } from "../Action/ActionRemoveBatchSameColor";
 import { IAction } from "../Action/IAction";
-import { BoardModel } from "./BoardModel";
+import { BoardStats } from "./BoardStats";
 import { IAddObserver } from "./IAddObserver";
 import { IAllowAction } from "./IAllowAction";
 import { IBoard } from "./IBoard";
-import { IBoardController } from "./IBoardController";
-import { INotifyObservers } from "./INotifyObservers";
+import { IActionPerformer } from "./IActionPerformer";
+import { IIsActionAllowed } from "./IIsActionAllowed";
 import { IObserver } from "./IObserver";
-import { IResetBoard } from "./IResetBoard";
+import { IFillBoard } from "./IFillBoard";
+import { ICanDoDefaultAction } from "./ICanDoDefaultAction";
 
-export class BoardController implements IBoardController, IResetBoard, IAllowAction, INotifyObservers, IAddObserver {
+export class ActionPerformer implements IActionPerformer, IFillBoard, IAllowAction, IAddObserver, IIsActionAllowed, ICanDoDefaultAction {
     private _board: IBoard;
-    private _boardModel: BoardModel;
+    private _boardStats: BoardStats;
 
     private _defaultAction: ActionRemoveBatchSameColor;
     private _currentAction: IAction;
     private _isActionAllowed: boolean;
     private _observers: IObserver[];
 
-    constructor(board: IBoard, boardModel: BoardModel, batchSizeForDefaultAction: number) {
+    constructor(board: IBoard, boardStats: BoardStats, batchSizeForDefaultAction: number) {
         this._board = board;
-        this._boardModel = boardModel;
+        this._boardStats = boardStats;
         this._defaultAction = new ActionRemoveBatchSameColor(batchSizeForDefaultAction);
         this.setDefaultAction();
     }
 
-    addObserver(observer: IObserver): void {
-        this._observers.push(observer);
+    get canDoDefaultAction(): boolean {
+
     }
 
-    notifyObservers(): void {
-        this._observers.forEach(observer => {
-            observer.notified();
-        });
+    get isActionAllowed(): boolean {
+        return this._isActionAllowed;
+    }
+
+    addObserver(observer: IObserver): void {
+        this._observers.push(observer);
     }
 
     allowAction(isAllowed: boolean): void {
@@ -43,18 +46,14 @@ export class BoardController implements IBoardController, IResetBoard, IAllowAct
         this._currentAction = action;
     }
 
-    shuffle(): void {
-        if (!this._boardModel.canShuffle) {
-            return;
-        }
-        this._board.shuffle();
-        this._boardModel.increaseShuffle();
+    reset(): void {
+        this.fillBoard();
+        this._currentAction = this._defaultAction;
+        this._boardStats.reset();
     }
 
-    reset(): void {
-        this._board.reset();
-        this._currentAction = this._defaultAction;
-        this._boardModel.reset();
+    fillBoard(): void {
+        this._board.fill();
     }
 
     performeActionOnCellAt(x: number, y: number): void {
@@ -64,12 +63,13 @@ export class BoardController implements IBoardController, IResetBoard, IAllowAct
 
         let executedCells = this._currentAction.execute(this._board, x, y);
         if (executedCells.isExecuted) {
-            this._boardModel.increaseScore(executedCells.executedCells.length);
-            this._boardModel.increaseTurn();
+            this._boardStats.increaseScore(executedCells.executedCells.length);
+            this._boardStats.increaseTurn();
 
             // reaction on action
             console.log("executedCells", executedCells.executedCells);
             this.setDefaultAction();
+            this.notifyObservers();
         }
         else {
             // reaction on no action
@@ -79,5 +79,11 @@ export class BoardController implements IBoardController, IResetBoard, IAllowAct
 
     private setDefaultAction(): void {
         this._currentAction = this._defaultAction;
+    }
+
+    private notifyObservers(): void {
+        this._observers.forEach(observer => {
+            observer.notified();
+        });
     }
 }

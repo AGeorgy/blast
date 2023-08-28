@@ -1,9 +1,10 @@
 import { IColorPalette } from "../Color/IColorPalette";
 import { IBoard } from "./IBoard";
+import { IShuffle } from "./IShuffle";
 import { ITile } from "./ITile";
 import { Tile } from "./Tile";
 
-export class Board implements IBoard {
+export class Board implements IBoard, IShuffle {
     private _tiles: ITile[];
     private _xMax: number;
     private _yMax: number;
@@ -32,7 +33,7 @@ export class Board implements IBoard {
         this._tiles[x + y * this._xMax] = null;
     }
 
-    reset(): void {
+    fill(): void {
         for (let y = 0; y < this._yMax; y++) {
             for (let x = 0; x < this._xMax; x++) {
                 this._tiles[x + y * this._xMax] = new Tile(x, y, this._colorPalette.getRandomColor());

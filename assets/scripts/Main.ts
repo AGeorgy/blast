@@ -4,17 +4,18 @@ import { IColorPalette } from './Game/Color/IColorPalette';
 import { ColorPalette } from './Game/Color/ColorPalette';
 import { GameState, IGameController } from './Game/IGameController';
 import { GameController } from './Game/GameController';
-import { IBoardController } from './Game/Board/IBoardController';
-import { BoardController } from './Game/Board/BoardController';
+import { ActionPerformer } from './Game/Board/ActionPerformer';
 import { Board } from './Game/Board/Board';
 import { IBoard } from './Game/Board/IBoard';
-import { BoardModel } from './Game/Board/BoardModel';
+import { BoardStats } from './Game/Board/BoardStats';
 import { IStageController } from './Game/Stage/IStageController';
 import { StageController } from './Game/Stage/StageController';
 import { FillingStage } from './Game/Stage/FillingStage';
 import { AllowActionStage } from './Game/Stage/AllowActionStage';
-import { WaitStage } from './Game/Stage/WaitStage';
-import { NotifyViewStage } from './Game/Stage/NotifyViewStage';
+import { WaitStage as WaitForTimeStage } from './Game/Stage/WaitForTimeStage';
+import { WaitForActionStage } from './Game/Stage/WaitForActionStage';
+import { IfWinStage } from './Game/Stage/IfWinStage';
+import { ShuffleIfCantContinueStage } from './Game/Stage/ShuffleIfCantContinueStage';
 const { ccclass, property } = _decorator;
 
 @ccclass('Main')
@@ -41,9 +42,9 @@ export class Main extends Component {
     private _sceneSwitcher: ISceneSwitcher;
     private _gameController: IGameController;
     private _colorPalette: IColorPalette;
-    private _board: IBoard;
-    private _boardController: BoardController;
-    private _stageController: IStageController;
+    private _board: Board;
+    private _boardController: ActionPerformer;
+    private _stageController: StageController;
 
     onLoad() {
         console.log("Main onLoad");
@@ -51,11 +52,12 @@ export class Main extends Component {
 
         this._colorPalette = new ColorPalette(this.tileColors);
         this._board = new Board(this.boardMaxX, this.boardMaxY, this._colorPalette)
-        let boardModel = new BoardModel(this.maxTurns, this.targetScore, this.maxShuffleCount);
-        this._boardController = new BoardController(this._board, boardModel, this.groupSizeForDefaultAction);
+        let boardModel = new BoardStats(this.maxTurns, this.targetScore, this.maxShuffleCount);
+        this._boardController = new ActionPerformer(this._board, boardModel, this.groupSizeForDefaultAction);
 
         this._sceneSwitcher = new SceneSwitcher(this.loadingScreenName);
-        this._stageController = this.getStageController(this._boardController);
+        this._stageController = new StageController();
+        this.addStages(this._stageController, this._boardController, boardModel, this._board);
         this._gameController = new GameController(this.gameScreenName, this._sceneSwitcher, this._boardController);
     }
 
@@ -66,14 +68,23 @@ export class Main extends Component {
         // this._gameController.shuffleBoard();
     }
 
-    private getStageController(boardController: BoardController): IStageController {
+    private addStages(stageController: StageController, boardController: ActionPerformer, boardStats: BoardStats, board: Board): void {
         let startStages = [
             new AllowActionStage(false, boardController),
             new FillingStage(boardController),
-            new NotifyViewStage(boardController),
-            new WaitStage(1),
-            new AllowActionStage(true, boardController),
+            new WaitForTimeStage(1),
         ];
-        return new StageController(startStages, [], []);
+        let repeatingStages = [
+            new IfWinStage(boardStats, stageController),
+            new ShuffleIfCantContinueStage(1, boardStats, boardStats, board, boardController, stageController),
+            new AllowActionStage(true, boardController),
+            new WaitForActionStage(boardController, boardController),
+            new AllowActionStage(false, boardController),
+            new FillingStage(boardController),
+            new WaitForTimeStage(1),
+        ];
+
+        stageController.addStartStages(startStages);
+        stageController.addRepeatingStages(repeatingStages);
     }
 }

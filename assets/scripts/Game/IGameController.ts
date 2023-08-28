@@ -1,5 +1,5 @@
 export interface IGameController {
-    shuffleBoard(): void;
+    // shuffleBoard(): void;
     setStateTo(state: GameState): void;
 }
 

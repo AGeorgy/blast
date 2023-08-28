@@ -1,58 +1,71 @@
+import { IEndGameSequence } from "./IEndGameSequence";
 import { IStage } from "./IStage";
 import { IStageController } from "./IStageController";
 
-export class StageController implements IStageController {
-    private _repeatingStages: IStage[];
+export class StageController implements IStageController, IEndGameSequence {
     private _currentStage: number;
+    private _repeatingStages: IStage[];
     private _startStages: IStage[];
     private _endStages: IStage[];
 
-    constructor(startStages: IStage[], repeatingStages: IStage[], endStages: IStage[]) {
-        this._startStages = startStages;
-        this._repeatingStages = repeatingStages;
-        this._endStages = endStages;
-        this._currentStage = -1;
+    constructor() {
+        this._currentStage = 0;
+        this._repeatingStages = [];
+        this._startStages = [];
+        this._endStages = [];
+    }
 
-        this._startStages.forEach(stage => {
-            stage.setDoneCallback(() => {
-                this.nextStage();
-            });
-        });
-        this._repeatingStages.forEach(stage => {
-            stage.setDoneCallback(() => {
-                this.nextStage();
-            });
-        });
+    addStartStages(stages: IStage[]): void {
+        this.addStages(this._startStages, stages, this.nextStartStage);
+    }
 
-        this._endStages.forEach(stage => {
-            stage.setDoneCallback(() => {
-                this.nextStage();
-            });
-        });
+    addRepeatingStages(stages: IStage[]): void {
+        this.addStages(this._repeatingStages, stages, this.nextRepeatingStage);
+    }
+
+    addEndStages(stages: IStage[]): void {
+        this.addStages(this._endStages, stages, this.nextEndStage);
     }
 
     startSequance(): void {
-        this.nextStage();
+        this._currentStage = 0;
+        this.nextStartStage();
     }
 
     endSequance(): void {
-        this._currentStage = this._startStages.length + this._repeatingStages.length - 1;
-        this.nextStage();
+        this._currentStage = 0;
+        this.nextEndStage();
     }
 
-    private nextStage() {
-        this._currentStage++;
-        let index = this._currentStage;
+    private addStages(targetStages: IStage[], stagesToAdd: IStage[], nextStage: () => void) {
+        stagesToAdd.forEach(stage => {
+            targetStages.push(stage);
+            stage.setDoneCallback(() => {
+                nextStage();
+            });
+        });
+    }
 
-        if (this._currentStage < this._startStages.length + this._repeatingStages.length) {
-            index = this._currentStage - this._startStages.length;
-            index = index % this._repeatingStages.length;
-            this._currentStage = index + this._startStages.length;
+    private nextStartStage() {
+        this.nextStage(this._startStages, () => { this.nextRepeatingStage(); }, () => { this._currentStage++; });
+    }
+
+    private nextRepeatingStage() {
+        this.nextStage(this._repeatingStages, () => { }, () => { this._currentStage = this._currentStage++ % this._repeatingStages.length; });
+    }
+
+    private nextEndStage() {
+        this.nextStage(this._endStages, () => { }, () => { this._currentStage++; });
+    }
+
+    private nextStage(stages: IStage[], stageAfter: () => void, stageIncrement: () => void) {
+        if (this._currentStage < stages.length) {
+            stages[this._currentStage].execute();
+            stageIncrement();
         }
         else {
-            index = this._currentStage - this._startStages.length - this._repeatingStages.length;
+            this._currentStage = 0;
+            stageAfter();
         }
-
-        this._endStages[index].execute();
     }
 }
