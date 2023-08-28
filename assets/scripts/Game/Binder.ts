@@ -14,7 +14,7 @@ export class Binder {
         return Binder.instance;
     }
 
-    public resolve(type: string): Binder {
+    public resolve<T>(type: string): T {
         return Binder.instance._bindings.get(type);
     }
 
