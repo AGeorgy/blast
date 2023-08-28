@@ -30,6 +30,7 @@ export class ShuffleIfCantContinueStage implements IStage {
     }
 
     execute(): void {
+        console.log("ShuffleIfCantContinueStage execute");
         if (!this._canContinue.canDoDefaultAction) {
             if (this._canShuffle.canShuffle) {
                 this._shuffle.shuffle();

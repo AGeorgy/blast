@@ -11,7 +11,18 @@ export class ActionRemoveBathSameColor implements IAction {
         this._minCellsInBath = minCellsInBath;
     }
 
+    canExecute(board: IBoard, x: number, y: number): boolean {
+        console.log("ActionRemoveBathSameColor canExecute");
+        let color = board.getTile(x, y).color;
+        let tilesToRemove: { x: number, y: number }[] = this.getTilesInRadiusWithColor(board, x, y, color);
+        if (tilesToRemove.length >= this._minCellsInBath) {
+            return true;
+        }
+        return false;
+    }
+
     execute(board: IBoard, x: number, y: number): IActionResult {
+        console.log("ActionRemoveBathSameColor execute");
         return this.removeTilesInRadiusWithColor(board, x, y);
     }
 

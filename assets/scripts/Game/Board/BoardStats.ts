@@ -32,14 +32,17 @@ export class BoardStats implements ICheckWin, ICanShuffle, IIncreaseShuffle {
     }
 
     increaseTurn(): void {
+        console.log("BoardStats increaseTurn");
         this._currentTurns++;
     }
 
     increaseScore(removedTiles: number): void {
+        console.log("BoardStats increaseScore");
         this._currentScore += removedTiles * 2;
     }
 
     increaseShuffle(): void {
+        console.log("BoardStats increaseShuffle");
         this._currentShuffleCount++;
     }
 

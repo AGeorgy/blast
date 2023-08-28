@@ -27,7 +27,14 @@ export class ActionPerformer implements IActionPerformer, IFillBoard, IAllowActi
     }
 
     get canDoDefaultAction(): boolean {
-
+        for (let y = 0; y < this._board.yMax; y++) {
+            for (let x = 0; x < this._board.xMax; x++) {
+                if (this._defaultAction.canExecute(this._board, x, y)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     get isActionAllowed(): boolean {
@@ -47,6 +54,7 @@ export class ActionPerformer implements IActionPerformer, IFillBoard, IAllowActi
     }
 
     reset(): void {
+        console.log("ActionPerformer reset");
         this.fillBoard();
         this._currentAction = this._defaultAction;
         this._boardStats.reset();
@@ -57,6 +65,7 @@ export class ActionPerformer implements IActionPerformer, IFillBoard, IAllowActi
     }
 
     performeActionOnCellAt(x: number, y: number): void {
+        console.log("ActionPerformer performeActionOnCellAt", x, y);
         if (!this._isActionAllowed) {
             return;
         }

@@ -58,14 +58,12 @@ export class Main extends Component {
         this._sceneSwitcher = new SceneSwitcher(this.loadingScreenName);
         this._stageController = new StageController();
         this.addStages(this._stageController, this._boardController, boardModel, this._board);
-        this._gameController = new GameController(this.gameScreenName, this._sceneSwitcher, this._boardController);
+        this._gameController = new GameController(this.gameScreenName, this._sceneSwitcher, this._boardController, this._stageController, this._stageController);
     }
 
     start() {
         console.log("Main start");
         this._gameController.setStateTo(GameState.Playing);
-
-        // this._gameController.shuffleBoard();
     }
 
     private addStages(stageController: StageController, boardController: ActionPerformer, boardStats: BoardStats, board: Board): void {
