@@ -113,6 +113,28 @@
     "__prefab": null,
     "loadingScreenName": "loading",
     "gameScreenName": "game",
+    "boardMaxX": 5,
+    "boardMaxY": 5,
+    "tileColors": [
+      {
+        "__type__": "cc.Color",
+        "r": 187,
+        "g": 51,
+        "b": 51,
+        "a": 255
+      },
+      {
+        "__type__": "cc.Color",
+        "r": 47,
+        "g": 209,
+        "b": 25,
+        "a": 255
+      }
+    ],
+    "groupSizeForDefaultAction": 2,
+    "maxShuffleCount": 2,
+    "maxTurns": 10,
+    "targetScore": 100,
     "_id": "61EK8y+ElOy6z+OyJZB/Oh"
   },
   {

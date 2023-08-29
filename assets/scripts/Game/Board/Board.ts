@@ -9,7 +9,7 @@ import { IReadTile } from "./IReadTile";
 import { TilesChange } from "./IBoardLastChanged";
 
 export class Board implements IBoard, IBoardDataAndAddNotifier, IShuffle {
-    private _lastChangedTiles: { change: TilesChange, tile: IReadTile }[] = [];
+    private _lastChangedTiles: { change: TilesChange, tiles: IReadTile[] };
     private _tiles: ITile[];
     private _xMax: number;
     private _yMax: number;
@@ -32,7 +32,7 @@ export class Board implements IBoard, IBoardDataAndAddNotifier, IShuffle {
         return this._yMax;
     }
 
-    get lastChangedTiles(): { change: TilesChange, tile: IReadTile }[] {
+    get lastChangedTiles(): { change: TilesChange, tiles: IReadTile[] } {
         return this._lastChangedTiles;
     }
 
@@ -47,7 +47,7 @@ export class Board implements IBoard, IBoardDataAndAddNotifier, IShuffle {
     removeTile(x: number, y: number): void {
         console.log("Board removeTile: " + x + ", " + y);
         let index = this.codePositionToIndex(x, y);
-        this._lastChangedTiles.push({ change: TilesChange.Removed, tile: this._tiles[index] });
+        this._lastChangedTiles = this.prepareTilesForNotify();
         this._tiles[index] = null;
         this.notifyObservers();
     }
@@ -63,10 +63,7 @@ export class Board implements IBoard, IBoardDataAndAddNotifier, IShuffle {
             }
         }
 
-        this._tiles.forEach(tile => {
-            this._lastChangedTiles.push({ change: TilesChange.Moved, tile: tile });
-        });
-
+        this._lastChangedTiles = this.prepareTilesForNotify();
         this.notifyObservers();
     }
 
@@ -86,6 +83,7 @@ export class Board implements IBoard, IBoardDataAndAddNotifier, IShuffle {
             this._tiles[randomIndex].setPosition(this.decodeIndexToPosition(randomIndex));
         }
 
+        this._lastChangedTiles = this.prepareTilesForNotify();
         this.notifyObservers();
     };
 
@@ -94,14 +92,22 @@ export class Board implements IBoard, IBoardDataAndAddNotifier, IShuffle {
             observer.notified();
         });
 
-        this._lastChangedTiles = [];
+        this._lastChangedTiles = null;
     }
 
-    codePositionToIndex(x: number, y: number): number {
+    private codePositionToIndex(x: number, y: number): number {
         return x + y * this._xMax;
     }
 
-    decodeIndexToPosition(index: number): { x: number, y: number } {
+    private decodeIndexToPosition(index: number): { x: number, y: number } {
         return { x: index % this._xMax, y: Math.floor(index / this._xMax) };
+    }
+
+    private prepareTilesForNotify(): { change: TilesChange.Moved, tiles: IReadTile[] } {
+        let tiles: IReadTile[];
+        this._tiles.forEach(tile => {
+            tiles.push(tile);
+        });
+        return { change: TilesChange.Moved, tiles: tiles };
     }
 }
