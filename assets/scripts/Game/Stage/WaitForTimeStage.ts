@@ -1,21 +1,25 @@
 import { IStage } from "./IStage";
 
 export class WaitStage implements IStage {
-    private _doneCallback: () => void;
     private _time: number;
 
     constructor(time: number) {
         this._time = time;
     }
 
-    setDoneCallback(callback: () => void): void {
-        this._doneCallback = callback;
+    isStarted: boolean;
+    isDone: boolean;
+
+    reset(): void {
+        this.isStarted = false;
+        this.isDone = false;
     }
 
     execute(): void {
         console.log("WaitStage execute");
+        this.isStarted = true;
         setTimeout(() => {
-            this._doneCallback();
+            this.isDone = true;
         }, this._time * 1000);
     }
 }

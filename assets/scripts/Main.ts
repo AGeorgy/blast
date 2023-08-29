@@ -63,13 +63,17 @@ export class Main extends Component {
         this.addStages(this._stageController, this._boardController, boardStats, this._board);
         this._gameController = new GameController(this.gameScreenName, this._sceneSwitcher, this._boardController, this._stageController, this._stageController);
 
-        Binder.getInstance().addBinding<IReadStatsAndAddObserver>(boardStats);
-        Binder.getInstance().addBinding<IBoardDataAndAddNotifier>(this._board);
+        Binder.getInstance().addBinding("IReadStatsAndAddObserver", boardStats);
+        Binder.getInstance().addBinding("IBoardDataAndAddNotifier", this._board);
     }
 
     start() {
         console.log("Main start");
         this._gameController.setStateTo(GameState.Playing);
+    }
+
+    update() {
+        this._gameController.update();
     }
 
     private addStages(stageController: StageController, boardController: ActionPerformer, boardStats: BoardStats, board: Board): void {

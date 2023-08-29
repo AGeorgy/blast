@@ -3,7 +3,6 @@ import { IEndGameSequence } from "./IEndGameSequence";
 import { IStage } from "./IStage";
 
 export class IfWinStage implements IStage {
-    private _doneCallback: () => void;
     private _winChecker: ICheckWin;
     private _endGameSequence: IEndGameSequence;
 
@@ -12,14 +11,20 @@ export class IfWinStage implements IStage {
         this._endGameSequence = endGameSequence;
     }
 
-    setDoneCallback(callback: () => void): void {
-        this._doneCallback = callback;
+    isStarted: boolean;
+    isDone: boolean;
+
+    reset(): void {
+        this.isStarted = false;
+        this.isDone = false;
     }
 
     execute(): void {
+        console.log("IfWinStage execute");
+        this.isStarted = true;
         if (this._winChecker.ifWin) {
             this._endGameSequence.endSequance();
         }
-        this._doneCallback();
+        this.isDone = true;
     }
 }

@@ -2,79 +2,135 @@ import { IEndGameSequence } from "./IEndGameSequence";
 import { IOnEndGameSequence } from "./IOnEndGameSequence";
 import { IStage } from "./IStage";
 import { IStageController } from "./IStageController";
-import { IStartGameSequence } from "./IStartGameSequence";
+import { IStartGameSequenceAndUpdate } from "./IStartGameSequenceAndUpdate";
 
-export class StageController implements IStageController, IEndGameSequence, IStartGameSequence, IOnEndGameSequence {
-    private _currentStage: number;
+export class StageController implements IStageController, IEndGameSequence, IStartGameSequenceAndUpdate, IOnEndGameSequence {
+    private _currentStageIndex: number;
     private _repeatingStages: IStage[] = [];
     private _startStages: IStage[] = [];
     private _endStages: IStage[] = [];
 
+    private _currentStages: IStage[];
+    private _stageType: StageType;
+    private _sequenceEnded: boolean;
+
     constructor() {
-        this._currentStage = 0;
+        this._stageType = StageType.None;
+        this._sequenceEnded = false;
+        this._currentStageIndex = 0;
+        this._currentStages = this._startStages = [];
         this._repeatingStages = [];
-        this._startStages = [];
         this._endStages = [];
     }
 
     public onEndGameSequence: () => void;
 
+    get isStarted(): boolean {
+        return this._stageType != StageType.None;
+    }
+
+    update(): void {
+        if (this._sequenceEnded) {
+            return;
+        }
+
+        console.log("StageController update");
+        let currentStages = this.getStages(this._stageType);
+        if (this._currentStageIndex < currentStages.length) {
+            let currentStage = this._currentStages[this._currentStageIndex];
+
+            if (currentStage.isDone) {
+                this.increaseStageCounter();
+            }
+            else if (currentStage.isStarted) {
+                return;
+            }
+            else {
+                currentStage.execute();
+            }
+        }
+        else {
+            this._currentStageIndex = 0;
+            switch (this._stageType) {
+                case StageType.Start:
+                    this._stageType = StageType.Repeating;
+                case StageType.Repeating:
+                    this._stageType = StageType.End;
+                case StageType.End:
+                    this._sequenceEnded = true;
+                    this.onEndGameSequence();
+            }
+        }
+    }
+
+    private getStages(stageType: StageType): IStage[] {
+        switch (stageType) {
+            case StageType.Start:
+                return this._startStages;
+            case StageType.Repeating:
+                return this._repeatingStages;
+            case StageType.End:
+                return this._endStages;
+        }
+    }
+
     addStartStages(stages: IStage[]): void {
-        this.addStages(this._startStages, stages, this.nextStartStage.bind(this));
+        this.addStages(this._startStages, stages);
     }
 
     addRepeatingStages(stages: IStage[]): void {
-        this.addStages(this._repeatingStages, stages, this.nextRepeatingStage.bind(this));
+        this.addStages(this._repeatingStages, stages);
     }
 
     addEndStages(stages: IStage[]): void {
-        this.addStages(this._endStages, stages, this.nextEndStage.bind(this));
+        this.addStages(this._endStages, stages);
     }
 
     startSequance(): void {
         console.log("Start Sequance");
-        this._currentStage = 0;
-        this.nextStartStage();
+        this._currentStageIndex = 0;
+        this._stageType = StageType.Start;
     }
 
     endSequance(): void {
         console.log("End Sequance");
-        this._currentStage = 0;
-        this.nextEndStage();
+        this._currentStageIndex = 0;
+        this._stageType = StageType.End;
     }
 
-    private addStages(targetStages: IStage[], stagesToAdd: IStage[], nextStage: () => void): void {
+    private addStages(targetStages: IStage[], stagesToAdd: IStage[]): void {
         stagesToAdd.forEach(stage => {
             targetStages.push(stage);
-            stage.setDoneCallback(() => {
-                nextStage();
-            });
         });
-    }
-
-    private nextStartStage(): void {
-        this.nextStage(this._startStages, this.nextRepeatingStage.bind(this), () => { this._currentStage++; });
-    }
-
-    private nextRepeatingStage(): void {
-        this.nextStage(this._repeatingStages, this.nextEndStage.bind(this), () => { this._currentStage = this._currentStage++ % this._repeatingStages.length; });
-    }
-
-    private nextEndStage(): void {
-        this.nextStage(this._endStages, this.onEndGameSequence.bind(this), () => { this._currentStage++; });
     }
 
     private nextStage(stages: IStage[], stageAfter: () => void, stageIncrement: () => void): void {
         console.log("StageController nextStage");
-        if (this._currentStage < stages.length) {
-            console.log("StageController nextStage execute: " + this._currentStage + " of " + stages.length + " stages");
-            stages[this._currentStage].execute();
+        if (this._currentStageIndex < stages.length) {
+            console.log("StageController nextStage execute: " + this._currentStageIndex + " of " + stages.length + " stages");
+            stages[this._currentStageIndex].execute();
             stageIncrement();
         }
         else {
             console.log("StageController nextStage done");
-            this._currentStage = 0;
+            this._currentStageIndex = 0;
             stageAfter();
         }
     }
+
+    private increaseStageCounter(): void {
+        if (this._stageType == StageType.Repeating) {
+            this._currentStageIndex = this._currentStageIndex++ % this._repeatingStages.length;
+        }
+        else {
+            this._currentStageIndex++;
+        }
+    }
+}
+
+enum StageType {
+    None,
+    Start,
+    Repeating,
+    End
 }

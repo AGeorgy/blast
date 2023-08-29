@@ -3,7 +3,6 @@ import { IStage } from "./IStage";
 
 export class AllowActionStage implements IStage {
     private _boardActionAllower: IAllowAction;
-    private _doneCallback: () => void;
     private _isAllow: boolean;
 
     constructor(isAllow: boolean, boardActionAllower: IAllowAction) {
@@ -11,13 +10,18 @@ export class AllowActionStage implements IStage {
         this._boardActionAllower = boardActionAllower;
     }
 
-    setDoneCallback(callback: () => void): void {
-        this._doneCallback = callback;
+    isStarted: boolean;
+    isDone: boolean;
+
+    reset(): void {
+        this.isStarted = false;
+        this.isDone = false;
     }
 
     execute(): void {
+        this.isStarted = true;
         console.log("AllowActionStage execute");
         this._boardActionAllower.allowAction(this._isAllow);
-        this._doneCallback();
+        this.isDone = true;
     }
 }

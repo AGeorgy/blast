@@ -7,7 +7,6 @@ import { IStage } from "./IStage";
 
 
 export class ShuffleIfCantContinueStage implements IStage {
-    private _doneCallback: () => void;
     private _canShuffle: ICanShuffle;
     private _canContinue: ICanDoDefaultAction;
     private _time: number;
@@ -25,12 +24,17 @@ export class ShuffleIfCantContinueStage implements IStage {
         this._endGameSequence = endGameSequence;
     }
 
-    setDoneCallback(callback: () => void): void {
-        this._doneCallback = callback;
+    isStarted: boolean;
+    isDone: boolean;
+
+    reset(): void {
+        this.isStarted = false;
+        this.isDone = false;
     }
 
     execute(): void {
         console.log("ShuffleIfCantContinueStage execute");
+        this.isStarted = true;
         if (!this._canContinue.canDoDefaultAction) {
             if (this._canShuffle.canShuffle) {
                 this._shuffle.shuffle();
@@ -41,9 +45,11 @@ export class ShuffleIfCantContinueStage implements IStage {
             }
             else {
                 this._endGameSequence.endSequance();
+                this.isDone = true;
             }
         }
-
-        this._doneCallback();
+        else {
+            this.isDone = true;
+        }
     }
 }

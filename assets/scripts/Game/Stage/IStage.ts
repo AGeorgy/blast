@@ -1,4 +1,6 @@
 export interface IStage {
-    setDoneCallback(callback: () => void): void;
+    readonly isStarted: boolean;
+    readonly isDone: boolean;
+    reset(): void;
     execute(): void;
 }

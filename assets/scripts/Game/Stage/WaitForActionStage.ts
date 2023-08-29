@@ -4,7 +4,6 @@ import { IObserver } from "../Board/IObserver";
 import { IStage } from "./IStage";
 
 export class WaitForActionStage implements IStage, IObserver {
-    private _doneCallback: () => void;
     private _observerAdder: IAddObserver;
     private _actionAllower: IIsActionAllowed;
 
@@ -13,18 +12,23 @@ export class WaitForActionStage implements IStage, IObserver {
         this._actionAllower = actionAllower;
     }
 
-    setDoneCallback(callback: () => void): void {
-        this._doneCallback = callback;
+    isStarted: boolean;
+    isDone: boolean;
+
+    reset(): void {
+        this.isStarted = false;
+        this.isDone = false;
     }
 
     execute(): void {
         console.log("WaitForActionStage execute");
+        this.isStarted = true;
         this._observerAdder.addObserver(this);
     }
 
     notified(): void {
         if (this._actionAllower.isActionAllowed) {
-            this._doneCallback();
+            this.isDone = true;
         }
     }
 }
