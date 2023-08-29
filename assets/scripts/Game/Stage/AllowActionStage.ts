@@ -16,6 +16,7 @@ export class AllowActionStage implements IStage {
     }
 
     execute(): void {
+        console.log("AllowActionStage execute");
         this._boardActionAllower.allowAction(this._isAllow);
         this._doneCallback();
     }

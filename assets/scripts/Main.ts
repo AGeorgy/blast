@@ -74,6 +74,7 @@ export class Main extends Component {
 
     private addStages(stageController: StageController, boardController: ActionPerformer, boardStats: BoardStats, board: Board): void {
         let startStages = [
+            new WaitForTimeStage(1),
             new AllowActionStage(false, boardController),
             new FillingStage(boardController),
             new WaitForTimeStage(1),

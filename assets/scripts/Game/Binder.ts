@@ -2,7 +2,7 @@
 // TODO: dont know yet how to bind model and view in CocosCreator better than this
 export class Binder {
     private static instance: Binder;
-    private _bindings: Map<string, any>;
+    private _bindings: Map<string, any> = new Map<string, any>();
 
     private constructor() { }
 
@@ -18,9 +18,7 @@ export class Binder {
         return Binder.instance._bindings.get(type);
     }
 
-    public addBinding<T>(instance: T): void {
-        let type = typeof instance
-
+    public addBinding(type: string, instance: any): void {
         if (this._bindings.has(type)) {
             return;
         }

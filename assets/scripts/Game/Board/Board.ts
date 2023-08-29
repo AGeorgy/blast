@@ -38,32 +38,42 @@ export class Board implements IBoard, IBoardDataAndAddNotifier, IShuffle {
 
     addObserver(observer: IObserver): void {
         this._observers.push(observer);
+        this._lastChangedTiles = this.prepareAllTilesForNotify(TilesChange.Added);
+        observer.notified();
     }
 
     getTile(x: number, y: number): ITile {
         return this._tiles[x + y * this._xMax];
     }
 
-    removeTile(x: number, y: number): void {
-        console.log("Board removeTile: " + x + ", " + y);
-        let index = this.codePositionToIndex(x, y);
-        this._lastChangedTiles = this.prepareTilesForNotify();
-        this._tiles[index] = null;
+    removeTile(tilesToRemove: { x: number, y: number }[]): void {
+        console.log("Board removeTile");
+        let tiles: IReadTile[] = [];
+
+        tilesToRemove.forEach(tileToRemove => {
+            let index = this.codePositionToIndex(tileToRemove.x, tileToRemove.y);
+            tiles.push(this._tiles[index]);
+            this._tiles[index] = null;
+        });
+
+        this._lastChangedTiles = { change: TilesChange.Removed, tiles: tiles };
         this.notifyObservers();
     }
 
     fill(): void {
         console.log("Board fill");
+        let tiles: IReadTile[] = [];
         for (let y = 0; y < this._yMax; y++) {
             for (let x = 0; x < this._xMax; x++) {
                 let index = this.codePositionToIndex(x, y);
                 if (!this._tiles[index]) {
                     this._tiles[index] = new Tile(x, y, this._colorPalette.getRandomColor());
+                    tiles.push(this._tiles[index]);
                 }
             }
         }
 
-        this._lastChangedTiles = this.prepareTilesForNotify();
+        this._lastChangedTiles = { change: TilesChange.Added, tiles: tiles };
         this.notifyObservers();
     }
 
@@ -83,7 +93,7 @@ export class Board implements IBoard, IBoardDataAndAddNotifier, IShuffle {
             this._tiles[randomIndex].setPosition(this.decodeIndexToPosition(randomIndex));
         }
 
-        this._lastChangedTiles = this.prepareTilesForNotify();
+        this._lastChangedTiles = this.prepareAllTilesForNotify(TilesChange.Moved);
         this.notifyObservers();
     };
 
@@ -103,11 +113,11 @@ export class Board implements IBoard, IBoardDataAndAddNotifier, IShuffle {
         return { x: index % this._xMax, y: Math.floor(index / this._xMax) };
     }
 
-    private prepareTilesForNotify(): { change: TilesChange.Moved, tiles: IReadTile[] } {
-        let tiles: IReadTile[];
+    private prepareAllTilesForNotify(change: TilesChange): { change: TilesChange, tiles: IReadTile[] } {
+        let tiles: IReadTile[] = [];
         this._tiles.forEach(tile => {
             tiles.push(tile);
         });
-        return { change: TilesChange.Moved, tiles: tiles };
+        return { change: change, tiles: tiles };
     }
 }

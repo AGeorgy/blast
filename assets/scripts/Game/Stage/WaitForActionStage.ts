@@ -18,6 +18,7 @@ export class WaitForActionStage implements IStage, IObserver {
     }
 
     execute(): void {
+        console.log("WaitForActionStage execute");
         this._observerAdder.addObserver(this);
     }
 

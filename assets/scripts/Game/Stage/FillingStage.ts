@@ -14,6 +14,7 @@ export class FillingStage implements IStage {
     }
 
     execute(): void {
+        console.log("FillingStage execute");
         this._boardReseter.fillBoard();
         this._doneCallback();
     }

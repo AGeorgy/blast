@@ -13,6 +13,7 @@ export class WaitStage implements IStage {
     }
 
     execute(): void {
+        console.log("WaitStage execute");
         setTimeout(() => {
             this._doneCallback();
         }, this._time * 1000);
