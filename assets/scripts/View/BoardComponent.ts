@@ -1,4 +1,4 @@
-import { _decorator, Component, instantiate, math, Node, Prefab, UITransform } from 'cc';
+import { _decorator, Component, instantiate, Layout, math, Node, Prefab, UITransform } from 'cc';
 import { TileComponent } from './TileComponent';
 import { Binder } from '../Game/Binder';
 import { IBoardDataAndAddNotifier } from '../Game/Board/IBoardDataAndAddNotifier';
@@ -11,10 +11,12 @@ const { ccclass, property } = _decorator;
 export class BoardComponent extends Component implements IObserver {
     @property(Prefab)
     tilePrefab: Prefab = null!;
+    @property(Node)
+    content: Node = null!;
 
     private _board: IBoardDataAndAddNotifier;
     private _tiles: Map<number, TileComponent> = new Map<number, TileComponent>();
-    private _transform: UITransform;
+    private _contentTransform: UITransform;
     private _tileWidth: number;
     private _tileHeight: number;
 
@@ -23,7 +25,7 @@ export class BoardComponent extends Component implements IObserver {
             throw new Error('Prefab is null');
         }
 
-        this._transform = this.getComponent(UITransform);
+        this._contentTransform = this.content.getComponent(UITransform);
         const binder = Binder.getInstance();
         this._board = binder.resolve<IBoardDataAndAddNotifier>("IBoardDataAndAddNotifier");
 
@@ -33,11 +35,14 @@ export class BoardComponent extends Component implements IObserver {
     }
 
     adjustSize() {
-        const squareTileSize = math.bits.min(this._transform.contentSize.width / this._board.xMax, this._transform.contentSize.height / this._board.yMax);
-        this._transform.contentSize = new math.Size(squareTileSize * this._board.xMax, squareTileSize * this._board.yMax);
+        const squareTileSize = math.bits.min(this._contentTransform.contentSize.width / this._board.xMax, this._contentTransform.contentSize.height / this._board.yMax);
+        this._contentTransform.contentSize = new math.Size(squareTileSize * this._board.xMax + 0.1, squareTileSize * this._board.yMax);
 
         this._tileWidth = squareTileSize;
         this._tileHeight = squareTileSize;
+        this.getComponents(Layout).forEach(layout => {
+            layout.updateLayout();
+        });
     }
 
     notified(): void {
@@ -78,7 +83,7 @@ export class BoardComponent extends Component implements IObserver {
 
     private setTileComponent(tileModel: IReadTile, tileNode: TileComponent): void {
         this._tiles.set(tileModel.id, tileNode);
-        tileNode.node.parent = this.node;
+        tileNode.node.parent = this.content;
         tileNode.init(tileModel)
 
         this.setTileSize(tileNode);
