@@ -78,20 +78,20 @@ export class Main extends Component {
         this._gameController.update();
     }
 
-    private addStages(stageController: StageController, boardController: ActionPerformer, boardStats: BoardStats, board: Board): void {
+    private addStages(stageController: StageController, actionPerformer: ActionPerformer, boardStats: BoardStats, board: Board): void {
         let startStages = [
             new WaitForTimeStage(1),
-            new AllowActionStage(false, boardController),
-            new FillingStage(boardController),
+            new AllowActionStage(false, actionPerformer),
+            new FillingStage(actionPerformer),
             new WaitForTimeStage(1),
         ];
         let repeatingStages = [
             new IfWinStage(boardStats, stageController),
-            new ShuffleIfCantContinueStage(1, boardStats, boardStats, board, boardController, stageController),
-            new AllowActionStage(true, boardController),
-            new WaitForActionStage(boardController, boardController),
-            new AllowActionStage(false, boardController),
-            new FillingStage(boardController),
+            new ShuffleIfCantContinueStage(1, actionPerformer, board, boardStats, stageController),
+            new AllowActionStage(true, actionPerformer),
+            new WaitForActionStage(actionPerformer, actionPerformer),
+            new AllowActionStage(false, actionPerformer),
+            new FillingStage(actionPerformer),
             new WaitForTimeStage(1),
         ];
 

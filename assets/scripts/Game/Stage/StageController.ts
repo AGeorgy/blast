@@ -19,8 +19,6 @@ export class StageController implements IStageController, IEndGameSequence, ISta
         this._sequenceEnded = false;
         this._currentStageIndex = 0;
         this._currentStages = this._startStages = [];
-        this._repeatingStages = [];
-        this._endStages = [];
     }
 
     public onEndGameSequence: () => void;
@@ -54,11 +52,14 @@ export class StageController implements IStageController, IEndGameSequence, ISta
             switch (this._stageType) {
                 case StageType.Start:
                     this._stageType = StageType.Repeating;
+                    break;
                 case StageType.Repeating:
                     this._stageType = StageType.End;
+                    break;
                 case StageType.End:
                     this._sequenceEnded = true;
                     this.onEndGameSequence();
+                    break;
             }
         }
     }
@@ -75,15 +76,15 @@ export class StageController implements IStageController, IEndGameSequence, ISta
     }
 
     addStartStages(stages: IStage[]): void {
-        this.addStages(this._startStages, stages);
+        this._startStages = stages;
     }
 
     addRepeatingStages(stages: IStage[]): void {
-        this.addStages(this._repeatingStages, stages);
+        this._repeatingStages = stages;
     }
 
     addEndStages(stages: IStage[]): void {
-        this.addStages(this._endStages, stages);
+        this._endStages = stages;
     }
 
     startSequance(): void {
@@ -98,29 +99,9 @@ export class StageController implements IStageController, IEndGameSequence, ISta
         this._stageType = StageType.End;
     }
 
-    private addStages(targetStages: IStage[], stagesToAdd: IStage[]): void {
-        stagesToAdd.forEach(stage => {
-            targetStages.push(stage);
-        });
-    }
-
-    private nextStage(stages: IStage[], stageAfter: () => void, stageIncrement: () => void): void {
-        console.log("StageController nextStage");
-        if (this._currentStageIndex < stages.length) {
-            console.log("StageController nextStage execute: " + this._currentStageIndex + " of " + stages.length + " stages");
-            stages[this._currentStageIndex].execute();
-            stageIncrement();
-        }
-        else {
-            console.log("StageController nextStage done");
-            this._currentStageIndex = 0;
-            stageAfter();
-        }
-    }
-
     private increaseStageCounter(): void {
         if (this._stageType == StageType.Repeating) {
-            this._currentStageIndex = this._currentStageIndex++ % this._repeatingStages.length;
+            this._currentStageIndex = (this._currentStageIndex + 1) % this._repeatingStages.length;
         }
         else {
             this._currentStageIndex++;

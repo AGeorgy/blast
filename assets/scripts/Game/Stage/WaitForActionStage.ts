@@ -4,31 +4,39 @@ import { IObserver } from "../Board/IObserver";
 import { IStage } from "./IStage";
 
 export class WaitForActionStage implements IStage, IObserver {
-    private _observerAdder: IAddObserver;
-    private _actionAllower: IIsActionAllowed;
+    private readonly _observerAdder: IAddObserver;
+    private readonly _actionAllower: IIsActionAllowed;
+
+    private _isStarted: boolean;
+    private _isDone: boolean;
 
     constructor(observerAdder: IAddObserver, actionAllower: IIsActionAllowed) {
         this._observerAdder = observerAdder;
         this._actionAllower = actionAllower;
     }
 
-    isStarted: boolean;
-    isDone: boolean;
+    get isStarted(): boolean {
+        return this._isStarted;
+    }
+
+    get isDone(): boolean {
+        return this._isDone;
+    }
 
     reset(): void {
-        this.isStarted = false;
-        this.isDone = false;
+        this._isStarted = false;
+        this._isDone = false;
     }
 
     execute(): void {
         console.log("WaitForActionStage execute");
-        this.isStarted = true;
+        this._isStarted = true;
         this._observerAdder.addObserver(this);
     }
 
     notified(): void {
         if (this._actionAllower.isActionAllowed) {
-            this.isDone = true;
+            this._isDone = true;
         }
     }
 }

@@ -1,4 +1,4 @@
-import { ActionRemoveBathSameColor as ActionRemoveBatchSameColor } from "./ActionRemoveBatchSameColor";
+import { ActionRemoveBatchSameColor } from "./ActionRemoveBatchSameColor";
 import { IAction } from "./IAction";
 import { BoardStats } from "../Board/BoardStats";
 import { IAddObserver } from "../Board/IAddObserver";
@@ -11,10 +11,10 @@ import { IFillBoard } from "../Board/IFillBoard";
 import { ICanDoDefaultAction } from "../Board/ICanDoDefaultAction";
 
 export class ActionPerformer implements IActionPerformer, IFillBoard, IAllowAction, IAddObserver, IIsActionAllowed, ICanDoDefaultAction {
-    private _board: IBoard;
-    private _boardStats: BoardStats;
+    private readonly _board: IBoard;
+    private readonly _boardStats: BoardStats;
 
-    private _defaultAction: ActionRemoveBatchSameColor;
+    private readonly _defaultAction: ActionRemoveBatchSameColor;
     private _currentAction: IAction;
     private _isActionAllowed: boolean;
     private _observers: IObserver[];
@@ -64,8 +64,8 @@ export class ActionPerformer implements IActionPerformer, IFillBoard, IAllowActi
         this._board.fill();
     }
 
-    performeActionOnCellAt(x: number, y: number): void {
-        console.log("ActionPerformer performeActionOnCellAt", x, y);
+    performActionOnCellAt(x: number, y: number): void {
+        console.log("ActionPerformer performActionOnCellAt", x, y);
         if (!this._isActionAllowed) {
             return;
         }

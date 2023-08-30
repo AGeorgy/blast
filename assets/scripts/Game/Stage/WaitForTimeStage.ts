@@ -1,25 +1,33 @@
 import { IStage } from "./IStage";
 
 export class WaitStage implements IStage {
-    private _time: number;
+    private readonly _time: number;
+
+    private _isStarted: boolean;
+    private _isDone: boolean;
 
     constructor(time: number) {
         this._time = time;
     }
 
-    isStarted: boolean;
-    isDone: boolean;
+    get isStarted(): boolean {
+        return this._isStarted;
+    }
+
+    get isDone(): boolean {
+        return this._isDone;
+    }
 
     reset(): void {
-        this.isStarted = false;
-        this.isDone = false;
+        this._isStarted = false;
+        this._isDone = false;
     }
 
     execute(): void {
         console.log("WaitStage execute");
-        this.isStarted = true;
+        this._isStarted = true;
         setTimeout(() => {
-            this.isDone = true;
+            this._isDone = true;
         }, this._time * 1000);
     }
 }

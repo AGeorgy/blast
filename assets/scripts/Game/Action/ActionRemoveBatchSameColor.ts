@@ -4,56 +4,62 @@ import { IAction } from "./IAction";
 import { IActionResult } from "./IActionResult";
 import { ActionResult } from "./ActionResult";
 
-export class ActionRemoveBathSameColor implements IAction {
-    private _minCellsInBath: number;
+export class ActionRemoveBatchSameColor implements IAction {
+    private readonly _minCellsInBath: number;
 
     constructor(minCellsInBath: number) {
         this._minCellsInBath = minCellsInBath;
     }
 
     canExecute(board: IBoard, x: number, y: number): boolean {
-        console.log("ActionRemoveBathSameColor canExecute");
-        let color = board.getTile(x, y).color;
-        let tilesToRemove: { x: number, y: number }[] = this.getTilesInRadiusWithColor(board, x, y, color);
-        if (tilesToRemove.length >= this._minCellsInBath) {
+        console.log("ActionRemoveBatchSameColor canExecute");
+        const color = board.getTile(x, y).color;
+        const tilesToRemove = this.getTilesInRadiusWithColor(board, x, y, color);
+        if (tilesToRemove.size >= this._minCellsInBath) {
             return true;
         }
         return false;
     }
 
     execute(board: IBoard, x: number, y: number): IActionResult {
-        console.log("ActionRemoveBathSameColor execute");
+        console.log("ActionRemoveBatchSameColor execute");
         return this.removeTilesInRadiusWithColor(board, x, y);
     }
 
     private removeTilesInRadiusWithColor(board: IBoard, x: number, y: number): IActionResult {
-        let color = board.getTile(x, y).color;
-        let tilesToRemove: { x: number, y: number }[] = this.getTilesInRadiusWithColor(board, x, y, color);
+        const color = board.getTile(x, y).color;
+        const tilesToRemove = this.getTilesInRadiusWithColor(board, x, y, color);
 
-        if (tilesToRemove.length >= this._minCellsInBath) {
-            board.removeTile(tilesToRemove);
-            return new ActionResult(tilesToRemove);
+        if (tilesToRemove.size >= this._minCellsInBath) {
+            const tilesToRemoveArray = Array.from(tilesToRemove);
+            board.removeTile(tilesToRemoveArray);
+            return new ActionResult(tilesToRemoveArray);
         }
 
         return new ActionResult();
     }
 
-    private getTilesInRadiusWithColor(board: IBoard, x: number, y: number, color: Color): { x: number, y: number }[] {
-        let tilesToRemove: { x: number, y: number }[] = [];
-        let tilesToCheck: { x: number, y: number }[] = [{ x: x, y: y }];
+    private getTilesInRadiusWithColor(board: IBoard, x: number, y: number, color: Color): Set<{ x: number, y: number }> {
+        const tilesToRemove = new Set<{ x: number, y: number }>;
+        const tilesToCheck = [{ x: x, y: y }];
+        const visited = new Set<string>();
 
         while (tilesToCheck.length > 0) {
-            let tileToCheck = tilesToCheck.pop();
-            if (board.getTile(tileToCheck.x, tileToCheck.y).color.equals(color)) {
-                tilesToRemove.push(tileToCheck);
-                tilesToCheck = tilesToCheck.concat(this.getNeighbours(board, tileToCheck.x, tileToCheck.y));
+            const tileToCheck = tilesToCheck.shift();
+            const key = `${tileToCheck.x},${tileToCheck.y}`;
+
+            if (!visited.has(key)
+                && board.getTile(tileToCheck.x, tileToCheck.y).color.equals(color)) {
+                visited.add(key);
+                tilesToRemove.add(tileToCheck);
+                tilesToCheck.push(...this.getNeighbours(board, tileToCheck.x, tileToCheck.y));
             }
         }
 
         return tilesToRemove;
     }
 
-    private getNeighbours(board: IBoard, x: number, y: number): ConcatArray<{ x: number; y: number; }> {
+    private getNeighbours(board: IBoard, x: number, y: number): { x: number, y: number }[] {
         let neighbours: { x: number, y: number }[] = [];
 
         if (x > 0) {

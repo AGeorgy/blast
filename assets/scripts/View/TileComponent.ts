@@ -58,6 +58,6 @@ export class TileComponent extends Component {
 
     onTileClicked() {
         console.log('TileComponent onTileClicked');
-        this._performAction.performeActionOnCellAt(this._model.x, this._model.y);
+        this._performAction.performActionOnCellAt(this._model.x, this._model.y);
     }
 }

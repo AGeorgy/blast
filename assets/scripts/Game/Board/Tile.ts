@@ -2,27 +2,23 @@ import { Color } from "cc";
 import { ITile } from "./ITile";
 
 export class Tile implements ITile {
-    static _idCounter: number = 0;
+    private static _idCounter: number = 0;
 
-    private _id: number;
+    private readonly _id: number;
     private _x: number;
     private _y: number;
-    private _color: Color;
+    private readonly _color: Color;
 
-    constructor(x: number, y: number, color: Color, id?: number) {
-        if (id) {
-            this._id = id;
-        } else {
-            this._id = Tile._idCounter++;
-        }
+    constructor(x: number, y: number, color: Color, id: number = Tile._idCounter++) {
+        this._id = id;
         this._x = x;
         this._y = y;
         this._color = color;
     }
 
-    setPosition(position: { x: number, y: number }): void {
-        this._x = position.x;
-        this._y = position.y;
+    setPosition({ x, y }: { x: number, y: number }): void {
+        this._x = x;
+        this._y = y;
     }
 
     get id(): number {

@@ -2,24 +2,31 @@ import { IFillBoard } from "../Board/IFillBoard";
 import { IStage } from "./IStage";
 
 export class FillingStage implements IStage {
-    private _boardReseter: IFillBoard;
+    private readonly _boardReseter: IFillBoard;
+    private _isStarted: boolean = false;
+    private _isDone: boolean = false;
 
     constructor(boardReseter: IFillBoard) {
         this._boardReseter = boardReseter;
     }
 
-    isStarted: boolean;
-    isDone: boolean;
+    get isStarted(): boolean {
+        return this._isStarted;
+    }
+
+    get isDone(): boolean {
+        return this._isDone;
+    }
 
     reset(): void {
-        this.isStarted = false;
-        this.isDone = false;
+        this._isStarted = false;
+        this._isDone = false;
     }
 
     execute(): void {
         console.log("FillingStage execute");
-        this.isStarted = true;
+        this._isStarted = true;
         this._boardReseter.fillBoard();
-        this.isDone = true;
+        this._isDone = true;
     }
 }

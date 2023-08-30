@@ -18,7 +18,7 @@ export class Binder {
         return Binder.instance._bindings.get(type);
     }
 
-    public addBinding(type: string, instance: any): void {
+    public addBinding<T>(type: string, instance: T): void {
         if (this._bindings.has(type)) {
             return;
         }

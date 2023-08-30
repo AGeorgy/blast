@@ -5,11 +5,11 @@ import { IStartGameSequenceAndUpdate } from "./Stage/IStartGameSequenceAndUpdate
 
 export class GameController implements IGameController {
     private _state: GameState;
-    private _sceneSwitcher: ISceneSwitcher;
-    private _gameScreenName: string;
-    private _actionPerformer: IActionPerformer;
-    private _startGameplay: IStartGameSequenceAndUpdate;
-    private _onEndGameSequence: IOnEndGameSequence;
+    private readonly _sceneSwitcher: ISceneSwitcher;
+    private readonly _gameScreenName: string;
+    private readonly _actionPerformer: IActionPerformer;
+    private readonly _startGameplay: IStartGameSequenceAndUpdate;
+    private readonly _onEndGameSequence: IOnEndGameSequence;
 
     constructor(gameScreenName: string, sceneSwitcher: ISceneSwitcher, actionPerformer: IActionPerformer,
         startGameplay: IStartGameSequenceAndUpdate, onEndGameSequence: IOnEndGameSequence) {

@@ -1,55 +1,58 @@
 import { ICanDoDefaultAction } from "../Board/ICanDoDefaultAction";
-import { ICanShuffle } from "../Board/ICanShuffle";
-import { IIncreaseShuffle } from "../Board/IIncreaseShuffle";
+import { ICanShuffleAndIncrease } from "../Board/ICanShuffleAndIncrease";
 import { IShuffle } from "../Board/IShuffle";
 import { IEndGameSequence } from "./IEndGameSequence";
 import { IStage } from "./IStage";
 
-
 export class ShuffleIfCantContinueStage implements IStage {
-    private _canShuffle: ICanShuffle;
-    private _canContinue: ICanDoDefaultAction;
-    private _time: number;
-    private _shuffle: IShuffle;
-    private _endGameSequence: IEndGameSequence;
-    private _increaseShuffle: IIncreaseShuffle;
+    private readonly _canContinue: ICanDoDefaultAction;
+    private readonly _shuffle: IShuffle;
+    private readonly _canShuffleAndIncrease: ICanShuffleAndIncrease;
+    private readonly _endGameSequence: IEndGameSequence;
+    private readonly _time: number;
+    private _isStarted: boolean = false;
+    private _isDone: boolean = false;
 
-    constructor(time: number, canShuffle: ICanShuffle, increaseShuffle: IIncreaseShuffle, shuffle: IShuffle,
-        canContinue: ICanDoDefaultAction, endGameSequence: IEndGameSequence) {
-        this._time = time;
+
+    constructor(time: number, canContinue: ICanDoDefaultAction, shuffle: IShuffle, canShuffleAndIncrease: ICanShuffleAndIncrease,
+        endGameSequence: IEndGameSequence) {
         this._canContinue = canContinue;
         this._shuffle = shuffle;
-        this._canShuffle = canShuffle;
-        this._increaseShuffle = increaseShuffle;
+        this._canShuffleAndIncrease = canShuffleAndIncrease;
         this._endGameSequence = endGameSequence;
     }
 
-    isStarted: boolean;
-    isDone: boolean;
+    get isStarted(): boolean {
+        return this._isStarted;
+    }
+
+    get isDone(): boolean {
+        return this._isDone;
+    }
 
     reset(): void {
-        this.isStarted = false;
-        this.isDone = false;
+        this._isStarted = false;
+        this._isDone = false;
     }
 
     execute(): void {
         console.log("ShuffleIfCantContinueStage execute");
-        this.isStarted = true;
+        this._isStarted = true;
         if (!this._canContinue.canDoDefaultAction) {
-            if (this._canShuffle.canShuffle) {
+            if (this._canShuffleAndIncrease.canShuffle) {
                 this._shuffle.shuffle();
-                this._increaseShuffle.increaseShuffle();
+                this._canShuffleAndIncrease.increaseShuffle();
                 setTimeout(() => {
                     this.execute();
                 }, this._time * 1000);
             }
             else {
                 this._endGameSequence.endSequance();
-                this.isDone = true;
+                this._isDone = true;
             }
         }
         else {
-            this.isDone = true;
+            this._isDone = true;
         }
     }
 }

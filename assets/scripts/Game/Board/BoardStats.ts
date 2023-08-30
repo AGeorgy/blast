@@ -1,17 +1,16 @@
-import { ICanShuffle } from "./ICanShuffle";
+import { ICanShuffleAndIncrease } from "./ICanShuffleAndIncrease";
 import { ICheckWin } from "./ICheckWin";
-import { IIncreaseShuffle } from "./IIncreaseShuffle";
 import { IObserver } from "./IObserver";
 import { IReadStatsAndAddObserver } from "./IReadStatsAndAddObserver";
 
-export class BoardStats implements ICheckWin, ICanShuffle, IIncreaseShuffle, IReadStatsAndAddObserver {
-    private _maxTurns: number;
+export class BoardStats implements ICheckWin, ICanShuffleAndIncrease, IReadStatsAndAddObserver {
+    private readonly _maxTurns: number;
     private _currentTurns: number;
 
-    private _targetScore: number;
+    private readonly _targetScore: number;
     private _currentScore: number;
 
-    private _maxShuffleCount: number;
+    private readonly _maxShuffleCount: number;
     private _currentShuffleCount: number;
     private _observers: IObserver[];
 
@@ -68,8 +67,6 @@ export class BoardStats implements ICheckWin, ICanShuffle, IIncreaseShuffle, IRe
     }
 
     private notifyObservers(): void {
-        this._observers.forEach(observer => {
-            observer.notified();
-        });
+        this._observers.map(observer => observer.notified());
     }
 }

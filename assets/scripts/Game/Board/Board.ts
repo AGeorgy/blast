@@ -9,12 +9,12 @@ import { IReadTile } from "./IReadTile";
 import { TilesChange } from "./IBoardLastChanged";
 
 export class Board implements IBoard, IBoardDataAndAddNotifier, IShuffle {
-    private _lastChangedTiles: { change: TilesChange, tiles: IReadTile[] };
-    private _tiles: ITile[];
-    private _xMax: number;
-    private _yMax: number;
-    private _colorPalette: IColorPalette;
-    private _observers: IObserver[];
+    private readonly _tiles: ITile[];
+    private readonly _xMax: number;
+    private readonly _yMax: number;
+    private readonly _colorPalette: IColorPalette;
+    private readonly _observers: IObserver[];
+    private _lastChangedTiles: { change: TilesChange, tiles: IReadTile[] } = null;
 
     constructor(xMax: number, yMax: number, colorPalette: IColorPalette) {
         this._xMax = xMax;
@@ -48,12 +48,11 @@ export class Board implements IBoard, IBoardDataAndAddNotifier, IShuffle {
 
     removeTile(tilesToRemove: { x: number, y: number }[]): void {
         console.log("Board removeTile");
-        let tiles: IReadTile[] = [];
-
-        tilesToRemove.forEach(tileToRemove => {
-            let index = this.codePositionToIndex(tileToRemove.x, tileToRemove.y);
-            tiles.push(this._tiles[index]);
+        const tiles: IReadTile[] = tilesToRemove.map(({ x, y }) => {
+            const index = this.codePositionToIndex(x, y);
+            const tile = this._tiles[index];
             this._tiles[index] = null;
+            return tile;
         });
 
         this._lastChangedTiles = { change: TilesChange.Removed, tiles: tiles };
@@ -62,13 +61,14 @@ export class Board implements IBoard, IBoardDataAndAddNotifier, IShuffle {
 
     fill(): void {
         console.log("Board fill");
-        let tiles: IReadTile[] = [];
+        const tiles: IReadTile[] = [];
         for (let y = 0; y < this._yMax; y++) {
             for (let x = 0; x < this._xMax; x++) {
-                let index = this.codePositionToIndex(x, y);
+                const index = this.codePositionToIndex(x, y);
                 if (!this._tiles[index]) {
-                    this._tiles[index] = new Tile(x, y, this._colorPalette.getRandomColor());
-                    tiles.push(this._tiles[index]);
+                    const tile = new Tile(x, y, this._colorPalette.getRandomColor());
+                    this._tiles[index] = tile;
+                    tiles.push(tile);
                 }
             }
         }
@@ -80,14 +80,13 @@ export class Board implements IBoard, IBoardDataAndAddNotifier, IShuffle {
     shuffle(): void {
         console.log("Board shuffle");
         let currentIndex = this._tiles.length;
-        let randomIndex: number;
 
         while (currentIndex != 0) {
-            randomIndex = Math.floor(Math.random() * currentIndex);
+            const randomIndex = Math.floor(Math.random() * currentIndex);
             currentIndex--;
 
-            [this._tiles[currentIndex], this._tiles[randomIndex]] = [
-                this._tiles[randomIndex], this._tiles[currentIndex]];
+            [this._tiles[currentIndex], this._tiles[randomIndex]] =
+                [this._tiles[randomIndex], this._tiles[currentIndex]];
 
             this._tiles[currentIndex].setPosition(this.decodeIndexToPosition(currentIndex));
             this._tiles[randomIndex].setPosition(this.decodeIndexToPosition(randomIndex));
@@ -98,9 +97,7 @@ export class Board implements IBoard, IBoardDataAndAddNotifier, IShuffle {
     };
 
     private notifyObservers(): void {
-        this._observers.forEach(observer => {
-            observer.notified();
-        });
+        this._observers.map(observer => observer.notified());
 
         this._lastChangedTiles = null;
     }
@@ -114,10 +111,7 @@ export class Board implements IBoard, IBoardDataAndAddNotifier, IShuffle {
     }
 
     private prepareAllTilesForNotify(change: TilesChange): { change: TilesChange, tiles: IReadTile[] } {
-        let tiles: IReadTile[] = [];
-        this._tiles.forEach(tile => {
-            tiles.push(tile);
-        });
+        const tiles = this._tiles.map(tile => tile);
         return { change: change, tiles: tiles };
     }
 }
