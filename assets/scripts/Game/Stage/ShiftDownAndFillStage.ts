@@ -1,12 +1,16 @@
+
 import { IFillBoard } from "../Board/IFillBoard";
+import { IShiftDownBoard } from "../Board/IShiftDownBoard";
 import { IStage } from "./IStage";
 
-export class FillingStage implements IStage {
+export class ShiftDownAndFillStage implements IStage {
     private readonly _boardFill: IFillBoard;
     private _isStarted: boolean = false;
     private _isDone: boolean = false;
+    private _boardShiftDown: IShiftDownBoard;
 
-    constructor(boardFill: IFillBoard) {
+    constructor(boardShiftDown: IShiftDownBoard, boardFill: IFillBoard) {
+        this._boardShiftDown = boardShiftDown;
         this._boardFill = boardFill;
     }
 
@@ -24,8 +28,9 @@ export class FillingStage implements IStage {
     }
 
     execute(): void {
-        console.log("FillingStage execute");
+        console.log("ShiftDownAndFillStage execute");
         this._isStarted = true;
+        this._boardShiftDown.shiftDown();
         this._boardFill.fill();
         this._isDone = true;
     }

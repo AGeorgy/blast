@@ -16,6 +16,7 @@ export class ShuffleIfCantContinueStage implements IStage {
 
     constructor(time: number, canContinue: ICanDoDefaultAction, shuffle: IShuffle, canShuffleAndIncrease: ICanShuffleAndIncrease,
         endGameSequence: IEndGameSequence) {
+        this._time = time;
         this._canContinue = canContinue;
         this._shuffle = shuffle;
         this._canShuffleAndIncrease = canShuffleAndIncrease;

@@ -8,6 +8,8 @@ const { ccclass, property } = _decorator;
 export class TileComponent extends Component {
     @property(CCFloat)
     moveDuration: number = 0.7;
+    @property(CCFloat)
+    destroyDuration: number = 0.2;
 
     private static _removedTiles: TileComponent[] = [];
     private _model: IReadTile;
@@ -26,7 +28,7 @@ export class TileComponent extends Component {
         return tileComponent;
     }
 
-    start() {
+    onLoad() {
         const sprite = this.getComponent(Sprite);
         if (sprite) {
             this._sprite = sprite;
@@ -40,14 +42,20 @@ export class TileComponent extends Component {
 
     init(model: IReadTile) {
         this._model = model;
-
+        this.node.active = true;
         this._sprite.color = this._model.color;
     }
 
     pool() {
-        this.node.parent = null;
-        TileComponent._removedTiles.push(this);
-        this.node.active = false;
+        tween(this.node)
+            .to(this.destroyDuration, { scale: new Vec3(0, 0, 0) })
+            .call(() => {
+                this.node.parent = null;
+                TileComponent._removedTiles.push(this);
+                this.node.active = false;
+                this.node.scale = new Vec3(1, 1, 1);
+            })
+            .start();
     }
 
     moveTo(x: number, y: number) {

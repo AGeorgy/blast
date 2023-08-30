@@ -131,6 +131,13 @@
         "g": 209,
         "b": 25,
         "a": 255
+      },
+      {
+        "__type__": "cc.Color",
+        "r": 132,
+        "g": 48,
+        "b": 158,
+        "a": 255
       }
     ],
     "groupSizeForDefaultAction": 2,

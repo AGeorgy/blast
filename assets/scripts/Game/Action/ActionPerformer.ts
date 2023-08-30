@@ -7,17 +7,16 @@ import { IBoard } from "../Board/IBoard";
 import { IActionPerformer } from "./IActionPerformer";
 import { IIsActionAllowed } from "../Board/IIsActionAllowed";
 import { IObserver } from "../Board/IObserver";
-import { IFillBoard } from "../Board/IFillBoard";
 import { ICanDoDefaultAction } from "../Board/ICanDoDefaultAction";
 
-export class ActionPerformer implements IActionPerformer, IFillBoard, IAllowAction, IAddObserver, IIsActionAllowed, ICanDoDefaultAction {
+export class ActionPerformer implements IActionPerformer, IAllowAction, IAddObserver, IIsActionAllowed, ICanDoDefaultAction {
     private readonly _board: IBoard;
     private readonly _boardStats: BoardStats;
 
     private readonly _defaultAction: ActionRemoveBatchSameColor;
     private _currentAction: IAction;
     private _isActionAllowed: boolean;
-    private _observers: IObserver[];
+    private _observers: IObserver[] = [];
 
     constructor(board: IBoard, boardStats: BoardStats, batchSizeForDefaultAction: number) {
         this._board = board;
@@ -55,13 +54,8 @@ export class ActionPerformer implements IActionPerformer, IFillBoard, IAllowActi
 
     reset(): void {
         console.log("ActionPerformer reset");
-        this.fillBoard();
         this._currentAction = this._defaultAction;
         this._boardStats.reset();
-    }
-
-    fillBoard(): void {
-        this._board.fill();
     }
 
     performActionOnCellAt(x: number, y: number): void {

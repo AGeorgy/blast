@@ -10,7 +10,6 @@ export class StageController implements IStageController, IEndGameSequence, ISta
     private _startStages: IStage[] = [];
     private _endStages: IStage[] = [];
 
-    private _currentStages: IStage[];
     private _stageType: StageType;
     private _sequenceEnded: boolean;
 
@@ -18,7 +17,6 @@ export class StageController implements IStageController, IEndGameSequence, ISta
         this._stageType = StageType.None;
         this._sequenceEnded = false;
         this._currentStageIndex = 0;
-        this._currentStages = this._startStages = [];
     }
 
     public onEndGameSequence: () => void;
@@ -32,35 +30,37 @@ export class StageController implements IStageController, IEndGameSequence, ISta
             return;
         }
 
-        console.log("StageController update");
         let currentStages = this.getStages(this._stageType);
         if (this._currentStageIndex < currentStages.length) {
-            let currentStage = this._currentStages[this._currentStageIndex];
+            let currentStage = currentStages[this._currentStageIndex];
 
             if (currentStage.isDone) {
                 this.increaseStageCounter();
+                currentStage.reset();
             }
             else if (currentStage.isStarted) {
                 return;
             }
             else {
+                console.log("StageController update execute");
                 currentStage.execute();
             }
         }
         else {
-            this._currentStageIndex = 0;
-            switch (this._stageType) {
-                case StageType.Start:
-                    this._stageType = StageType.Repeating;
-                    break;
-                case StageType.Repeating:
-                    this._stageType = StageType.End;
-                    break;
-                case StageType.End:
-                    this._sequenceEnded = true;
-                    this.onEndGameSequence();
-                    break;
-            }
+            this.switchToNextStage();
+        }
+    }
+
+    private switchToNextStage(): void {
+        this._currentStageIndex = 0;
+        switch (this._stageType) {
+            case StageType.Start:
+                this._stageType = StageType.Repeating;
+                break;
+            case StageType.End:
+                this._sequenceEnded = true;
+                this.onEndGameSequence();
+                break;
         }
     }
 
@@ -101,7 +101,7 @@ export class StageController implements IStageController, IEndGameSequence, ISta
 
     private increaseStageCounter(): void {
         if (this._stageType == StageType.Repeating) {
-            this._currentStageIndex = (this._currentStageIndex + 1) % this._repeatingStages.length;
+            this._currentStageIndex = (this._currentStageIndex + 1) % (this._repeatingStages.length);
         }
         else {
             this._currentStageIndex++;

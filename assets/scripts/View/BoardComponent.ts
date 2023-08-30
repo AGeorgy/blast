@@ -18,13 +18,12 @@ export class BoardComponent extends Component implements IObserver {
     private _tileWidth: number;
     private _tileHeight: number;
 
-    start() {
+    onLoad() {
         if (!this.tilePrefab) {
             throw new Error('Prefab is null');
         }
 
         this._transform = this.getComponent(UITransform);
-        this._tiles = new Map<number, TileComponent>();
         const binder = Binder.getInstance();
         this._board = binder.resolve<IBoardDataAndAddNotifier>("IBoardDataAndAddNotifier");
 
@@ -78,8 +77,7 @@ export class BoardComponent extends Component implements IObserver {
     }
 
     private setTileComponent(tileModel: IReadTile, tileNode: TileComponent): void {
-        this._tiles[tileModel.id] = tileNode;
-        tileNode.enabled = true;
+        this._tiles.set(tileModel.id, tileNode);
         tileNode.node.parent = this.node;
         tileNode.init(tileModel)
 

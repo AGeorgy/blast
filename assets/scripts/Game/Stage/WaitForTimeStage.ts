@@ -24,7 +24,7 @@ export class WaitStage implements IStage {
     }
 
     execute(): void {
-        console.log("WaitStage execute");
+        console.log("WaitForTimeStage execute");
         this._isStarted = true;
         setTimeout(() => {
             this._isDone = true;

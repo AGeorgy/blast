@@ -238,6 +238,7 @@
       "__id__": 10
     },
     "moveDuration": 0.7,
+    "destroyDuration": 0.2,
     "_id": ""
   },
   {

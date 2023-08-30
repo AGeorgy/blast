@@ -13,7 +13,11 @@ export class ActionRemoveBatchSameColor implements IAction {
 
     canExecute(board: IBoard, x: number, y: number): boolean {
         console.log("ActionRemoveBatchSameColor canExecute");
-        const color = board.getTile(x, y).color;
+        const tile = board.getTile(x, y);
+        if (!tile) {
+            return false;
+        }
+        const color = tile.color;
         const tilesToRemove = this.getTilesInRadiusWithColor(board, x, y, color);
         if (tilesToRemove.size >= this._minCellsInBath) {
             return true;
@@ -32,7 +36,7 @@ export class ActionRemoveBatchSameColor implements IAction {
 
         if (tilesToRemove.size >= this._minCellsInBath) {
             const tilesToRemoveArray = Array.from(tilesToRemove);
-            board.removeTile(tilesToRemoveArray);
+            board.removeTiles(tilesToRemoveArray);
             return new ActionResult(tilesToRemoveArray);
         }
 
@@ -48,11 +52,13 @@ export class ActionRemoveBatchSameColor implements IAction {
             const tileToCheck = tilesToCheck.shift();
             const key = `${tileToCheck.x},${tileToCheck.y}`;
 
-            if (!visited.has(key)
-                && board.getTile(tileToCheck.x, tileToCheck.y).color.equals(color)) {
-                visited.add(key);
-                tilesToRemove.add(tileToCheck);
-                tilesToCheck.push(...this.getNeighbours(board, tileToCheck.x, tileToCheck.y));
+            if (!visited.has(key)) {
+                const tile = board.getTile(tileToCheck.x, tileToCheck.y)
+                if (tile && tile.color.equals(color)) {
+                    visited.add(key);
+                    tilesToRemove.add(tileToCheck);
+                    tilesToCheck.push(...this.getNeighbours(board, tileToCheck.x, tileToCheck.y));
+                }
             }
         }
 

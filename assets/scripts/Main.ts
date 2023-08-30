@@ -6,9 +6,7 @@ import { GameState, IGameController } from './Game/IGameController';
 import { GameController } from './Game/GameController';
 import { ActionPerformer } from './Game/Action/ActionPerformer';
 import { Board } from './Game/Board/Board';
-import { IBoard } from './Game/Board/IBoard';
 import { BoardStats } from './Game/Board/BoardStats';
-import { IStageController } from './Game/Stage/IStageController';
 import { StageController } from './Game/Stage/StageController';
 import { FillingStage } from './Game/Stage/FillingStage';
 import { AllowActionStage } from './Game/Stage/AllowActionStage';
@@ -17,8 +15,7 @@ import { WaitForActionStage } from './Game/Stage/WaitForActionStage';
 import { IfWinStage } from './Game/Stage/IfWinStage';
 import { ShuffleIfCantContinueStage } from './Game/Stage/ShuffleIfCantContinueStage';
 import { Binder } from './Game/Binder';
-import { IReadStatsAndAddObserver } from './Game/Board/IReadStatsAndAddObserver';
-import { IBoardDataAndAddNotifier } from './Game/Board/IBoardDataAndAddNotifier';
+import { ShiftDownAndFillStage } from './Game/Stage/ShiftDownAndFillStage';
 const { ccclass, property } = _decorator;
 
 @ccclass('Main')
@@ -82,7 +79,7 @@ export class Main extends Component {
         let startStages = [
             new WaitForTimeStage(1),
             new AllowActionStage(false, actionPerformer),
-            new FillingStage(actionPerformer),
+            new FillingStage(board),
             new WaitForTimeStage(1),
         ];
         let repeatingStages = [
@@ -91,7 +88,7 @@ export class Main extends Component {
             new AllowActionStage(true, actionPerformer),
             new WaitForActionStage(actionPerformer, actionPerformer),
             new AllowActionStage(false, actionPerformer),
-            new FillingStage(actionPerformer),
+            new ShiftDownAndFillStage(board, board),
             new WaitForTimeStage(1),
         ];
 
