@@ -30,6 +30,7 @@ export class BoardStats implements ICheckWin, ICanShuffleAndIncrease, IReadStats
 
     addObserver(observer: IObserver): void {
         this._observers.push(observer);
+        observer.notified();
     }
 
     reset() {

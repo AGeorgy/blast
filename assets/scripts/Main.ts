@@ -63,7 +63,6 @@ export class Main extends Component {
         Binder.getInstance().addBinding("IReadStatsAndAddObserver", boardStats);
         Binder.getInstance().addBinding("IBoardDataAndAddNotifier", this._board);
         Binder.getInstance().addBinding("ISetAndPerformeAction", this._actionPerformer);
-
     }
 
     start() {
