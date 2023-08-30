@@ -1,5 +1,7 @@
 import { _decorator, CCFloat, Component, instantiate, Node, Prefab, Sprite, tween, Vec3 } from 'cc';
 import { IReadTile } from '../Game/Board/IReadTile';
+import { Binder } from '../Game/Binder';
+import { ISetAndPerformeAction } from '../Game/Action/ISetAndPerformeAction';
 const { ccclass, property } = _decorator;
 
 @ccclass('TileComponent')
@@ -9,6 +11,8 @@ export class TileComponent extends Component {
 
     private static _removedTiles: TileComponent[] = [];
     private _model: IReadTile;
+    private _sprite: Sprite;
+    private _performAction: ISetAndPerformeAction;
 
     static getPooledTileOrInstantiate(prefab: Prefab): TileComponent {
         let tileComponent: TileComponent = null;
@@ -22,28 +26,38 @@ export class TileComponent extends Component {
         return tileComponent;
     }
 
-    // start() {
-    // }
+    start() {
+        const sprite = this.getComponent(Sprite);
+        if (sprite) {
+            this._sprite = sprite;
+        } else {
+            console.error('TileComponent init: Sprite component not found');
+        }
+
+        const binder = Binder.getInstance();
+        this._performAction = binder.resolve<ISetAndPerformeAction>("ISetAndPerformeAction");
+    }
 
     init(model: IReadTile) {
         this._model = model;
 
-        this.getComponent(Sprite).color = this._model.color;
+        this._sprite.color = this._model.color;
     }
 
     pool() {
         this.node.parent = null;
-        this.enabled = false;
         TileComponent._removedTiles.push(this);
+        this.node.active = false;
     }
 
     moveTo(x: number, y: number) {
         tween(this.node)
             .to(this.moveDuration, { position: new Vec3(x, y, 0) })
             .start();
-        // let moveTween = tween(this.node)
-        //     .to(this.moveDuration, { position: new Vec3(x, y, 0) })
+    }
 
-        // tween(this.node).parallel(moveTween).start();
+    onTileClicked() {
+        console.log('TileComponent onTileClicked');
+        this._performAction.performeActionOnCellAt(this._model.x, this._model.y);
     }
 }

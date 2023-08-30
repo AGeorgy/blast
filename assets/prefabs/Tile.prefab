@@ -30,11 +30,11 @@
         "__id__": 6
       },
       {
-        "__id__": 8
+        "__id__": 9
       }
     ],
     "_prefab": {
-      "__id__": 10
+      "__id__": 11
     },
     "_lpos": {
       "__type__": "cc.Vec3",
@@ -153,7 +153,11 @@
     "__prefab": {
       "__id__": 7
     },
-    "clickEvents": [],
+    "clickEvents": [
+      {
+        "__id__": 8
+      }
+    ],
     "_interactable": true,
     "_transition": 3,
     "_normalColor": {
@@ -212,6 +216,16 @@
     "fileId": "8b3EehEbxBnq6Bu9nU42HB"
   },
   {
+    "__type__": "cc.ClickEvent",
+    "target": {
+      "__id__": 1
+    },
+    "component": "",
+    "_componentId": "a2fe1Y4PlRMfpYdETR1x6hr",
+    "handler": "onTileClicked",
+    "customEventData": ""
+  },
+  {
     "__type__": "a2fe1Y4PlRMfpYdETR1x6hr",
     "_name": "",
     "_objFlags": 0,
@@ -221,7 +235,7 @@
     },
     "_enabled": true,
     "__prefab": {
-      "__id__": 9
+      "__id__": 10
     },
     "moveDuration": 0.7,
     "_id": ""

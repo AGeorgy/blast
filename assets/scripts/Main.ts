@@ -4,7 +4,7 @@ import { IColorPalette } from './Game/Color/IColorPalette';
 import { ColorPalette } from './Game/Color/ColorPalette';
 import { GameState, IGameController } from './Game/IGameController';
 import { GameController } from './Game/GameController';
-import { ActionPerformer } from './Game/Board/ActionPerformer';
+import { ActionPerformer } from './Game/Action/ActionPerformer';
 import { Board } from './Game/Board/Board';
 import { IBoard } from './Game/Board/IBoard';
 import { BoardStats } from './Game/Board/BoardStats';
@@ -46,7 +46,7 @@ export class Main extends Component {
     private _gameController: IGameController;
     private _colorPalette: IColorPalette;
     private _board: Board;
-    private _boardController: ActionPerformer;
+    private _actionPerformer: ActionPerformer;
     private _stageController: StageController;
 
     onLoad() {
@@ -56,15 +56,17 @@ export class Main extends Component {
         this._colorPalette = new ColorPalette(this.tileColors);
         this._board = new Board(this.boardMaxX, this.boardMaxY, this._colorPalette)
         let boardStats = new BoardStats(this.maxTurns, this.targetScore, this.maxShuffleCount);
-        this._boardController = new ActionPerformer(this._board, boardStats, this.groupSizeForDefaultAction);
+        this._actionPerformer = new ActionPerformer(this._board, boardStats, this.groupSizeForDefaultAction);
 
         this._sceneSwitcher = new SceneSwitcher(this.loadingScreenName);
         this._stageController = new StageController();
-        this.addStages(this._stageController, this._boardController, boardStats, this._board);
-        this._gameController = new GameController(this.gameScreenName, this._sceneSwitcher, this._boardController, this._stageController, this._stageController);
+        this.addStages(this._stageController, this._actionPerformer, boardStats, this._board);
+        this._gameController = new GameController(this.gameScreenName, this._sceneSwitcher, this._actionPerformer, this._stageController, this._stageController);
 
         Binder.getInstance().addBinding("IReadStatsAndAddObserver", boardStats);
         Binder.getInstance().addBinding("IBoardDataAndAddNotifier", this._board);
+        Binder.getInstance().addBinding("ISetAndPerformeAction", this._actionPerformer);
+
     }
 
     start() {

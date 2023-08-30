@@ -1,14 +1,14 @@
-import { ActionRemoveBathSameColor as ActionRemoveBatchSameColor } from "../Action/ActionRemoveBatchSameColor";
-import { IAction } from "../Action/IAction";
-import { BoardStats } from "./BoardStats";
-import { IAddObserver } from "./IAddObserver";
-import { IAllowAction } from "./IAllowAction";
-import { IBoard } from "./IBoard";
+import { ActionRemoveBathSameColor as ActionRemoveBatchSameColor } from "./ActionRemoveBatchSameColor";
+import { IAction } from "./IAction";
+import { BoardStats } from "../Board/BoardStats";
+import { IAddObserver } from "../Board/IAddObserver";
+import { IAllowAction } from "../Board/IAllowAction";
+import { IBoard } from "../Board/IBoard";
 import { IActionPerformer } from "./IActionPerformer";
-import { IIsActionAllowed } from "./IIsActionAllowed";
-import { IObserver } from "./IObserver";
-import { IFillBoard } from "./IFillBoard";
-import { ICanDoDefaultAction } from "./ICanDoDefaultAction";
+import { IIsActionAllowed } from "../Board/IIsActionAllowed";
+import { IObserver } from "../Board/IObserver";
+import { IFillBoard } from "../Board/IFillBoard";
+import { ICanDoDefaultAction } from "../Board/ICanDoDefaultAction";
 
 export class ActionPerformer implements IActionPerformer, IFillBoard, IAllowAction, IAddObserver, IIsActionAllowed, ICanDoDefaultAction {
     private _board: IBoard;

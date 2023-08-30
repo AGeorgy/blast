@@ -1,4 +1,4 @@
-import { IActionPerformer } from "./Board/IActionPerformer";
+import { IActionPerformer } from "./Action/IActionPerformer";
 import { GameState, IGameController } from "./IGameController";
 import { IOnEndGameSequence } from "./Stage/IOnEndGameSequence";
 import { IStartGameSequenceAndUpdate } from "./Stage/IStartGameSequenceAndUpdate";

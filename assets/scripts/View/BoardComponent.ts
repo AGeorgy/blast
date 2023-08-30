@@ -19,9 +19,13 @@ export class BoardComponent extends Component implements IObserver {
     private _tileHeight: number;
 
     start() {
+        if (!this.tilePrefab) {
+            throw new Error('Prefab is null');
+        }
+
         this._transform = this.getComponent(UITransform);
         this._tiles = new Map<number, TileComponent>();
-        let binder = Binder.getInstance();
+        const binder = Binder.getInstance();
         this._board = binder.resolve<IBoardDataAndAddNotifier>("IBoardDataAndAddNotifier");
 
         this.adjustSize();
@@ -30,7 +34,7 @@ export class BoardComponent extends Component implements IObserver {
     }
 
     adjustSize() {
-        let squareTileSize = math.bits.min(this._transform.contentSize.width / this._board.xMax, this._transform.contentSize.height / this._board.yMax);
+        const squareTileSize = math.bits.min(this._transform.contentSize.width / this._board.xMax, this._transform.contentSize.height / this._board.yMax);
         this._transform.contentSize = new math.Size(squareTileSize * this._board.xMax, squareTileSize * this._board.yMax);
 
         this._tileWidth = squareTileSize;
@@ -44,30 +48,32 @@ export class BoardComponent extends Component implements IObserver {
     }
 
     private updateTiles() {
-        let lastChanges = this._board.lastChangedTiles;
+        const lastChanges = this._board.lastChangedTiles;
 
-        if (lastChanges.change == TilesChange.Removed) {
-            console.log("BoardComponent updateTiles: Removed");
-            lastChanges.tiles.forEach(tileModel => {
-                let tileNode = this._tiles.get(tileModel.id);
-                tileNode.pool();
-                this._tiles.delete(tileModel.id);
-            });
-        }
-        else if (lastChanges.change == TilesChange.Added) {
-            console.log("BoardComponent updateTiles: Added");
-            lastChanges.tiles.forEach(tileModel => {
-                let tileNode = TileComponent.getPooledTileOrInstantiate(this.tilePrefab);
-                this.setTileComponent(tileModel, tileNode);
-            });
-        }
-        else if (lastChanges.change == TilesChange.Moved) {
-            console.log("BoardComponent updateTiles: Moved");
-            lastChanges.tiles.forEach(tileModel => {
-                let tileNode = this._tiles.get(tileModel.id);
-                let position = this.transformGridToUiPosition(tileModel.x, tileModel.y);
-                tileNode.moveTo(position.x, this.getUiYPosition(position.y));
-            });
+        switch (lastChanges.change) {
+            case TilesChange.Removed:
+                console.log("BoardComponent updateTiles: Removed");
+                lastChanges.tiles.forEach(tileModel => {
+                    const tileNode = this._tiles.get(tileModel.id);
+                    tileNode.pool();
+                    this._tiles.delete(tileModel.id);
+                });
+                break;
+            case TilesChange.Added:
+                console.log("BoardComponent updateTiles: Added");
+                lastChanges.tiles.forEach(tileModel => {
+                    const tileNode = TileComponent.getPooledTileOrInstantiate(this.tilePrefab);
+                    this.setTileComponent(tileModel, tileNode);
+                });
+                break;
+            case TilesChange.Moved:
+                console.log("BoardComponent updateTiles: Moved");
+                lastChanges.tiles.forEach(tileModel => {
+                    const tileNode = this._tiles.get(tileModel.id);
+                    const position = this.transformGridToUiPosition(tileModel.x, tileModel.y);
+                    tileNode.moveTo(position.x, this.getUiYPosition(position.y));
+                });
+                break;
         }
     }
 
@@ -79,7 +85,7 @@ export class BoardComponent extends Component implements IObserver {
 
         this.setTileSize(tileNode);
 
-        let position = this.transformGridToUiPosition(tileModel.x, tileModel.y);
+        const position = this.transformGridToUiPosition(tileModel.x, tileModel.y);
         console.log("BoardComponent setTileComponent: " + position.x + ", " + position.y);
         tileNode.node.setPosition(position.x, position.y);
         tileNode.moveTo(position.x, this.getUiYPosition(position.y));
