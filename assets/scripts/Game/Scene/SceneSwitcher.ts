@@ -8,7 +8,19 @@ export class SceneSwitcher implements ISceneSwitcher {
     }
 
     switchScene(sceneName: string, callback: () => void = () => { }): void {
-        director.loadScene(sceneName, (err, scene) => {
+        this.loadLoadingScreen(() => {
+            director.loadScene(sceneName, (err, scene) => {
+                if (err) {
+                    console.error(err);
+                    return;
+                }
+                callback?.();
+            });
+        });
+    }
+
+    private loadLoadingScreen(callback: () => void = () => { }): void {
+        director.loadScene(this._loadingScreenName, (err, scene) => {
             if (err) {
                 console.error(err);
                 return;

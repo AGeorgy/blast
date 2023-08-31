@@ -1,5 +1,6 @@
 import { IActionPerformer } from "./Action/IActionPerformer";
-import { GameState, IGameController } from "./IGameController";
+import { IGameController } from "./IGameController";
+import { GameState } from "./ISetState";
 import { IOnEndGameSequence } from "./Stage/IOnEndGameSequence";
 import { IStartGameSequenceAndUpdate } from "./Stage/IStartGameSequenceAndUpdate";
 
@@ -10,11 +11,13 @@ export class GameController implements IGameController {
     private readonly _actionPerformer: IActionPerformer;
     private readonly _startGameplay: IStartGameSequenceAndUpdate;
     private readonly _onEndGameSequence: IOnEndGameSequence;
+    private readonly _gameOverScreenName: string;
 
-    constructor(gameScreenName: string, sceneSwitcher: ISceneSwitcher, actionPerformer: IActionPerformer,
+    constructor(gameScreenName: string, gameOverScreenName: string, sceneSwitcher: ISceneSwitcher, actionPerformer: IActionPerformer,
         startGameplay: IStartGameSequenceAndUpdate, onEndGameSequence: IOnEndGameSequence) {
         this._sceneSwitcher = sceneSwitcher;
         this._gameScreenName = gameScreenName;
+        this._gameOverScreenName = gameOverScreenName;
         this._actionPerformer = actionPerformer;
         this._startGameplay = startGameplay;
         this._onEndGameSequence = onEndGameSequence;
@@ -28,7 +31,8 @@ export class GameController implements IGameController {
             case GameState.Start:
                 break;
             case GameState.Playing:
-                if (this._state === GameState.Start) {
+                if (this._state === GameState.Start
+                    || this._state === GameState.GameOver) {
                     this._state = state;
                     console.log("Game Start");
                     this._actionPerformer.reset();
@@ -45,6 +49,10 @@ export class GameController implements IGameController {
                 if (this._state === GameState.Playing) {
                     this._state = state;
                     console.log("Game Over");
+
+                    this._sceneSwitcher.switchScene(this._gameOverScreenName, () => {
+                        console.log("GameOverScreen loaded");
+                    });
                 }
                 break;
         }

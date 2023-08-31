@@ -115,6 +115,7 @@
     "__prefab": null,
     "loadingScreenName": "loading",
     "gameScreenName": "game",
+    "gameOverScreenName": "gameOver",
     "boardMaxX": 3,
     "boardMaxY": 3,
     "tileColors": [

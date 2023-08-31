@@ -1,11 +1,5 @@
-export interface IGameController {
-    update(): unknown;
-    setStateTo(state: GameState): void;
-}
+import { ISetState } from "./ISetState";
 
-export enum GameState {
-    Start,
-    Playing,
-    Paused,
-    GameOver
+export interface IGameController extends ISetState {
+    update(): unknown;
 }

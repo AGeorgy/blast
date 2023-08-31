@@ -2,7 +2,6 @@ import { _decorator, CCInteger, CCString, Color, Component, director, Node } fro
 import { SceneSwitcher } from './Game/Scene/SceneSwitcher';
 import { IColorPalette } from './Game/Color/IColorPalette';
 import { ColorPalette } from './Game/Color/ColorPalette';
-import { GameState, IGameController } from './Game/IGameController';
 import { GameController } from './Game/GameController';
 import { ActionPerformer } from './Game/Action/ActionPerformer';
 import { Board } from './Game/Board/Board';
@@ -17,6 +16,8 @@ import { ShuffleIfCantContinueStage } from './Game/Stage/ShuffleIfCantContinueSt
 import { Binder } from './Game/Binder';
 import { ShiftDownAndFillStage } from './Game/Stage/ShiftDownAndFillStage';
 import { IfLostStage } from './Game/Stage/IfLostStage';
+import { IGameController } from './Game/IGameController';
+import { GameState } from './Game/ISetState';
 const { ccclass, property } = _decorator;
 
 @ccclass('Main')
@@ -25,6 +26,8 @@ export class Main extends Component {
     loadingScreenName: string;
     @property(CCString)
     gameScreenName: string;
+    @property(CCString)
+    gameOverScreenName: string;
     @property(CCInteger)
     boardMaxX: number = 5;
     @property(CCInteger)
@@ -59,14 +62,17 @@ export class Main extends Component {
         this._sceneSwitcher = new SceneSwitcher(this.loadingScreenName);
         this._stageController = new StageController();
         this.addStages(this._stageController, this._actionPerformer, boardStats, this._board);
-        this._gameController = new GameController(this.gameScreenName, this._sceneSwitcher, this._actionPerformer, this._stageController, this._stageController);
+        this._gameController = new GameController(this.gameScreenName, this.gameOverScreenName, this._sceneSwitcher, this._actionPerformer, this._stageController, this._stageController);
 
         Binder.getInstance().addBinding("IReadStatsAndAddObserver", boardStats);
+
         Binder.getInstance().addBinding("IBoardDataAndAddNotifier", this._board);
+
         Binder.getInstance().addBinding("ISetAndPerformeAction", this._actionPerformer);
         Binder.getInstance().addBinding("ISetAction", this._actionPerformer);
         Binder.getInstance().addBinding("ISetAddActionObserverGetCount", this._actionPerformer);
 
+        Binder.getInstance().addBinding("ISetState", this._gameController);
     }
 
     start() {
