@@ -4,7 +4,7 @@ export class ActionResult implements IActionResult {
     private readonly _executedCells: { x: number, y: number }[];
     private readonly _isExecuted: boolean;
 
-    constructor(executedCells?: { x: number, y: number }[]) {
+    constructor(executedCells: { x: number, y: number }[] = []) {
         this._executedCells = executedCells;
         this._isExecuted = executedCells.length > 0;
     }

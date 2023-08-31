@@ -16,6 +16,7 @@ import { IfWinStage } from './Game/Stage/IfWinStage';
 import { ShuffleIfCantContinueStage } from './Game/Stage/ShuffleIfCantContinueStage';
 import { Binder } from './Game/Binder';
 import { ShiftDownAndFillStage } from './Game/Stage/ShiftDownAndFillStage';
+import { IfLostStage } from './Game/Stage/IfLostStage';
 const { ccclass, property } = _decorator;
 
 @ccclass('Main')
@@ -86,6 +87,7 @@ export class Main extends Component {
         ];
         let repeatingStages = [
             new IfWinStage(boardStats, stageController),
+            new IfLostStage(boardStats, stageController),
             new ShuffleIfCantContinueStage(1, actionPerformer, board, boardStats, stageController),
             new AllowActionStage(true, actionPerformer),
             new WaitForActionStage(actionPerformer, actionPerformer),

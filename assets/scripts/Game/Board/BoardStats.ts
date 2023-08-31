@@ -1,9 +1,10 @@
 import { ICanShuffleAndIncrease } from "./ICanShuffleAndIncrease";
+import { ICheckLost } from "./ICheckLost";
 import { ICheckWin } from "./ICheckWin";
 import { IObserver } from "./IObserver";
 import { IReadStatsAndAddObserver } from "./IReadStatsAndAddObserver";
 
-export class BoardStats implements ICheckWin, ICanShuffleAndIncrease, IReadStatsAndAddObserver {
+export class BoardStats implements ICheckWin, ICheckLost, ICanShuffleAndIncrease, IReadStatsAndAddObserver {
     private readonly _maxTurns: number;
     private _currentTurns: number;
 
@@ -62,9 +63,14 @@ export class BoardStats implements ICheckWin, ICanShuffleAndIncrease, IReadStats
         this.notifyObservers();
     }
 
-    get ifWin() {
+    get ifWin(): boolean {
         return this._currentScore >= this._targetScore
             && this._currentTurns < this._maxTurns;
+    }
+
+    get ifLost(): boolean {
+        return this._currentTurns >= this._maxTurns
+            && this._currentScore < this._targetScore;
     }
 
     private notifyObservers(): void {
