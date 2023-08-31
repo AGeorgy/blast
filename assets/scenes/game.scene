@@ -429,7 +429,7 @@
       "__id__": 16
     },
     "asset": {
-      "__uuid__": "0e618852-6383-4766-a4fd-9d6cdd2c7480",
+      "__uuid__": "7d17e38d-3009-4d8e-853c-8d06a19b8d78",
       "__expectedType__": "cc.Prefab"
     },
     "fileId": "75Q/siflVIIocMvoGOGeeL",
@@ -441,7 +441,7 @@
   },
   {
     "__type__": "cc.PrefabInstance",
-    "fileId": "adQ+hDBNVGf5txEBfGb1K4",
+    "fileId": "bfEPwr0StOM60LcFeWBzal",
     "prefabRootNode": null,
     "mountedChildren": [],
     "mountedComponents": [],
@@ -469,7 +469,7 @@
     "propertyPath": [
       "_name"
     ],
-    "value": "BonusButton"
+    "value": "BombBoosterButton"
   },
   {
     "__type__": "cc.TargetInfo",
@@ -1125,7 +1125,7 @@
     "asset": null,
     "fileId": "d52a121d-778e-4a49-80a5-c58dc5a17d4a",
     "instance": null,
-    "targetOverrides": null,
+    "targetOverrides": [],
     "nestedPrefabInstanceRoots": [
       {
         "__id__": 5

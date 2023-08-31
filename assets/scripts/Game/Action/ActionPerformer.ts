@@ -49,6 +49,7 @@ export class ActionPerformer implements IActionPerformer, IAllowAction, IAddObse
     }
 
     setAction(action: IAction): void {
+        console.log("ActionPerformer setAction", action);
         this._currentAction = action;
     }
 

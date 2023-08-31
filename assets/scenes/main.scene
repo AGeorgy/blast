@@ -115,8 +115,8 @@
     "__prefab": null,
     "loadingScreenName": "loading",
     "gameScreenName": "game",
-    "boardMaxX": 7,
-    "boardMaxY": 4,
+    "boardMaxX": 8,
+    "boardMaxY": 8,
     "tileColors": [
       {
         "__type__": "cc.Color",

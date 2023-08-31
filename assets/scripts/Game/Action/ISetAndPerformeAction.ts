@@ -1,6 +1,5 @@
-import { IAction } from "./IAction";
+import { ISetAction } from "./ISetAction";
 
-export interface ISetAndPerformeAction {
+export interface ISetAndPerformeAction extends ISetAction {
     performActionOnCellAt(x: number, y: number): void
-    setAction(action: IAction): void;
 }

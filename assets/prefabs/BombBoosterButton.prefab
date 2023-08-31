@@ -1,7 +1,7 @@
 [
   {
     "__type__": "cc.Prefab",
-    "_name": "BonusButton",
+    "_name": "BombBoosterButton",
     "_objFlags": 0,
     "__editorExtras__": {},
     "_native": "",
@@ -13,7 +13,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "BonusButton",
+    "_name": "BombBoosterButton",
     "_objFlags": 0,
     "__editorExtras__": {},
     "_parent": null,
@@ -38,15 +38,18 @@
       },
       {
         "__id__": 21
+      },
+      {
+        "__id__": 23
       }
     ],
     "_prefab": {
-      "__id__": 23
+      "__id__": 25
     },
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": -103.94200000000004,
-      "y": -62.42100000000003,
+      "x": -157.62400000000002,
+      "y": 0,
       "z": 0
     },
     "_lrot": {
@@ -500,8 +503,8 @@
       "__id__": 1
     },
     "component": "",
-    "_componentId": "072e45XyYhMdLjcxj2C6C56",
-    "handler": "onClick",
+    "_componentId": "5a7d4PXr7lA86IXy6UlnsBT",
+    "handler": "setBooster",
     "customEventData": ""
   },
   {
@@ -516,6 +519,9 @@
     "__prefab": {
       "__id__": 22
     },
+    "button": {
+      "__id__": 18
+    },
     "nameText": {
       "__id__": 5
     },
@@ -527,6 +533,30 @@
   {
     "__type__": "cc.CompPrefabInfo",
     "fileId": "ceFEsfcHZDCr7PZ6O1cpWp"
+  },
+  {
+    "__type__": "5a7d4PXr7lA86IXy6UlnsBT",
+    "_name": "",
+    "_objFlags": 0,
+    "__editorExtras__": {},
+    "node": {
+      "__id__": 1
+    },
+    "_enabled": true,
+    "__prefab": {
+      "__id__": 24
+    },
+    "boosterName": "Bomb booster",
+    "amount": 2,
+    "radius": 2,
+    "bonusComponent": {
+      "__id__": 21
+    },
+    "_id": ""
+  },
+  {
+    "__type__": "cc.CompPrefabInfo",
+    "fileId": "f6dFMOjoFLhIotLbFrDJX9"
   },
   {
     "__type__": "cc.PrefabInfo",
