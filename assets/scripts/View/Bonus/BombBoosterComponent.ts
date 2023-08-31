@@ -3,7 +3,6 @@ import { IAction } from '../../Game/Action/IAction';
 import { ActionBomb as ActionBomb } from '../../Game/Action/ActionBomb';
 import { BonusComponent } from './BonusComponent';
 import { Binder } from '../../Game/Binder';
-import { ISetAction } from '../../Game/Action/ISetAction';
 import { IObserver } from '../../Game/Board/IObserver';
 import { ISetAddActionObserverGetCount } from '../../Game/Action/ISetAddActionObserverGetCount';
 const { ccclass, property } = _decorator;
@@ -21,8 +20,6 @@ export class BombBoosterComponent extends Component implements IObserver {
 
     private _action: IAction;
     private _actionProvider: ISetAddActionObserverGetCount;
-
-    private readonly ACTION_NAME = "ActionBomb";
 
     onLoad() {
         if (!this.bonusComponent) {
