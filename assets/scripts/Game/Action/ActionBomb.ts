@@ -3,7 +3,7 @@ import { ActionResult } from "./ActionResult";
 import { IAction } from "./IAction";
 import { IActionResult } from "./IActionResult";
 
-export class ActioBomb implements IAction {
+export class ActionBomb implements IAction {
     private readonly _radius: number;
 
     constructor(radius: number) {

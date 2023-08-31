@@ -8,8 +8,9 @@ import { IActionPerformer } from "./IActionPerformer";
 import { IIsActionAllowed } from "../Board/IIsActionAllowed";
 import { IObserver } from "../Board/IObserver";
 import { ICanDoDefaultAction } from "../Board/ICanDoDefaultAction";
+import { IAddActionGetCount } from "./IAddActionGetCount";
 
-export class ActionPerformer implements IActionPerformer, IAllowAction, IAddObserver, IIsActionAllowed, ICanDoDefaultAction {
+export class ActionPerformer implements IActionPerformer, IAllowAction, IAddObserver, IIsActionAllowed, ICanDoDefaultAction, IAddActionGetCount {
     private readonly _board: IBoard;
     private readonly _boardStats: BoardStats;
 
@@ -17,12 +18,26 @@ export class ActionPerformer implements IActionPerformer, IAllowAction, IAddObse
     private _currentAction: IAction;
     private _isActionAllowed: boolean;
     private _observers: IObserver[] = [];
+    private _actions: Map<object, number> = new Map();
 
     constructor(board: IBoard, boardStats: BoardStats, batchSizeForDefaultAction: number) {
         this._board = board;
         this._boardStats = boardStats;
         this._defaultAction = new ActionRemoveBatchSameColor(batchSizeForDefaultAction);
         this.setDefaultAction();
+    }
+
+    getCount(action: IAction): number {
+        if (this._actions.has(action)) {
+            return this._actions.get(action)!;
+        }
+
+        console.warn("ActionPerformer getCount", action, "not found in ", this._actions);
+        return 0;
+    }
+
+    addAction(action: IAction, amount: number): void {
+        this._actions.set(action, amount);
     }
 
     get canDoDefaultAction(): boolean {
@@ -72,12 +87,21 @@ export class ActionPerformer implements IActionPerformer, IAllowAction, IAddObse
 
             // reaction on action
             console.log("executedCells", executedCells.executedCells);
+            this.decriseActionCount();
             this.setDefaultAction();
             this.notifyObservers();
         }
         else {
             // reaction on no action
             console.log("no action");
+        }
+    }
+
+    private decriseActionCount(): void {
+        console.log("ActionPerformer decriseActionCount", this._currentAction);
+        if (this._actions.has(this._currentAction)) {
+            const count = this._actions.get(this._currentAction);
+            this._actions.set(this._currentAction, Math.max(count - 1, 0));
         }
     }
 

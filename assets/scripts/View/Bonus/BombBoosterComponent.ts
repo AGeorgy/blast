@@ -1,13 +1,15 @@
 import { _decorator, CCInteger, CCString, Component, Label, Node } from 'cc';
 import { IAction } from '../../Game/Action/IAction';
-import { ActioBomb } from '../../Game/Action/ActioBomb';
+import { ActionBomb as ActionBomb } from '../../Game/Action/ActionBomb';
 import { BonusComponent } from './BonusComponent';
 import { Binder } from '../../Game/Binder';
 import { ISetAction } from '../../Game/Action/ISetAction';
+import { IObserver } from '../../Game/Board/IObserver';
+import { ISetAddActionObserverGetCount } from '../../Game/Action/ISetAddActionObserverGetCount';
 const { ccclass, property } = _decorator;
 
 @ccclass('BombBoosterComponent')
-export class BombBoosterComponent extends Component {
+export class BombBoosterComponent extends Component implements IObserver {
     @property(CCString)
     boosterName: string = '';
     @property(CCInteger)
@@ -18,8 +20,9 @@ export class BombBoosterComponent extends Component {
     bonusComponent: BonusComponent = null!;
 
     private _action: IAction;
-    private _setAction: ISetAction;
-    private _countLeft: number;
+    private _actionProvider: ISetAddActionObserverGetCount;
+
+    private readonly ACTION_NAME = "ActionBomb";
 
     onLoad() {
         if (!this.bonusComponent) {
@@ -29,16 +32,19 @@ export class BombBoosterComponent extends Component {
         this.bonusComponent.setCount(this.amount);
 
         const binder = Binder.getInstance();
-        this._setAction = binder.resolve<ISetAction>("ISetAction");
+        this._actionProvider = binder.resolve<ISetAddActionObserverGetCount>("ISetAddActionObserverGetCount");
+        this._action = new ActionBomb(this.radius);
 
-        this._action = new ActioBomb(this.radius);
-        this._countLeft = this.amount;
+        this._actionProvider.addAction(this._action, this.amount);
+        this._actionProvider.addObserver(this);
     }
 
     setBooster() {
-        this._setAction.setAction(this._action);
-        this._countLeft--;
-        this.bonusComponent.setCount(this._countLeft);
+        this._actionProvider.setAction(this._action);
+    }
+
+    notified(): void {
+        this.bonusComponent.setCount(this._actionProvider.getCount(this._action));
     }
 }
 
