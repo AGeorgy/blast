@@ -31,8 +31,8 @@ jobs:
       - name: Create build dir
         run: |
           mkdir build
-      - name: Cocos Creator Build
-        uses: miggene/cocos-build@v1.2.3
+      - name: Cocos Creator Build updated
+        uses: AGeorgy/cocos-build@v1.2.4
         with:
           cocos_version: 3.8.0
           platform: "web-desktop"
