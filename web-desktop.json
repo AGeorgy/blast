@@ -1,0 +1,66 @@
+{
+  "name": "Blast",
+  "server": "",
+  "platform": "web-desktop",
+  "buildPath": "project://build",
+  "debug": true,
+  "md5Cache": false,
+  "skipCompressTexture": false,
+  "sourceMaps": true,
+  "polyfills": {
+    "asyncFunctions": true
+  },
+  "experimentalEraseModules": false,
+  "startSceneAssetBundle": false,
+  "bundleConfigs": [],
+  "useBuiltinServer": false,
+  "mainBundleIsRemote": false,
+  "mainBundleCompressionType": "merge_dep",
+  "useSplashScreen": true,
+  "bundleCommonChunk": false,
+  "packAutoAtlas": true,
+  "startScene": "38071919-53b6-4731-8828-e87ecb89b192",
+  "outputName": "web-desktop",
+  "taskName": "web-desktop",
+  "scenes": [
+    {
+      "url": "db://assets/scenes/game.scene",
+      "uuid": "d52a121d-778e-4a49-80a5-c58dc5a17d4a"
+    },
+    {
+      "url": "db://assets/scenes/gameOver.scene",
+      "uuid": "59742fe6-543b-49b0-9135-2b3cfc69605f"
+    },
+    {
+      "url": "db://assets/scenes/loading.scene",
+      "uuid": "4511d08e-32f3-41f7-ba90-455fb87cf8c0"
+    },
+    {
+      "url": "db://assets/scenes/main.scene",
+      "uuid": "38071919-53b6-4731-8828-e87ecb89b192"
+    }
+  ],
+  "packages": {
+    "web-desktop": {
+      "useWebGPU": false,
+      "resolution": {
+        "designWidth": 1280,
+        "designHeight": 960
+      },
+      "cullEngineAsmJsModule": false,
+      "__version__": "1.0.1"
+    },
+    "engine": {
+      "cleanupImageCache": "inheritProjectSetting",
+      "__version__": "1.0.7"
+    },
+    "cocos-service": {
+      "configID": "7b8916",
+      "services": [],
+      "__version__": "3.0.7"
+    }
+  },
+  "__version__": "1.3.6",
+  "buildMode": "normal",
+  "logDest": "project://temp/builder/log/web-desktop9-1-2023 13-55.log"
+}
