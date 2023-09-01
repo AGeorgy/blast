@@ -1,21 +1,21 @@
-import { IGameSettings } from "../IGameSettings";
-import { ActionPerformer } from "./Action/ActionPerformer";
-import { Binder } from "./Binder";
-import { Board } from "./Board/Board";
-import { BoardStats } from "./Board/BoardStats";
-import { ColorPalette } from "./Color/ColorPalette";
+import { IGameSettings } from "../../IGameSettings";
+import { ActionPerformer } from "../Action/ActionPerformer";
+import { Binder } from "../Binder";
+import { Board } from "../Board/Board";
+import { BoardStats } from "../Board/BoardStats";
+import { ColorPalette } from "../Color/ColorPalette";
 import { IGameController } from "./IGameController";
 import { GameState } from "./ISetState";
-import { SceneSwitcher } from "./Scene/SceneSwitcher";
-import { AllowActionStage } from "./Stage/AllowActionStage";
-import { FillingStage } from "./Stage/FillingStage";
-import { IfLostStage } from "./Stage/IfLostStage";
-import { IfWinStage } from "./Stage/IfWinStage";
-import { ShiftDownAndFillStage } from "./Stage/ShiftDownAndFillStage";
-import { ShuffleIfCantContinueStage } from "./Stage/ShuffleIfCantContinueStage";
-import { StageController } from "./Stage/StageController";
-import { WaitForActionStage } from "./Stage/WaitForActionStage";
-import { WaitForTimeStage } from "./Stage/WaitForTimeStage";
+import { SceneSwitcher } from "../Scene/SceneSwitcher";
+import { AllowActionStage } from "../Stage/AllowActionStage";
+import { FillingStage } from "../Stage/FillingStage";
+import { IfLostStage } from "../Stage/IfLostStage";
+import { IfWinStage } from "../Stage/IfWinStage";
+import { ShiftDownAndFillStage } from "../Stage/ShiftDownAndFillStage";
+import { ShuffleIfCantContinueStage } from "../Stage/ShuffleIfCantContinueStage";
+import { StageController } from "../Stage/StageController";
+import { WaitForActionStage } from "../Stage/WaitForActionStage";
+import { WaitForTimeStage } from "../Stage/WaitForTimeStage";
 
 export class GameController implements IGameController {
     private _state: GameState;

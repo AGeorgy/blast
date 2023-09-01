@@ -1,8 +1,8 @@
 import { _decorator, Component, director } from 'cc';
-import { GameController } from './Game/GameController';
-import { IGameController } from './Game/IGameController';
-import { GameState } from './Game/ISetState';
+import { GameController } from './Game/GameController/GameController';
 import { GameSettings } from './GameSettings';
+import { IGameController } from './Game/GameController/IGameController';
+import { GameState } from './Game/GameController/ISetState';
 const { ccclass, property } = _decorator;
 
 @ccclass('Main')
