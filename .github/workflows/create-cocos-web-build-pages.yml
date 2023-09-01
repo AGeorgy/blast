@@ -32,17 +32,9 @@ jobs:
         uses: miggene/cocos-build@v1.2.3
         with:
           cocos_version: 3.8.0
-          # platform to build
           platform: "web-desktop"
-          # build path
-          build_path: ./_site
       - name: Setup Pages
         uses: actions/configure-pages@v3
-      # - name: Build with Jekyll
-      #   uses: actions/jekyll-build-pages@v1
-      #   with:
-      #     source: ./
-      #     destination: ./_site
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v2
 
