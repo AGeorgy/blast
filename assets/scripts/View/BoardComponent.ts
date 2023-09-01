@@ -1,10 +1,11 @@
-import { _decorator, Component, instantiate, Layout, math, Node, Prefab, UITransform } from 'cc';
+import { _decorator, Component, Layout, math, Node, Prefab, UITransform } from 'cc';
 import { TileComponent } from './TileComponent';
 import { Binder } from '../Game/Binder';
 import { IBoardDataAndAddNotifier } from '../Game/Board/IBoardDataAndAddNotifier';
 import { IObserver } from '../Game/Board/IObserver';
 import { TilesChange } from '../Game/Board/IBoardLastChanged';
 import { IReadTile } from '../Game/Board/IReadTile';
+import { ObjectPool } from './ObjectPool/ObjectPool';
 const { ccclass, property } = _decorator;
 
 @ccclass('BoardComponent')
@@ -19,6 +20,7 @@ export class BoardComponent extends Component implements IObserver {
     private _contentTransform: UITransform;
     private _tileWidth: number;
     private _tileHeight: number;
+    private _pool: ObjectPool<TileComponent>;
 
     onLoad() {
         if (!this.tilePrefab) {
@@ -28,6 +30,8 @@ export class BoardComponent extends Component implements IObserver {
         this._contentTransform = this.content.getComponent(UITransform);
         const binder = Binder.getInstance();
         this._board = binder.resolve<IBoardDataAndAddNotifier>("IBoardDataAndAddNotifier");
+
+        this._pool = new ObjectPool(this.tilePrefab, this.content, this._board.xMax * this._board.yMax, "TileComponent");
 
         this.adjustSize();
 
@@ -59,15 +63,14 @@ export class BoardComponent extends Component implements IObserver {
                 console.log("BoardComponent updateTiles: Removed");
                 lastChanges.tiles.forEach(tileModel => {
                     const tileNode = this._tiles.get(tileModel.id);
-                    tileNode.pool();
+                    tileNode.pool(this._pool);
                     this._tiles.delete(tileModel.id);
                 });
                 break;
             case TilesChange.Added:
                 console.log("BoardComponent updateTiles: Added");
                 lastChanges.tiles.forEach(tileModel => {
-                    const tileNode = TileComponent.getPooledTileOrInstantiate(this.tilePrefab);
-                    this.setTileComponent(tileModel, tileNode);
+                    this.setTileComponent(tileModel, this._pool.borrow());
                 });
                 break;
             case TilesChange.Moved:
