@@ -1,6 +1,6 @@
 import { IStage } from "./IStage";
 
-export class WaitStage implements IStage {
+export class WaitForTimeStage implements IStage {
     private readonly _time: number;
 
     private _isStarted: boolean;

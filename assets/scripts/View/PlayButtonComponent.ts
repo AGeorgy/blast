@@ -15,7 +15,7 @@ export class PlayButtonComponent extends Component {
     }
 
     setGameStateToPlay() {
-        this._setState.setStateTo(GameState.Playing);
+        this._setState.setStateTo(GameState.Start);
     }
 }
 

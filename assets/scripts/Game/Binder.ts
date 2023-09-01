@@ -25,4 +25,8 @@ export class Binder {
 
         this._bindings.set(type, instance);
     }
+
+    clear() {
+        this._bindings.clear();
+    }
 }

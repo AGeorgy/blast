@@ -19,7 +19,10 @@ export class BoardStats implements ICheckWin, ICheckLost, ICanShuffleAndIncrease
         this._maxTurns = maxTurns;
         this._targetScore = targetScore;
         this._maxShuffleCount = maxShuffleCount;
-        this.reset();
+        this._currentTurns = 0;
+        this._currentScore = 0;
+        this._currentShuffleCount = 0;
+        this._observers = [];
     }
 
     get maxTurns(): number { return this._maxTurns; }
@@ -32,13 +35,6 @@ export class BoardStats implements ICheckWin, ICheckLost, ICanShuffleAndIncrease
     addObserver(observer: IObserver): void {
         this._observers.push(observer);
         observer.notified();
-    }
-
-    reset() {
-        this._currentTurns = 0;
-        this._currentScore = 0;
-        this._currentShuffleCount = 0;
-        this._observers = [];
     }
 
     get canShuffle(): boolean {

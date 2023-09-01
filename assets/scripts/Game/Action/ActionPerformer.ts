@@ -4,13 +4,12 @@ import { BoardStats } from "../Board/BoardStats";
 import { IAddObserver } from "../Board/IAddObserver";
 import { IAllowAction } from "../Board/IAllowAction";
 import { IBoard } from "../Board/IBoard";
-import { IActionPerformer } from "./IActionPerformer";
 import { IIsActionAllowed } from "../Board/IIsActionAllowed";
 import { IObserver } from "../Board/IObserver";
 import { ICanDoDefaultAction } from "../Board/ICanDoDefaultAction";
 import { IAddActionGetCount } from "./IAddActionGetCount";
 
-export class ActionPerformer implements IActionPerformer, IAllowAction, IAddObserver, IIsActionAllowed, ICanDoDefaultAction, IAddActionGetCount {
+export class ActionPerformer implements IAllowAction, IAddObserver, IIsActionAllowed, ICanDoDefaultAction, IAddActionGetCount {
     private readonly _board: IBoard;
     private readonly _boardStats: BoardStats;
 
@@ -66,12 +65,6 @@ export class ActionPerformer implements IActionPerformer, IAllowAction, IAddObse
     setAction(action: IAction): void {
         console.log("ActionPerformer setAction", action);
         this._currentAction = action;
-    }
-
-    reset(): void {
-        console.log("ActionPerformer reset");
-        this._currentAction = this._defaultAction;
-        this._boardStats.reset();
     }
 
     performActionOnCellAt(x: number, y: number): void {

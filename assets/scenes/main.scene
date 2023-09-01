@@ -23,7 +23,7 @@
     "_active": true,
     "_components": [],
     "_prefab": {
-      "__id__": 4
+      "__id__": 5
     },
     "_lpos": {
       "__type__": "cc.Vec3",
@@ -54,7 +54,7 @@
     },
     "autoReleaseAssets": false,
     "_globals": {
-      "__id__": 5
+      "__id__": 6
     },
     "_id": "38071919-53b6-4731-8828-e87ecb89b192"
   },
@@ -71,6 +71,9 @@
     "_components": [
       {
         "__id__": 3
+      },
+      {
+        "__id__": 4
       }
     ],
     "_prefab": null,
@@ -113,6 +116,21 @@
     },
     "_enabled": true,
     "__prefab": null,
+    "gameSettings": {
+      "__id__": 4
+    },
+    "_id": "61EK8y+ElOy6z+OyJZB/Oh"
+  },
+  {
+    "__type__": "f060aDmR5JCMahVVwa/kpNj",
+    "_name": "",
+    "_objFlags": 0,
+    "__editorExtras__": {},
+    "node": {
+      "__id__": 2
+    },
+    "_enabled": true,
+    "__prefab": null,
     "loadingScreenName": "loading",
     "gameScreenName": "game",
     "gameOverScreenName": "gameOver",
@@ -121,37 +139,37 @@
     "tileColors": [
       {
         "__type__": "cc.Color",
-        "r": 187,
-        "g": 51,
-        "b": 51,
+        "r": 209,
+        "g": 45,
+        "b": 143,
+        "a": 255
+      },
+      {
+        "__type__": "cc.Color",
+        "r": 62,
+        "g": 158,
+        "b": 74,
+        "a": 255
+      },
+      {
+        "__type__": "cc.Color",
+        "r": 145,
+        "g": 70,
+        "b": 180,
+        "a": 255
+      },
+      {
+        "__type__": "cc.Color",
+        "r": 41,
+        "g": 180,
+        "b": 199,
         "a": 255
       },
       {
         "__type__": "cc.Color",
         "r": 47,
-        "g": 209,
-        "b": 25,
-        "a": 255
-      },
-      {
-        "__type__": "cc.Color",
-        "r": 132,
-        "g": 48,
-        "b": 158,
-        "a": 255
-      },
-      {
-        "__type__": "cc.Color",
-        "r": 25,
-        "g": 158,
-        "b": 153,
-        "a": 255
-      },
-      {
-        "__type__": "cc.Color",
-        "r": 216,
-        "g": 210,
-        "b": 58,
+        "g": 79,
+        "b": 207,
         "a": 255
       }
     ],
@@ -159,7 +177,7 @@
     "maxShuffleCount": 2,
     "maxTurns": 10,
     "targetScore": 100,
-    "_id": "61EK8y+ElOy6z+OyJZB/Oh"
+    "_id": "a71189wVRGqIFZyiQ531Ew"
   },
   {
     "__type__": "cc.PrefabInfo",
@@ -172,25 +190,25 @@
   {
     "__type__": "cc.SceneGlobals",
     "ambient": {
-      "__id__": 6
-    },
-    "shadows": {
       "__id__": 7
     },
-    "_skybox": {
+    "shadows": {
       "__id__": 8
     },
-    "fog": {
+    "_skybox": {
       "__id__": 9
     },
-    "octree": {
+    "fog": {
       "__id__": 10
     },
-    "skin": {
+    "octree": {
       "__id__": 11
     },
-    "lightProbeInfo": {
+    "skin": {
       "__id__": 12
+    },
+    "lightProbeInfo": {
+      "__id__": 13
     },
     "bakedWithStationaryMainLight": false,
     "bakedWithHighpLightmap": false

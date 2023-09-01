@@ -3,6 +3,7 @@ export interface ISetState {
 }
 
 export enum GameState {
+    None,
     Start,
     Playing,
     Paused,
