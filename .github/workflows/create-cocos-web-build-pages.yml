@@ -35,7 +35,7 @@ jobs:
           mkdir /Users/runner/work/blast/blast/build
 
       - name: Cocos Creator Build updated
-        uses: AGeorgy/cocos-build@v1.2.5
+        uses: AGeorgy/cocos-build@v1.2.6
             
         with:
           cocos_version: 3.7.0
