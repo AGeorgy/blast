@@ -32,7 +32,7 @@ jobs:
 
       - name: Create build dir
         run: |
-          mkdir build
+          mkdir /Users/runner/work/blast/blast/build
 
       - name: Cocos Creator Build updated
         uses: AGeorgy/cocos-build@v1.2.4
@@ -47,7 +47,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v2
         with:
-          path: './build/web-desktop'
+          path: '/Users/runner/work/blast/blast/build/web-desktop'
 
   # Deployment job
   deploy:
