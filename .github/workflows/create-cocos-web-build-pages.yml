@@ -39,7 +39,8 @@ jobs:
         with:
           cocos_version: 3.7.0
           platform: "web-desktop"
-          project_path: /Users/runner/work/blast/blast
+          project_path: "/Users/runner/work/blast/blast"
+          build_path: "/Users/runner/work/blast/blast/build"
 
       - name: Setup Pages
         uses: actions/configure-pages@v3
