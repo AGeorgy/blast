@@ -83,6 +83,19 @@ export class Board implements IBoard, IBoardDataAndAddNotifier, IShuffle, IShift
         this.notifyObservers();
     }
 
+    exchangeTiles(tile1: { x: number; y: number; }, tile2: { x: number; y: number; }): void {
+        console.log("Board exchangeTiles");
+        const index1 = Board.codePositionToIndex(tile1.x, tile1.y, this._xMax);
+        const index2 = Board.codePositionToIndex(tile2.x, tile2.y, this._xMax);
+        this._tiles[index1]?.setPosition(tile2);
+        this._tiles[index2]?.setPosition(tile1);
+        [this._tiles[index1], this._tiles[index2]] =
+            [this._tiles[index2], this._tiles[index1]];
+
+        this._lastChangedTiles = { change: TilesChange.Moved, tiles: [this._tiles[index1], this._tiles[index2]] };
+        this.notifyObservers();
+    }
+
     shiftDown(): void {
         console.log("Board shiftDown");
         const movedTiles = new Map<number, ITile>();
