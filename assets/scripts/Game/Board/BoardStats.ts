@@ -1,10 +1,9 @@
 import { ICanShuffleAndIncrease } from "./ICanShuffleAndIncrease";
-import { ICheckLost } from "./ICheckLost";
-import { ICheckWin } from "./ICheckWin";
+import { EndGameState, IEndGame } from "./IEndGame";
 import { IObserver } from "./IObserver";
 import { IReadStatsAndAddObserver } from "./IReadStatsAndAddObserver";
 
-export class BoardStats implements ICheckWin, ICheckLost, ICanShuffleAndIncrease, IReadStatsAndAddObserver {
+export class BoardStats implements IEndGame, ICanShuffleAndIncrease, IReadStatsAndAddObserver {
     private readonly _maxTurns: number;
     private _currentTurns: number;
 
@@ -59,14 +58,18 @@ export class BoardStats implements ICheckWin, ICheckLost, ICanShuffleAndIncrease
         this.notifyObservers();
     }
 
-    get ifWin(): boolean {
-        return this._currentScore >= this._targetScore
-            && this._currentTurns < this._maxTurns;
-    }
-
-    get ifLost(): boolean {
-        return this._currentTurns >= this._maxTurns
-            && this._currentScore < this._targetScore;
+    get endGameState(): EndGameState {
+        if (this._currentScore >= this._targetScore
+            && this._currentTurns < this._maxTurns) {
+            return EndGameState.Win;
+        }
+        else if (this._currentTurns >= this._maxTurns
+            && this._currentScore < this._targetScore) {
+            return EndGameState.Lose;
+        }
+        else {
+            return EndGameState.None;
+        }
     }
 
     private notifyObservers(): void {

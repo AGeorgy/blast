@@ -1,12 +1,12 @@
-import { ICheckLost } from "../Board/ICheckLost";
+import { EndGameState, IEndGame } from "../Board/IEndGame";
 import { IEndGameSequence } from "./IEndGameSequence";
 import { IStage } from "./IStage";
 
 export class IfLostStage implements IStage {
-    private _endGameChecker: ICheckLost;
+    private _endGameChecker: IEndGame;
     private _endGameSequence: IEndGameSequence;
 
-    constructor(endGameChecker: ICheckLost, endGameSequence: IEndGameSequence) {
+    constructor(endGameChecker: IEndGame, endGameSequence: IEndGameSequence) {
         this._endGameChecker = endGameChecker;
         this._endGameSequence = endGameSequence;
     }
@@ -22,7 +22,7 @@ export class IfLostStage implements IStage {
     execute(): void {
         console.log("IfLostStage execute");
         this.isStarted = true;
-        if (this._endGameChecker.ifLost) {
+        if (this._endGameChecker.endGameState == EndGameState.Lose) {
             this._endGameSequence.endSequance();
         }
         this.isDone = true;

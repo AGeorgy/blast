@@ -107,6 +107,7 @@ export class GameController implements IGameController {
 
     private makeBindings(): void {
         Binder.getInstance().addBinding("IReadStatsAndAddObserver", this._boardStats);
+        Binder.getInstance().addBinding("IEndGame", this._boardStats);
 
         Binder.getInstance().addBinding("IBoardDataAndAddNotifier", this._board);
 

@@ -38,6 +38,10 @@ export class Board implements IBoard, IBoardDataAndAddNotifier, IShuffle, IShift
         return this._lastChangedTiles;
     }
 
+    static codePositionToIndex(x: number, y: number, xMax: number): number {
+        return x + y * xMax;
+    }
+
     addObserver(observer: IObserver): void {
         this._observers.push(observer);
         this._lastChangedTiles = this.prepareAllTilesForNotify(TilesChange.Added);
@@ -51,7 +55,7 @@ export class Board implements IBoard, IBoardDataAndAddNotifier, IShuffle, IShift
     removeTiles(tilesToRemove: { x: number, y: number }[]): void {
         console.log("Board removeTile");
         const tiles: IReadTile[] = tilesToRemove.map(({ x, y }) => {
-            const index = this.codePositionToIndex(x, y);
+            const index = Board.codePositionToIndex(x, y, this._xMax);
             const tile = this._tiles[index];
             this._tiles[index] = null;
             return tile;
@@ -66,7 +70,7 @@ export class Board implements IBoard, IBoardDataAndAddNotifier, IShuffle, IShift
         const tiles: IReadTile[] = [];
         for (let y = 0; y < this._yMax; y++) {
             for (let x = 0; x < this._xMax; x++) {
-                const index = this.codePositionToIndex(x, y);
+                const index = Board.codePositionToIndex(x, y, this._xMax);
                 if (!this._tiles[index]) {
                     const tile = new Tile(x, y, this._colorPalette.getRandomColor());
                     this._tiles[index] = tile;
@@ -85,7 +89,7 @@ export class Board implements IBoard, IBoardDataAndAddNotifier, IShuffle, IShift
         for (let x = 0; x < this._xMax; x++) {
             let shiftsInRow = 0;
             for (let y = 0; y < this._yMax; y++) {
-                const index = this.codePositionToIndex(x, y);
+                const index = Board.codePositionToIndex(x, y, this._xMax);
                 while (this._tiles[index] === null && shiftsInRow + y < this._yMax) {
                     this.shiftRowDown(x, y, movedTiles);
                     shiftsInRow++;
@@ -99,9 +103,9 @@ export class Board implements IBoard, IBoardDataAndAddNotifier, IShuffle, IShift
 
     shiftRowDown(xPos: number, yPos: number, movedTiles: Map<number, ITile>): void {
         for (let y = yPos; y < this._yMax - 1; y++) {
-            const index = this.codePositionToIndex(xPos, y);
+            const index = Board.codePositionToIndex(xPos, y, this._xMax);
 
-            const upIndex = this.codePositionToIndex(xPos, y + 1);
+            const upIndex = Board.codePositionToIndex(xPos, y + 1, this._xMax);
             const upTile = this._tiles[upIndex];
             const currentTile = this._tiles[index];
             this._tiles[upIndex] = currentTile;
@@ -134,10 +138,6 @@ export class Board implements IBoard, IBoardDataAndAddNotifier, IShuffle, IShift
 
     private notifyObservers(): void {
         this._observers.map(observer => observer.notified());
-    }
-
-    private codePositionToIndex(x: number, y: number): number {
-        return x + y * this._xMax;
     }
 
     private decodeIndexToPosition(index: number): { x: number, y: number } {
