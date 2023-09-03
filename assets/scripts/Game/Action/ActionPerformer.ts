@@ -8,8 +8,9 @@ import { IIsActionAllowed } from "../Board/IIsActionAllowed";
 import { IObserver } from "../Board/IObserver";
 import { ICanDoDefaultAction } from "../Board/ICanDoDefaultAction";
 import { IAddActionGetCount } from "./IAddActionGetCount";
+import { IPerformAction } from "./IPerformAction";
 
-export class ActionPerformer implements IAllowAction, IAddObserver, IIsActionAllowed, ICanDoDefaultAction, IAddActionGetCount {
+export class ActionPerformer implements IPerformAction, IAllowAction, IAddObserver, IIsActionAllowed, ICanDoDefaultAction, IAddActionGetCount {
     private readonly _board: IBoard;
     private readonly _boardStats: BoardStats;
 
@@ -67,13 +68,13 @@ export class ActionPerformer implements IAllowAction, IAddObserver, IIsActionAll
         this._currentAction = action;
     }
 
-    performActionOnCellAt(x: number, y: number): void {
-        console.log("ActionPerformer performActionOnCellAt", x, y);
+    performActionOnCellAt(positions: { x: number, y: number }[]): void {
+        console.log("ActionPerformer performActionOnCellAt", positions);
         if (!this._isActionAllowed) {
             return;
         }
 
-        let executedCells = this._currentAction.execute(this._board, x, y);
+        let executedCells = this._currentAction.execute(this._board, positions);
         if (executedCells.isExecuted) {
             this._boardStats.increaseScore(executedCells.executedCells.length);
             this._boardStats.increaseTurn();

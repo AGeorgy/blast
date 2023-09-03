@@ -16,6 +16,8 @@ import { ShuffleIfCantContinueStage } from "../Stage/ShuffleIfCantContinueStage"
 import { StageController } from "../Stage/StageController";
 import { WaitForActionStage } from "../Stage/WaitForActionStage";
 import { WaitForTimeStage } from "../Stage/WaitForTimeStage";
+import { InputModeController } from "../InputMode/InputModeController";
+import { SingleClickInputMode } from "../InputMode/SingleClickInputMode";
 
 export class GameController implements IGameController {
     private _state: GameState;
@@ -26,6 +28,7 @@ export class GameController implements IGameController {
     private _actionPerformer: ActionPerformer;
     private _sceneSwitcher: SceneSwitcher;
     private _stageController: StageController;
+    private _inputModeController: InputModeController;
 
     constructor(settings: IGameSettings) {
         this._settings = settings;
@@ -82,6 +85,7 @@ export class GameController implements IGameController {
         this._board = new Board(this._settings.boardMaxX, this._settings.boardMaxY, this._colorPalette)
         this._boardStats = new BoardStats(this._settings.maxTurns, this._settings.targetScore, this._settings.maxShuffleCount);
         this._actionPerformer = new ActionPerformer(this._board, this._boardStats, this._settings.groupSizeForDefaultAction);
+        this._inputModeController = new InputModeController(new SingleClickInputMode(), this._actionPerformer);
 
         this._sceneSwitcher = new SceneSwitcher(this._settings.loadingScreenName);
         this._stageController = new StageController();
@@ -116,6 +120,8 @@ export class GameController implements IGameController {
         Binder.getInstance().addBinding("ISetAddActionObserverGetCount", this._actionPerformer);
 
         Binder.getInstance().addBinding("ISetState", this);
+
+        Binder.getInstance().addBinding("ITileClick", this._inputModeController);
     }
 
 

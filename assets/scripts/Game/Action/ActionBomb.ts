@@ -10,11 +10,17 @@ export class ActionBomb implements IAction {
         this._radius = radius;
     }
 
-    execute(board: IBoard, x: number, y: number): IActionResult {
-        console.log("ActioBomb execute", x, y);
-        const tilesToRemove = this.getElementsInRadius(board, x, y, this._radius);
-        board.removeTiles(tilesToRemove);
-        return new ActionResult(tilesToRemove);
+    execute(board: IBoard, positions: { x: number, y: number }[]): IActionResult {
+        console.log("ActioBomb execute", positions);
+        let tilesToRemoveArray: { x: number, y: number }[] = [];
+
+        for (let index = 0; index < positions.length; index++) {
+            const position = positions[index];
+            tilesToRemoveArray = tilesToRemoveArray.concat(this.getElementsInRadius(board, position.x, position.y, this._radius));
+        }
+
+        board.removeTiles(tilesToRemoveArray);
+        return new ActionResult(tilesToRemoveArray);
     }
 
     private getElementsInRadius(board: IBoard, xStart: number, yStart: number, size: number): { x: number, y: number }[] {

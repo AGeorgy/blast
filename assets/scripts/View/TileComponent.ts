@@ -1,8 +1,8 @@
 import { _decorator, CCFloat, Component, instantiate, Node, Prefab, Sprite, tween, Vec3 } from 'cc';
 import { IReadTile } from '../Game/Board/IReadTile';
 import { Binder } from '../Game/Binder';
-import { ISetAndPerformeAction } from '../Game/Action/ISetAndPerformeAction';
 import { IReturn } from './ObjectPool/IReturn';
+import { ITileClick } from '../Game/InputMode/ITileClick';
 const { ccclass, property } = _decorator;
 
 @ccclass('TileComponent')
@@ -14,7 +14,7 @@ export class TileComponent extends Component {
 
     private _model: IReadTile;
     private _sprite: Sprite;
-    private _performAction: ISetAndPerformeAction;
+    private _tileClick: ITileClick;
 
     onLoad() {
         const sprite = this.getComponent(Sprite);
@@ -25,7 +25,7 @@ export class TileComponent extends Component {
         }
 
         const binder = Binder.getInstance();
-        this._performAction = binder.resolve<ISetAndPerformeAction>("ISetAndPerformeAction");
+        this._tileClick = binder.resolve<ITileClick>("ITileClick");
     }
 
     init(model: IReadTile) {
@@ -52,6 +52,6 @@ export class TileComponent extends Component {
 
     onTileClicked() {
         console.log('TileComponent onTileClicked');
-        this._performAction.performActionOnCellAt(this._model.x, this._model.y);
+        this._tileClick.tileClick(this._model.x, this._model.y);
     }
 }
