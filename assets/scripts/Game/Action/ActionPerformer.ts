@@ -75,20 +75,15 @@ export class ActionPerformer implements IPerformAction, IAllowAction, IAddObserv
         }
 
         let executedCells = this._currentAction.execute(this._board, positions);
+        console.log("executedCells", executedCells.executedCells);
         if (executedCells.isExecuted) {
             this._boardStats.increaseScore(executedCells.executedCells.length);
-            this._boardStats.increaseTurn();
+        }
 
-            // reaction on action
-            console.log("executedCells", executedCells.executedCells);
-            this.decriseActionCount();
-            this.setDefaultAction();
-            this.notifyObservers();
-        }
-        else {
-            // reaction on no action
-            console.log("no action");
-        }
+        this._boardStats.increaseTurn();
+        this.decriseActionCount();
+        this.setDefaultAction();
+        this.notifyObservers();
     }
 
     private decriseActionCount(): void {

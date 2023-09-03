@@ -122,6 +122,7 @@ export class GameController implements IGameController {
         Binder.getInstance().addBinding("ISetState", this);
 
         Binder.getInstance().addBinding("ITileClick", this._inputModeController);
+        Binder.getInstance().addBinding("ISetInputMode", this._inputModeController);
     }
 
 

@@ -1,9 +1,9 @@
 import { IPerformAction } from "../Action/IPerformAction";
 import { IInputMode } from "./IInputMode";
-import { ISetMode } from "./ISetMode";
+import { ISetInputMode } from "./ISetInputMode";
 import { ITileClick } from "./ITileClick";
 
-export class InputModeController implements ITileClick, ISetMode {
+export class InputModeController implements ITileClick, ISetInputMode {
     private _mode: IInputMode;
     private _performAction: IPerformAction;
 

@@ -1,5 +1,5 @@
 import { IInputMode } from "./IInputMode";
 
-export interface ISetMode {
+export interface ISetInputMode {
     setMode(mode: IInputMode): void;
 }

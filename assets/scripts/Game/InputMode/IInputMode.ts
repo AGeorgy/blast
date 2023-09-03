@@ -1,6 +1,6 @@
 import { IPerformAction } from "../Action/IPerformAction";
-import { ISetMode } from "./ISetMode";
+import { ISetInputMode } from "./ISetInputMode";
 
 export interface IInputMode {
-    clickAt(x: number, y: number, setMode: ISetMode, performAction: IPerformAction): void;
+    clickAt(x: number, y: number, setMode: ISetInputMode, performAction: IPerformAction): void;
 }
