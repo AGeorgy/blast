@@ -2,7 +2,7 @@
 import { _decorator, Component } from 'cc';
 import { Binder } from '../Game/Binder';
 import { GameState, ISetState } from '../Game/GameController/ISetState';
-const { ccclass, property } = _decorator;
+const { ccclass } = _decorator;
 
 @ccclass('PlayButtonComponent')
 export class PlayButtonComponent extends Component {
@@ -11,11 +11,9 @@ export class PlayButtonComponent extends Component {
     onLoad() {
         const binder = Binder.getInstance();
         this._setState = binder.resolve<ISetState>("ISetState");
-
     }
 
     setGameStateToPlay() {
         this._setState.setStateTo(GameState.Start);
     }
 }
-

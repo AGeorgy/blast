@@ -1,6 +1,6 @@
-import { IAddObserver } from "../Board/IAddObserver";
-import { IIsActionAllowed } from "../Board/IIsActionAllowed";
-import { IObserver } from "../Board/IObserver";
+import { IAddObserver } from "../API/IAddObserver";
+import { IIsActionAllowed } from "../Action/IIsActionAllowed";
+import { IObserver } from "../../API/IObserver";
 import { IStage } from "./IStage";
 
 export class WaitForActionStage implements IStage, IObserver {

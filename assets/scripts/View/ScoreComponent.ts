@@ -1,7 +1,7 @@
 import { _decorator, Component, Label } from 'cc';
 import { Binder } from '../Game/Binder';
 import { IReadStatsAndAddObserver } from '../Game/Board/IReadStatsAndAddObserver';
-import { IObserver } from '../Game/Board/IObserver';
+import { IObserver } from '../API/IObserver';
 const { ccclass, property } = _decorator;
 
 @ccclass('ScoreComponent')
@@ -25,4 +25,3 @@ export class ScoreComponent extends Component implements IObserver {
         this.score.string = this._stats.currentScore.toString();
     }
 }
-

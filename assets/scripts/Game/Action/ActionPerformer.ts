@@ -1,11 +1,11 @@
 import { ActionRemoveBatchSameColor } from "./ActionRemoveBatchSameColor";
 import { IAction } from "./IAction";
 import { BoardStats } from "../Board/BoardStats";
-import { IAddObserver } from "../Board/IAddObserver";
+import { IAddObserver } from "../API/IAddObserver";
 import { IAllowAction } from "../Board/IAllowAction";
 import { IBoard } from "../Board/IBoard";
-import { IIsActionAllowed } from "../Board/IIsActionAllowed";
-import { IObserver } from "../Board/IObserver";
+import { IIsActionAllowed } from "./IIsActionAllowed";
+import { IObserver } from "../../API/IObserver";
 import { ICanDoDefaultAction } from "../Board/ICanDoDefaultAction";
 import { IAddActionGetCount } from "./IAddActionGetCount";
 import { IPerformAction } from "./IPerformAction";
@@ -17,6 +17,8 @@ export class ActionPerformer implements IPerformAction, IAllowAction, IAddObserv
     private readonly _defaultAction: ActionRemoveBatchSameColor;
     private _isActionAllowed: boolean;
     private _observers: IObserver[] = [];
+    // TODO: useing Map<object, number> might be not reliable solution and lokating in wrong place.
+    // But it is good enough for now.
     private _actions: Map<object, number> = new Map();
 
     constructor(board: IBoard, boardStats: BoardStats, defaultAction: ActionRemoveBatchSameColor) {

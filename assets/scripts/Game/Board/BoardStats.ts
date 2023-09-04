@@ -1,6 +1,6 @@
 import { ICanShuffleAndIncrease } from "./ICanShuffleAndIncrease";
 import { EndGameState, IEndGame } from "./IEndGame";
-import { IObserver } from "./IObserver";
+import { IObserver } from "../../API/IObserver";
 import { IReadStatsAndAddObserver } from "./IReadStatsAndAddObserver";
 
 export class BoardStats implements IEndGame, ICanShuffleAndIncrease, IReadStatsAndAddObserver {

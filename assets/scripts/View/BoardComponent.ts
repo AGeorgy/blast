@@ -2,7 +2,7 @@ import { _decorator, Component, Layout, math, Node, Prefab, UITransform } from '
 import { TileComponent } from './TileComponent';
 import { Binder } from '../Game/Binder';
 import { IBoardDataAndAddNotifier } from '../Game/Board/IBoardDataAndAddNotifier';
-import { IObserver } from '../Game/Board/IObserver';
+import { IObserver } from '../API/IObserver';
 import { TilesChange } from '../Game/Board/IBoardLastChanged';
 import { IReadTile } from '../Game/Board/IReadTile';
 import { ObjectPool } from './ObjectPool/ObjectPool';
@@ -127,6 +127,5 @@ export class BoardComponent extends Component implements IObserver {
     private getUiYPosition(y: number): number {
         return y - this._board.yMax * this._tileHeight;
     }
-
 }
 

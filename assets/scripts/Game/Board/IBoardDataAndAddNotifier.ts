@@ -1,4 +1,4 @@
-import { IAddObserver } from "./IAddObserver";
+import { IAddObserver } from "../API/IAddObserver";
 import { IBoardLastChanged } from "./IBoardLastChanged";
 import { IBoardReadData } from "./IBoardReadData";
 

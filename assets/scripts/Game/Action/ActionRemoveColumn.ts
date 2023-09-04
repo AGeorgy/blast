@@ -16,7 +16,8 @@ export class ActionRemoveColumn implements IAction {
         board.removeTiles(tilesToRemoveArray);
         return new ActionResult(tilesToRemoveArray);
     }
-    getElementsInColumn(board: IBoard, x: number): ConcatArray<{ x: number; y: number; }> {
+
+    private getElementsInColumn(board: IBoard, x: number): ConcatArray<{ x: number; y: number; }> {
         let tilesToRemove: { x: number, y: number }[] = [];
 
         for (let i = 0; i < board.yMax; i++) {

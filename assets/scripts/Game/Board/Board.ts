@@ -4,7 +4,7 @@ import { IShuffle } from "./IShuffle";
 import { ITile } from "./ITile";
 import { Tile } from "./Tile";
 import { IBoardDataAndAddNotifier } from "./IBoardDataAndAddNotifier";
-import { IObserver } from "./IObserver";
+import { IObserver } from "../../API/IObserver";
 import { IReadTile } from "./IReadTile";
 import { TilesChange } from "./IBoardLastChanged";
 import { IFillBoard } from "./IFillBoard";
@@ -45,10 +45,6 @@ export class Board implements IBoard, IBoardDataAndAddNotifier, IShuffle, IShift
         return this._lastChangedTiles;
     }
 
-    static codePositionToIndex(x: number, y: number, xMax: number): number {
-        return x + y * xMax;
-    }
-
     addObserver(observer: IObserver): void {
         this._observers.push(observer);
         this._lastChangedTiles = this.prepareAllTilesForNotify(TilesChange.Added);
@@ -60,7 +56,7 @@ export class Board implements IBoard, IBoardDataAndAddNotifier, IShuffle, IShift
     }
 
     setTile(tile: ITile): void {
-        const index = Board.codePositionToIndex(tile.x, tile.y, this._xMax);
+        const index = this.codePositionToIndex(tile.x, tile.y);
         this._tiles[index] = tile;
         this._lastChangedTiles = { change: TilesChange.Set, tiles: [tile] };
         console.log("Board setTile", this._lastChangedTiles);
@@ -69,7 +65,7 @@ export class Board implements IBoard, IBoardDataAndAddNotifier, IShuffle, IShift
 
     removeTiles(tilesToRemove: { x: number, y: number }[]): void {
         const tiles: IReadTile[] = tilesToRemove.map(({ x, y }) => {
-            const index = Board.codePositionToIndex(x, y, this._xMax);
+            const index = this.codePositionToIndex(x, y);
             const tile = this._tiles[index];
             this._tiles[index] = null;
             return tile;
@@ -84,7 +80,7 @@ export class Board implements IBoard, IBoardDataAndAddNotifier, IShuffle, IShift
         const tiles: IReadTile[] = [];
         for (let y = 0; y < this._yMax; y++) {
             for (let x = 0; x < this._xMax; x++) {
-                const index = Board.codePositionToIndex(x, y, this._xMax);
+                const index = this.codePositionToIndex(x, y);
                 if (!this._tiles[index]) {
                     const tile = new Tile(x, y, this._colorPalette.getRandomColor(), this._defaultAction);
                     this._tiles[index] = tile;
@@ -100,8 +96,8 @@ export class Board implements IBoard, IBoardDataAndAddNotifier, IShuffle, IShift
 
     exchangeTiles(tile1: { x: number; y: number; }, tile2: { x: number; y: number; }): void {
         console.log("Board exchangeTiles");
-        const index1 = Board.codePositionToIndex(tile1.x, tile1.y, this._xMax);
-        const index2 = Board.codePositionToIndex(tile2.x, tile2.y, this._xMax);
+        const index1 = this.codePositionToIndex(tile1.x, tile1.y);
+        const index2 = this.codePositionToIndex(tile2.x, tile2.y);
         this._tiles[index1]?.setPosition(tile2);
         this._tiles[index2]?.setPosition(tile1);
         [this._tiles[index1], this._tiles[index2]] =
@@ -109,40 +105,6 @@ export class Board implements IBoard, IBoardDataAndAddNotifier, IShuffle, IShift
 
         this._lastChangedTiles = { change: TilesChange.Moved, tiles: [this._tiles[index1], this._tiles[index2]] };
         this.notifyObservers();
-    }
-
-    shiftDown(): void {
-        console.log("Board shiftDown");
-        const movedTiles = new Map<number, ITile>();
-        for (let x = 0; x < this._xMax; x++) {
-            let shiftsInRow = 0;
-            for (let y = 0; y < this._yMax; y++) {
-                const index = Board.codePositionToIndex(x, y, this._xMax);
-                while (this._tiles[index] === null && shiftsInRow + y < this._yMax) {
-                    this.shiftRowDown(x, y, movedTiles);
-                    shiftsInRow++;
-                }
-            }
-        }
-
-        this._lastChangedTiles = { change: TilesChange.Moved, tiles: Array.from(movedTiles.values()) };
-        this.notifyObservers();
-    }
-
-    shiftRowDown(xPos: number, yPos: number, movedTiles: Map<number, ITile>): void {
-        for (let y = yPos; y < this._yMax - 1; y++) {
-            const index = Board.codePositionToIndex(xPos, y, this._xMax);
-
-            const upIndex = Board.codePositionToIndex(xPos, y + 1, this._xMax);
-            const upTile = this._tiles[upIndex];
-            const currentTile = this._tiles[index];
-            this._tiles[upIndex] = currentTile;
-            this._tiles[index] = upTile;
-            if (upTile) {
-                movedTiles.set(upTile.id, upTile);
-                upTile.setPosition({ x: xPos, y: y });
-            }
-        }
     }
 
     shuffle(): void {
@@ -164,6 +126,40 @@ export class Board implements IBoard, IBoardDataAndAddNotifier, IShuffle, IShift
         this.notifyObservers();
     };
 
+    shiftDown(): void {
+        console.log("Board shiftDown");
+        const movedTiles = new Map<number, ITile>();
+        for (let x = 0; x < this._xMax; x++) {
+            let shiftsInRow = 0;
+            for (let y = 0; y < this._yMax; y++) {
+                const index = this.codePositionToIndex(x, y);
+                while (this._tiles[index] === null && shiftsInRow + y < this._yMax) {
+                    this.shiftRowDown(x, y, movedTiles);
+                    shiftsInRow++;
+                }
+            }
+        }
+
+        this._lastChangedTiles = { change: TilesChange.Moved, tiles: Array.from(movedTiles.values()) };
+        this.notifyObservers();
+    }
+
+    private shiftRowDown(xPos: number, yPos: number, movedTiles: Map<number, ITile>): void {
+        for (let y = yPos; y < this._yMax - 1; y++) {
+            const index = this.codePositionToIndex(xPos, y);
+
+            const upIndex = this.codePositionToIndex(xPos, y + 1);
+            const upTile = this._tiles[upIndex];
+            const currentTile = this._tiles[index];
+            this._tiles[upIndex] = currentTile;
+            this._tiles[index] = upTile;
+            if (upTile) {
+                movedTiles.set(upTile.id, upTile);
+                upTile.setPosition({ x: xPos, y: y });
+            }
+        }
+    }
+
     private notifyObservers(): void {
         this._observers.map(observer => observer.notified());
     }
@@ -175,5 +171,9 @@ export class Board implements IBoard, IBoardDataAndAddNotifier, IShuffle, IShift
     private prepareAllTilesForNotify(change: TilesChange): { change: TilesChange, tiles: IReadTile[] } {
         const tiles = this._tiles.map(tile => tile);
         return { change: change, tiles: tiles };
+    }
+
+    private codePositionToIndex(x: number, y: number): number {
+        return x + y * this._xMax;
     }
 }

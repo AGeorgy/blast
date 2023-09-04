@@ -25,4 +25,3 @@ export class GameSettings extends Component implements IGameSettings {
     @property(CCInteger)
     readonly targetScore: number = 100;
 }
-
