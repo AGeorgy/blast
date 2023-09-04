@@ -1,6 +1,7 @@
 import { IAction } from "../Action/IAction";
 import { IPerformAction } from "../Action/IPerformAction";
 import { IInputMode } from "./IInputMode";
+import { IResetMode } from "./IResetMode";
 
 export class HoldActionClickInputMode implements IInputMode {
     private _clicks: { x: number, y: number }[];
@@ -11,10 +12,14 @@ export class HoldActionClickInputMode implements IInputMode {
         this._action = action;
     }
 
-    clickAt(x: number, y: number, performAction: IPerformAction): boolean {
+    get rank(): number {
+        return 2;
+    }
+
+    clickAt(x: number, y: number, resetMode: IResetMode, performAction: IPerformAction): void {
         this._clicks.push({ x, y });
         console.log("HoldActionClickInputMode clickAt", x, y, this._clicks);
+        resetMode.resetMode();
         performAction.performActionOnCellAt(this._clicks, this._action);
-        return true;
     }
 }

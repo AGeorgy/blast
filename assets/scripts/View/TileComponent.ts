@@ -1,10 +1,10 @@
-import { _decorator, CCFloat, Component, instantiate, Node, Prefab, Sprite, tween, Vec3 } from 'cc';
+import { _decorator, CCFloat, Component, Sprite, tween, Vec3 } from 'cc';
 import { IReadTile } from '../Game/Board/IReadTile';
 import { Binder } from '../Game/Binder';
 import { IReturn } from './ObjectPool/IReturn';
 import { ITileClick } from '../Game/InputMode/ITileClick';
 import { ISetInputMode } from '../Game/InputMode/ISetInputMode';
-import { HoldActionClickInputMode } from '../Game/InputMode/HoldActionClickInputMode';
+import { TileClickInputMode } from '../Game/InputMode/TileClickInputMode';
 const { ccclass, property } = _decorator;
 
 @ccclass('TileComponent')
@@ -63,7 +63,7 @@ export class TileComponent extends Component {
 
     onTileClicked() {
         console.log('TileComponent onTileClicked');
-        this._setInputMode.setMode(new HoldActionClickInputMode(this._model.action));
+        this._setInputMode.setMode(new TileClickInputMode(this._model.action));
         this._tileClick.tileClick(this._model.x, this._model.y);
     }
 }

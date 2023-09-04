@@ -3,7 +3,7 @@ import { IPerformAction } from "../Action/IPerformAction";
 import { IInputMode } from "./IInputMode";
 import { IResetMode } from "./IResetMode";
 
-export class DoubleClickInputMode implements IInputMode {
+export class TileClickInputMode implements IInputMode {
     private _clicks: { x: number, y: number }[];
     private _action: IAction;
 
@@ -13,19 +13,13 @@ export class DoubleClickInputMode implements IInputMode {
     }
 
     get rank(): number {
-        return 2;
+        return 1;
     }
 
     clickAt(x: number, y: number, resetMode: IResetMode, performAction: IPerformAction): void {
         this._clicks.push({ x, y });
-        console.log("DoubleClickInputMode clickAt", x, y, this._clicks, this.isReady());
-        if (this.isReady()) {
-            resetMode.resetMode();
-            performAction.performActionOnCellAt(this._clicks, this._action);
-        }
-    }
-
-    private isReady(): boolean {
-        return this._clicks.length >= 2;
+        console.log("TileClickInputMode clickAt", x, y, this._clicks);
+        resetMode.resetMode();
+        performAction.performActionOnCellAt(this._clicks, this._action);
     }
 }
