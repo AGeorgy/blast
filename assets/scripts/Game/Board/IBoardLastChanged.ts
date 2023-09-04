@@ -7,5 +7,6 @@ export interface IBoardLastChanged {
 export enum TilesChange {
     Added,
     Removed,
-    Moved
+    Moved,
+    Set
 }

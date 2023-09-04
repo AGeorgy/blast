@@ -9,6 +9,7 @@ import { IReadTile } from "./IReadTile";
 import { TilesChange } from "./IBoardLastChanged";
 import { IFillBoard } from "./IFillBoard";
 import { IShiftDownBoard } from "./IShiftDownBoard";
+import { IAction } from "../Action/IAction";
 
 export class Board implements IBoard, IBoardDataAndAddNotifier, IShuffle, IShiftDownBoard, IFillBoard {
     private readonly _tiles: ITile[];
@@ -17,13 +18,19 @@ export class Board implements IBoard, IBoardDataAndAddNotifier, IShuffle, IShift
     private readonly _colorPalette: IColorPalette;
     private readonly _observers: IObserver[];
     private _lastChangedTiles: { change: TilesChange, tiles: IReadTile[] } = null;
+    private _defaultAction: IAction;
 
-    constructor(xMax: number, yMax: number, colorPalette: IColorPalette) {
+    constructor(xMax: number, yMax: number, colorPalette: IColorPalette, defaultAction: IAction) {
         this._xMax = xMax;
         this._yMax = yMax;
         this._colorPalette = colorPalette;
+        this._defaultAction = defaultAction;
         this._tiles = new Array(xMax * yMax);
         this._observers = [];
+    }
+
+    get colorPalette(): IColorPalette {
+        return this._colorPalette;
     }
 
     get xMax(): number {
@@ -52,8 +59,15 @@ export class Board implements IBoard, IBoardDataAndAddNotifier, IShuffle, IShift
         return this._tiles[x + y * this._xMax];
     }
 
+    setTile(tile: ITile): void {
+        const index = Board.codePositionToIndex(tile.x, tile.y, this._xMax);
+        this._tiles[index] = tile;
+        this._lastChangedTiles = { change: TilesChange.Set, tiles: [tile] };
+        console.log("Board setTile", this._lastChangedTiles);
+        this.notifyObservers();
+    }
+
     removeTiles(tilesToRemove: { x: number, y: number }[]): void {
-        console.log("Board removeTile");
         const tiles: IReadTile[] = tilesToRemove.map(({ x, y }) => {
             const index = Board.codePositionToIndex(x, y, this._xMax);
             const tile = this._tiles[index];
@@ -62,17 +76,17 @@ export class Board implements IBoard, IBoardDataAndAddNotifier, IShuffle, IShift
         });
 
         this._lastChangedTiles = { change: TilesChange.Removed, tiles: tiles };
+        console.log("Board removeTile", this._lastChangedTiles);
         this.notifyObservers();
     }
 
     fill(): void {
-        console.log("Board fill");
         const tiles: IReadTile[] = [];
         for (let y = 0; y < this._yMax; y++) {
             for (let x = 0; x < this._xMax; x++) {
                 const index = Board.codePositionToIndex(x, y, this._xMax);
                 if (!this._tiles[index]) {
-                    const tile = new Tile(x, y, this._colorPalette.getRandomColor());
+                    const tile = new Tile(x, y, this._colorPalette.getRandomColor(), this._defaultAction);
                     this._tiles[index] = tile;
                     tiles.push(tile);
                 }
@@ -80,6 +94,7 @@ export class Board implements IBoard, IBoardDataAndAddNotifier, IShuffle, IShift
         }
 
         this._lastChangedTiles = { change: TilesChange.Added, tiles: tiles };
+        console.log("Board fill", this._lastChangedTiles);
         this.notifyObservers();
     }
 
