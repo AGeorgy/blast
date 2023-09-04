@@ -133,7 +133,7 @@
     "loadingScreenName": "loading",
     "gameScreenName": "game",
     "gameOverScreenName": "gameOver",
-    "boardMaxX": 3,
+    "boardMaxX": 5,
     "boardMaxY": 3,
     "tileColors": [
       {
@@ -173,7 +173,7 @@
       }
     ],
     "groupSizeForDefaultAction": 2,
-    "maxShuffleCount": 2,
+    "maxShuffleCount": 3,
     "maxTurns": 10,
     "targetScore": 100,
     "_id": "a71189wVRGqIFZyiQ531Ew"
