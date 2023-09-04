@@ -17,7 +17,7 @@ import { StageController } from "../Stage/StageController";
 import { WaitForActionStage } from "../Stage/WaitForActionStage";
 import { WaitForTimeStage } from "../Stage/WaitForTimeStage";
 import { InputModeController } from "../InputMode/InputModeController";
-import { SingleClickInputMode } from "../InputMode/SingleClickInputMode";
+import { ActionRemoveBatchSameColor } from "../Action/ActionRemoveBatchSameColor";
 
 export class GameController implements IGameController {
     private _state: GameState;
@@ -81,11 +81,12 @@ export class GameController implements IGameController {
     private init(): void {
         this.clear();
 
+        let defaulAction = new ActionRemoveBatchSameColor(this._settings.groupSizeForDefaultAction);
         this._colorPalette = new ColorPalette(this._settings.tileColors);
-        this._board = new Board(this._settings.boardMaxX, this._settings.boardMaxY, this._colorPalette)
+        this._board = new Board(this._settings.boardMaxX, this._settings.boardMaxY, this._colorPalette, defaulAction)
         this._boardStats = new BoardStats(this._settings.maxTurns, this._settings.targetScore, this._settings.maxShuffleCount);
-        this._actionPerformer = new ActionPerformer(this._board, this._boardStats, this._settings.groupSizeForDefaultAction);
-        this._inputModeController = new InputModeController(new SingleClickInputMode(), this._actionPerformer);
+        this._actionPerformer = new ActionPerformer(this._board, this._boardStats, defaulAction);
+        this._inputModeController = new InputModeController(this._actionPerformer);
 
         this._sceneSwitcher = new SceneSwitcher(this._settings.loadingScreenName);
         this._stageController = new StageController();
