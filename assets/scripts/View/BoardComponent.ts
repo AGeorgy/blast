@@ -70,7 +70,13 @@ export class BoardComponent extends Component implements IObserver {
             case TilesChange.Added:
                 console.log("BoardComponent updateTiles: Added");
                 lastChanges.tiles.forEach(tileModel => {
-                    this.setTileComponent(tileModel, this._pool.borrow());
+                    let tileNode = this._pool.borrow();
+                    this.setTileComponent(tileModel, tileNode);
+
+                    const position = this.transformGridToUiPosition(tileModel.x, tileModel.y);
+                    console.log("BoardComponent setTileComponent: " + position.x + ", " + position.y);
+                    tileNode.node.setPosition(position.x, position.y);
+                    tileNode.moveTo(position.x, this.getUiYPosition(position.y));
                 });
                 break;
             case TilesChange.Moved:
@@ -81,7 +87,19 @@ export class BoardComponent extends Component implements IObserver {
                     tileNode.moveTo(position.x, this.getUiYPosition(position.y));
                 });
                 break;
+            case TilesChange.Set:
+                console.log("BoardComponent updateTiles: Set");
+                lastChanges.tiles.forEach(tileModel => {
+                    let tileNode = this._pool.borrow();
+                    this.setTileComponent(tileModel, tileNode);
+
+                    const position = this.transformGridToUiPosition(tileModel.x, tileModel.y);
+                    tileNode.node.setPosition(position.x, this.getUiYPosition(position.y));
+                    tileNode.appear();
+                });
+                break;
         }
+
     }
 
     private setTileComponent(tileModel: IReadTile, tileNode: TileComponent): void {
@@ -90,11 +108,6 @@ export class BoardComponent extends Component implements IObserver {
         tileNode.init(tileModel)
 
         this.setTileSize(tileNode);
-
-        const position = this.transformGridToUiPosition(tileModel.x, tileModel.y);
-        console.log("BoardComponent setTileComponent: " + position.x + ", " + position.y);
-        tileNode.node.setPosition(position.x, position.y);
-        tileNode.moveTo(position.x, this.getUiYPosition(position.y));
     }
 
     private transformGridToUiPosition(x: number, y: number): { x: number, y: number } {
