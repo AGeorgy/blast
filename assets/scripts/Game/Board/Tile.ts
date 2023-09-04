@@ -1,5 +1,6 @@
 import { Color } from "cc";
 import { ITile } from "./ITile";
+import { IAction } from "../Action/IAction";
 
 export class Tile implements ITile {
     private static _idCounter: number = 0;
@@ -8,12 +9,14 @@ export class Tile implements ITile {
     private _x: number;
     private _y: number;
     private readonly _color: Color;
+    private readonly _action: IAction;
 
-    constructor(x: number, y: number, color: Color, id: number = Tile._idCounter++) {
-        this._id = id;
+    constructor(x: number, y: number, color: Color, action: IAction) {
+        this._id = Tile._idCounter++;
         this._x = x;
         this._y = y;
         this._color = color;
+        this._action = action;
     }
 
     setPosition({ x, y }: { x: number, y: number }): void {
@@ -35,5 +38,9 @@ export class Tile implements ITile {
 
     get color(): Color {
         return this._color;
+    }
+
+    get action(): IAction {
+        return this._action;
     }
 }

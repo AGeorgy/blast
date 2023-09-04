@@ -15,16 +15,14 @@ export class ActionPerformer implements IPerformAction, IAllowAction, IAddObserv
     private readonly _boardStats: BoardStats;
 
     private readonly _defaultAction: ActionRemoveBatchSameColor;
-    private _currentAction: IAction;
     private _isActionAllowed: boolean;
     private _observers: IObserver[] = [];
     private _actions: Map<object, number> = new Map();
 
-    constructor(board: IBoard, boardStats: BoardStats, batchSizeForDefaultAction: number) {
+    constructor(board: IBoard, boardStats: BoardStats, defaultAction: ActionRemoveBatchSameColor) {
         this._board = board;
         this._boardStats = boardStats;
-        this._defaultAction = new ActionRemoveBatchSameColor(batchSizeForDefaultAction);
-        this.setDefaultAction();
+        this._defaultAction = defaultAction;
     }
 
     getCount(action: IAction): number {
@@ -63,39 +61,29 @@ export class ActionPerformer implements IPerformAction, IAllowAction, IAddObserv
         this._isActionAllowed = isAllowed;
     }
 
-    setAction(action: IAction): void {
-        console.log("ActionPerformer setAction", action);
-        this._currentAction = action;
-    }
-
-    performActionOnCellAt(positions: { x: number, y: number }[]): void {
+    performActionOnCellAt(positions: { x: number, y: number }[], action: IAction): void {
         console.log("ActionPerformer performActionOnCellAt", positions);
         if (!this._isActionAllowed) {
             return;
         }
 
-        let executedCells = this._currentAction.execute(this._board, positions);
+        let executedCells = action.execute(this._board, positions);
         console.log("executedCells", executedCells.executedCells);
         if (executedCells.isExecuted) {
             this._boardStats.increaseScore(executedCells.executedCells.length);
         }
 
         this._boardStats.increaseTurn();
-        this.decriseActionCount();
-        this.setDefaultAction();
+        this.decriseActionCount(action);
         this.notifyObservers();
     }
 
-    private decriseActionCount(): void {
-        console.log("ActionPerformer decriseActionCount", this._currentAction);
-        if (this._actions.has(this._currentAction)) {
-            const count = this._actions.get(this._currentAction);
-            this._actions.set(this._currentAction, Math.max(count - 1, 0));
+    private decriseActionCount(action: IAction): void {
+        console.log("ActionPerformer decriseActionCount", action);
+        if (this._actions.has(action)) {
+            const count = this._actions.get(action);
+            this._actions.set(action, Math.max(count - 1, 0));
         }
-    }
-
-    private setDefaultAction(): void {
-        this._currentAction = this._defaultAction;
     }
 
     private notifyObservers(): void {

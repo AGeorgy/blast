@@ -3,6 +3,8 @@ import { IReadTile } from '../Game/Board/IReadTile';
 import { Binder } from '../Game/Binder';
 import { IReturn } from './ObjectPool/IReturn';
 import { ITileClick } from '../Game/InputMode/ITileClick';
+import { ISetInputMode } from '../Game/InputMode/ISetInputMode';
+import { HoldActionClickInputMode } from '../Game/InputMode/HoldActionClickInputMode';
 const { ccclass, property } = _decorator;
 
 @ccclass('TileComponent')
@@ -15,6 +17,7 @@ export class TileComponent extends Component {
     private _model: IReadTile;
     private _sprite: Sprite;
     private _tileClick: ITileClick;
+    private _setInputMode: ISetInputMode;
 
     onLoad() {
         const sprite = this.getComponent(Sprite);
@@ -26,6 +29,7 @@ export class TileComponent extends Component {
 
         const binder = Binder.getInstance();
         this._tileClick = binder.resolve<ITileClick>("ITileClick");
+        this._setInputMode = binder.resolve<ISetInputMode>("ISetInputMode");
     }
 
     init(model: IReadTile) {
@@ -50,8 +54,16 @@ export class TileComponent extends Component {
             .start();
     }
 
+    appear() {
+        this.node.scale = new Vec3(0, 0, 0);
+        tween(this.node)
+            .to(this.moveDuration, { scale: new Vec3(1, 1, 1) })
+            .start();
+    }
+
     onTileClicked() {
         console.log('TileComponent onTileClicked');
+        this._setInputMode.setMode(new HoldActionClickInputMode(this._model.action));
         this._tileClick.tileClick(this._model.x, this._model.y);
     }
 }
