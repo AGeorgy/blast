@@ -1,3 +1,3 @@
 export interface IBoosterService {
-    resetAvailableBoosters(): void;
+    resetBoosters(): void;
 }

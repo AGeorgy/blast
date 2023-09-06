@@ -8,7 +8,7 @@ export class BoosterService implements IBoosterService {
         this._store = store;
     }
 
-    resetAvailableBoosters(): void {
+    resetBoosters(): void {
         let boosterIds = this._store.getAllBoosterIds();
         boosterIds.forEach((boosterId) => {
             let booster = this._store.getBoosterById(boosterId);

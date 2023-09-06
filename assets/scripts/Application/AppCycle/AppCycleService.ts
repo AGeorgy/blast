@@ -6,6 +6,7 @@ import { IBoardService } from "../../Modules/Board/IBoardService";
 import { IBoosterService } from "../../Modules/Booster/IBoosterService";
 import { IGameStatsService } from "../../Modules/GameStats/IGameStatsService";
 import { ISceneService } from "../../Modules/Scene/ISceneService";
+import { ITileService } from "../../Modules/Tiles/ITileService";
 
 export class AppCycleService implements IAppCycleService {
     private _appStateStore: IAppStateStore;
@@ -13,14 +14,16 @@ export class AppCycleService implements IAppCycleService {
     private _gameStats: IGameStatsService;
     private _board: IBoardService;
     private _boosterService: IBoosterService;
+    private _tileService: ITileService;
 
     constructor(appStateStore: IAppStateStore, scene: ISceneService, gameStats: IGameStatsService, board: IBoardService,
-        boosterService: IBoosterService) {
+        boosterService: IBoosterService, tileSrvice: ITileService) {
         this._appStateStore = appStateStore;
         this._sceneService = scene;
         this._gameStats = gameStats;
         this._board = board;
         this._boosterService = boosterService;
+        this._tileService = tileSrvice;
     }
 
     createAppState(): void {
@@ -31,7 +34,8 @@ export class AppCycleService implements IAppCycleService {
         AppCycle.setStateToGame(this._appStateStore);
         this._gameStats.resetStats();
         this._board.resetBoard();
-        this._boosterService.resetAvailableBoosters();
+        this._tileService.resetTiles();
+        this._boosterService.resetBoosters();
 
         this._sceneService.switchSceneToGame();
     }
