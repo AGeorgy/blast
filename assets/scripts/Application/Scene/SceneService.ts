@@ -11,6 +11,14 @@ export class SceneService implements ISceneService {
         this._store = store;
     }
 
+    switchSceneToGame(): void {
+        this.switchSceneTo(SceneType.Game);
+    }
+
+    switchSceneToGameOver(): void {
+        this.switchSceneTo(SceneType.GameOver);
+    }
+
     addScene(sceneType: SceneType, sceneName: string): void {
         let scenes = this._store.getScenes();
         scenes.addScene(sceneType, sceneName);

@@ -1,4 +1,5 @@
 export interface IBoardService {
+    resetBoard(): void;
     createBoard(xMax: number, yMax: number): void;
     getSlotId(x: number, y: number): string;
     // setTile(tile: ITile): void;

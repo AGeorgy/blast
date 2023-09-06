@@ -1,12 +1,17 @@
 import { IGameStatsService } from "../../Modules/GameStats/IGameStatsService";
 import { IGameStatsStore } from "../../Modules/GameStats/IGameStatsStore";
-import { GameStats } from "../../Modules/GameStats/Model/GameStats";
 
 export class GameStatsService implements IGameStatsService {
     private _store: IGameStatsStore;
 
     constructor(store: IGameStatsStore) {
         this._store = store;
+    }
+
+    resetStats(): void {
+        let stats = this._store.getStats();
+        stats.resetCurrentStats();
+        this._store.updateStats(stats);
     }
 
     incrementScore(scoreReward: number): void {

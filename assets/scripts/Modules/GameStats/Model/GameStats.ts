@@ -10,13 +10,10 @@ export class GameStats {
 
     constructor(maxTurns: number, targetScore: number, maxShuffleCount: number) {
         this._maxTurns = maxTurns;
-        this._currentTurns = 0;
-
         this._targetScore = targetScore;
-        this._currentScore = 0;
-
         this._maxShuffleCount = maxShuffleCount;
-        this._currentShuffleCount = 0;
+
+        this.resetCurrentStats();
     }
 
     get maxTurns(): number {
@@ -41,6 +38,12 @@ export class GameStats {
 
     get currentShuffleCount(): number {
         return this._currentShuffleCount;
+    }
+
+    resetCurrentStats() {
+        this._currentTurns = 0;
+        this._currentScore = 0;
+        this._currentShuffleCount = 0;
     }
 
     incrementTurns(quantity: number): void {

@@ -13,6 +13,14 @@ export class BoardService implements IBoardService {
         this._slotStore = slotStore;
     }
 
+    resetBoard(): void {
+        this._slotStore.getAllSlotIds().forEach(slotId => {
+            let slot = this._slotStore.getSlot(slotId);
+            slot.state = SlotState.Empty;
+            this._slotStore.updateSlot(slot);
+        });
+    }
+
     createBoard(xMax: number, yMax: number): void {
         let board = new Board(xMax, yMax);
         this._boardStore.updateBoard(board);
