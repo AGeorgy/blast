@@ -1,4 +1,5 @@
 export interface IBoardService {
+    createBoard(xMax: number, yMax: number): void;
     getSlotId(x: number, y: number): string;
     // setTile(tile: ITile): void;
     removeSlots(slotsToRemove: { x: number, y: number }[]): string[];

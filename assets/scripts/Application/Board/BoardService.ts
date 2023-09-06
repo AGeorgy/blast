@@ -1,6 +1,7 @@
 import { IBoardService } from "../../Modules/Board/IBoardService";
 import { IBoardStore } from "../../Modules/Board/IBoardStore";
 import { ISlotStore } from "../../Modules/Board/ISlotStore";
+import { Board } from "../../Modules/Board/Model/Board";
 import { SlotState } from "../../Modules/Board/Model/SlotState";
 
 export class BoardService implements IBoardService {
@@ -10,6 +11,11 @@ export class BoardService implements IBoardService {
     constructor(boardStore: IBoardStore, slotStore: ISlotStore) {
         this._boardStore = boardStore;
         this._slotStore = slotStore;
+    }
+
+    createBoard(xMax: number, yMax: number): void {
+        let board = new Board(xMax, yMax);
+        this._boardStore.updateBoard(board);
     }
 
     getSlotId(x: number, y: number): string {

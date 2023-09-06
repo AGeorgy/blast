@@ -1,16 +1,10 @@
 export class Board {
-    private _id: string;
     private _xMax: number;
     private _yMax: number;
 
-    constructor(id: string) {
-        this._id = id;
-        this._xMax = 0;
-        this._yMax = 0;
-    }
-
-    get id(): string {
-        return this._id;
+    constructor(xMax: number, yMax: number) {
+        this._xMax = xMax;
+        this._yMax = yMax;
     }
 
     get xMax(): number {
