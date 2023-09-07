@@ -32,11 +32,11 @@ export class GameStats {
         return this._currentScore;
     }
 
-    get maxShuffleCount(): number {
+    get maxShuffle(): number {
         return this._maxShuffleCount;
     }
 
-    get currentShuffleCount(): number {
+    get currentShuffle(): number {
         return this._currentShuffleCount;
     }
 
@@ -54,8 +54,7 @@ export class GameStats {
         this._currentScore += quantity;
     }
 
-    incrementShuffleCount(): void {
+    incrementShuffle(): void {
         this._currentShuffleCount++;
     }
-
 }

@@ -1,8 +1,8 @@
-import { ISignalTrigger } from "../../Signal/Signal";
-import { IGameStageService } from "./Modules/GameStage/IGameStageService";
-import { IGameStageStore } from "./Modules/GameStage/IGameStageStore";
-import { IStage } from "./Modules/GameStage/Model/IStage";
-import { EndGameStageSignal } from "./Modules/GameStage/EndGameStageSignal";
+import { ISignalTrigger } from "../../../../Signal/Signal";
+import { IGameStageService } from "./IGameStageService";
+import { IGameStageStore } from "./IGameStageStore";
+import { IStage } from "./Model/IStage";
+import { EndGameStageSignal } from "./EndGameStageSignal";
 
 export class GameStageService implements IGameStageService {
     private _stagesStore: IGameStageStore;
@@ -11,6 +11,12 @@ export class GameStageService implements IGameStageService {
     constructor(stagesStore: IGameStageStore, endGameStagesDispatcher: ISignalTrigger<EndGameStageSignal>) {
         this._stagesStore = stagesStore;
         this._endGameStagesDispatcher = endGameStagesDispatcher;
+    }
+
+    switchToEndStages(): void {
+        let gameStages = this._stagesStore.getGameStages();
+        gameStages.switchToEndStages();
+        this._stagesStore.updateGameStages(gameStages);
     }
 
     resetStages(): void {

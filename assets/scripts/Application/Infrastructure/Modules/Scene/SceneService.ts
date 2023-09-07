@@ -1,8 +1,8 @@
 import { director } from "cc";
-import { ISceneService } from "./Modules/Scene/ISceneService";
-import { ISceneStore } from "./Modules/Scene/ISceneStore";
-import { SceneType } from "./Modules/Scene/Model/SceneType";
-import { SceneRegestry } from "./Modules/Scene/Model/SceneRegestry";
+import { ISceneService } from "./ISceneService";
+import { ISceneStore } from "./ISceneStore";
+import { SceneType } from "./Model/SceneType";
+import { SceneRegestry } from "./Model/SceneRegestry";
 
 export class SceneService implements ISceneService {
     private _store: ISceneStore;

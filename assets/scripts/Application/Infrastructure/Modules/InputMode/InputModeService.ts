@@ -1,7 +1,7 @@
-import { IInputModeService } from "./Modules/InputMode/IInputModeService";
-import { IInputModeStore } from "./Modules/InputMode/IInputModeStore";
-import { IInputModeType } from "./Modules/InputMode/Model/IInputModeType";
-import { InputMode } from "./Modules/InputMode/Model/InputMode";
+import { IInputModeService } from "./IInputModeService";
+import { IInputModeStore } from "./IInputModeStore";
+import { IInputModeType } from "./Model/IInputModeType";
+import { InputMode } from "./Model/InputMode";
 
 export class InputModeService implements IInputModeService {
     private _inputModeStore: IInputModeStore;

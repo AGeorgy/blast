@@ -1,8 +1,8 @@
 import { Color } from "cc";
-import { ColorRegistry } from "./Modules/Color/Model/ColorRegistry";
-import { IColorStore } from "./Modules/Color/IColorStore";
-import { RandomColorPalette } from "./Modules/Color/RandomColorPalette";
-import { IColorPaletteService } from "./Modules/Color/IColorPaletteService";
+import { ColorRegistry } from "./Model/ColorRegistry";
+import { IColorStore } from "./IColorStore";
+import { RandomColorPalette } from "./RandomColorPalette";
+import { IColorPaletteService } from "./IColorPaletteService";
 
 export class ColorPaletteService implements IColorPaletteService {
     private _store: IColorStore;

@@ -1,9 +1,9 @@
-import { ISlotStore } from "./Modules/Board/ISlotStore";
-import { IInputModeStore } from "./Modules/InputMode/IInputModeStore";
-import { ITileService } from "./Modules/Tiles/ITileService";
-import { ITileStore } from "./Modules/Tiles/ITileStore";
-import { Tile } from "./Modules/Tiles/Model/Tile";
-import { ColorPaletteService } from "./ColorPaletteService";
+import { ISlotStore } from "../Board/ISlotStore";
+import { IInputModeStore } from "../InputMode/IInputModeStore";
+import { ITileService } from "./ITileService";
+import { ITileStore } from "./ITileStore";
+import { Tile } from "./Model/Tile";
+import { ColorPaletteService } from "../Color/ColorPaletteService";
 
 export class TileService implements ITileService {
     private _tileStore: ITileStore;

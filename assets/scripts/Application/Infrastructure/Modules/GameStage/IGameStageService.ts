@@ -1,6 +1,7 @@
 import { IStage } from "./Model/IStage";
 
 export interface IGameStageService {
+    switchToEndStages(): void
     resetStages(): void;
     addStartStages(stages: IStage[]): void;
     addRepeatingStages(stages: IStage[]): void;

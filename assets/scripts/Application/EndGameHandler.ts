@@ -1,5 +1,5 @@
 import { EndGameSignal } from "./Infrastructure/Modules/AppCycle/EndGameSignal";
-import { SceneService } from "./Infrastructure/SceneService";
+import { SceneService } from "./Infrastructure/Modules/Scene/SceneService";
 
 export class EndGameHandler {
     static handle(sceneService: SceneService, signal: EndGameSignal): void {

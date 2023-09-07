@@ -1,5 +1,5 @@
-import { IBoosterService } from "./Modules/Booster/IBoosterService";
-import { IBoosterStore } from "./Modules/Booster/IBoosterStore";
+import { IBoosterService } from "./IBoosterService";
+import { IBoosterStore } from "./IBoosterStore";
 
 export class BoosterService implements IBoosterService {
     private _store: IBoosterStore;
