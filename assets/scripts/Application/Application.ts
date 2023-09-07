@@ -1,37 +1,39 @@
 import { IGameSettings } from "../IGameSettings";
-import { ActionService } from "./Action/ActionService";
-import { ActionStore } from "./Action/ActionStore";
-import { BoardService } from "../Modules/Board/BoardService";
-import { BoosterService } from "./Booster/BoosterService";
-import { BoosterStore } from "./Booster/BoosterStore";
-import { ColorPaletteService } from "./Color/ColorPaletteService";
-import { ColorStore } from "./Color/ColorStore";
-import { GameStatsService } from "./GameStats/GameStatsService";
-import { GameStatsStore } from "./GameStats/GameStatsStore";
-import { InputModeService } from "./InputMode/InputModeService";
-import { InputModeStore } from "./InputMode/InputModeStore";
-import { SceneService } from "./Scene/SceneService";
-import { SceneStore } from "./Scene/SceneStore";
-import { TileService } from "./Tiles/TileService";
-import { TileStore } from "./Tiles/TileStore";
+import { ActionService } from "./Infrastructure/ActionService";
+import { ActionStore } from "./Infrastructure/ActionStore";
+import { BoardService } from "./Infrastructure/Modules/Board/BoardService";
+import { BoosterService } from "./Infrastructure/BoosterService";
+import { ColorPaletteService } from "./Infrastructure/ColorPaletteService";
+import { GameStatsService } from "./Infrastructure/GameStatsService";
+import { InputModeService } from "./Infrastructure/InputModeService";
+import { InputModeStore } from "./Infrastructure/InputModeStore";
+import { SceneService } from "./Infrastructure/SceneService";
+import { SceneStore } from "./Infrastructure/SceneStore";
+import { TileService } from "./Infrastructure/TileService";
+import { TileStore } from "./Infrastructure/TileStore";
+import { SlotStore } from "./Infrastructure/Modules/Board/SlotStore";
+import { BoardStore } from "./Infrastructure/Modules/Board/BoardStore";
+import { ColorStore } from "./Infrastructure/ColorStore";
+import { GameStatsStore } from "./Infrastructure/GameStatsStore";
+import { BoosterStore } from "./Infrastructure/BoosterStore";
 
-import { AppCycleService } from "../Modules/AppCycle/AppCycleService";
-import { BeginGameSignal as BeginGameSignal } from "../Modules/AppCycle/BeginGameSignal";
-import { AppStateStore } from "../Modules/AppCycle/AppStateStore";
+import { AppCycleService } from "./Infrastructure/Modules/AppCycle/AppCycleService";
+import { BeginGameSignal as BeginGameSignal } from "./Infrastructure/Modules/AppCycle/BeginGameSignal";
+import { AppStateStore } from "./Infrastructure/Modules/AppCycle/AppStateStore";
 
 import { EndGameHandler } from "./EndGameHandler";
 import { BeginGameHandler } from "./BeginGameHandler";
 import { Signal } from "../Signal/Signal";
-import { EndGameSignal } from "../Modules/AppCycle/EndGameSignal";
-
-import { SlotStore } from "../Modules/Board/SlotStore";
-import { BoardStore } from "../Modules/Board/BoardStore";
+import { EndGameSignal } from "./Infrastructure/Modules/AppCycle/EndGameSignal";
+import { GameStageService } from "./Infrastructure/GameStageService";
+import { GameStageStore } from "./Infrastructure/GameStageStore";
 
 export class Application {
+    static endGameSignal: Signal<EndGameSignal>;
+
     private _settings: IGameSettings;
 
     private _beginGameSignal: Signal<BeginGameSignal>;
-    private _endGameSignal: Signal<EndGameSignal>;
 
     private _inputModeService: InputModeService;
     private _gameStatsService: GameStatsService;
@@ -42,13 +44,14 @@ export class Application {
     private _boosterService: BoosterService;
     private _colorService: ColorPaletteService;
     private _tileService: TileService;
+    private _gameStageService: GameStageService;
 
     constructor(settings: IGameSettings) {
         console.log('Application created');
         this._settings = settings;
 
         this._beginGameSignal = new Signal<BeginGameSignal>();
-        this._endGameSignal = new Signal<EndGameSignal>();
+        Application.endGameSignal = new Signal<EndGameSignal>();
 
         this._colorService = new ColorPaletteService(new ColorStore(), this._settings.tileColors);
         this._gameStatsService = new GameStatsService(new GameStatsStore());
@@ -62,7 +65,24 @@ export class Application {
         this._tileService = new TileService(new TileStore(), this._colorService, slotStore, inputModeStore);
 
         this._beginGameSignal.subscribe(BeginGameHandler.handle.bind(this._sceneService, this._gameStatsService, this._boardService, this._boosterService));
-        this._endGameSignal.subscribe(EndGameHandler.handle.bind(this._sceneService));
-        this._appCycleService = new AppCycleService(new AppStateStore(), this._beginGameSignal, this._endGameSignal);
+        Application.endGameSignal.subscribe(EndGameHandler.handle.bind(this._sceneService));
+        this._appCycleService = new AppCycleService(new AppStateStore(), this._beginGameSignal, Application.endGameSignal);
+
+        this._gameStageService = new GameStageService(new GameStageStore());
+        this.addStages();
+    }
+
+    beginGame(): void {
+        this._beginGameSignal.trigger(new BeginGameSignal());
+    }
+
+    update() {
+
+    }
+
+    private addStages() {
+        this._gameStageService.addEndStages([]);
+        this._gameStageService.addStartStages([]);
+        this._gameStageService.addRepeatingStages([]);
     }
 }

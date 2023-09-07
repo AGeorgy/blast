@@ -1,8 +1,8 @@
-import { BeginGameSignal } from "../Modules/AppCycle/BeginGameSignal";
-import { IBoardService } from "../Modules/Board/IBoardService";
-import { IBoosterService } from "../Modules/Booster/IBoosterService";
-import { IGameStatsService } from "../Modules/GameStats/IGameStatsService";
-import { ISceneService } from "../Modules/Scene/ISceneService";
+import { BeginGameSignal } from "./Infrastructure/Modules/AppCycle/BeginGameSignal";
+import { IBoardService } from "./Infrastructure/Modules/Board/IBoardService";
+import { IBoosterService } from "./Infrastructure/Modules/Booster/IBoosterService";
+import { IGameStatsService } from "./Infrastructure/Modules/GameStats/IGameStatsService";
+import { ISceneService } from "./Infrastructure/Modules/Scene/ISceneService";
 
 export class BeginGameHandler {
     static handle(sceneService: ISceneService, gameStats: IGameStatsService, board: IBoardService,
