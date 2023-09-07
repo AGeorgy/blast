@@ -1,4 +1,4 @@
-import { BeginGameEvent } from "../Modules/AppCycle/BeginGameEvent";
+import { BeginGameSignal } from "../Modules/AppCycle/BeginGameSignal";
 import { IBoardService } from "../Modules/Board/IBoardService";
 import { IBoosterService } from "../Modules/Booster/IBoosterService";
 import { IGameStatsService } from "../Modules/GameStats/IGameStatsService";
@@ -7,7 +7,7 @@ import { ITileService } from "../Modules/Tiles/ITileService";
 
 export class BeginGameHandler {
     static handle(sceneService: ISceneService, gameStats: IGameStatsService, board: IBoardService,
-        boosterService: IBoosterService, tileSrvice: ITileService, event: BeginGameEvent): void {
+        boosterService: IBoosterService, tileSrvice: ITileService, signal: BeginGameSignal): void {
         console.log("handle beginGame");
         gameStats.resetStats();
         board.resetBoard();

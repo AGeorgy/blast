@@ -18,16 +18,20 @@ import { TileService } from "./Tiles/TileService";
 import { TileStore } from "./Tiles/TileStore";
 
 import { AppCycleService } from "../Modules/AppCycle/AppCycleService";
-import { BeginGameEvent } from "../Modules/AppCycle/BeginGameEvent";
+import { BeginGameSignal as BeginGameSignal } from "../Modules/AppCycle/BeginGameSignal";
 import { AppStateStore } from "../Modules/AppCycle/AppStateStore";
 
 import { EndGameHandler } from "./EndGameHandler";
 import { BeginGameHandler } from "./BeginGameHandler";
+import { Signal } from "../Signal/Signal";
+import { EndGameSignal } from "../Modules/AppCycle/EndGameSignal";
 
 export class Application {
-    private _beginGameHandler: (event: BeginGameEvent) => void;
-
     private _settings: IGameSettings;
+
+    private _beginGameSignal: Signal<BeginGameSignal>;
+    private _endGameSignal: Signal<EndGameSignal>;
+
     private _inputModeService: InputModeService;
     private _gameStatsService: GameStatsService;
     private _actionService: ActionService;
@@ -42,6 +46,9 @@ export class Application {
         console.log('Application created');
         this._settings = settings;
 
+        this._beginGameSignal = new Signal<BeginGameSignal>();
+        this._endGameSignal = new Signal<EndGameSignal>();
+
         this._colorService = new ColorPaletteService(new ColorStore(), this._settings.tileColors);
         this._gameStatsService = new GameStatsService(new GameStatsStore());
         let inputModeStore = new InputModeStore();
@@ -53,9 +60,8 @@ export class Application {
         this._boosterService = new BoosterService(new BoosterStore());
         this._tileService = new TileService(new TileStore(), this._colorService, slotStore, inputModeStore);
 
-        this._beginGameHandler = BeginGameHandler.handle.bind(this._sceneService, this._gameStatsService, this._boardService, this._boosterService, this._tileService);
-        this._appCycleService = new AppCycleService(new AppStateStore(),
-            this._beginGameHandler,
-            EndGameHandler.handle.bind(this._sceneService));
+        this._beginGameSignal.subscribe(BeginGameHandler.handle.bind(this._sceneService, this._gameStatsService, this._boardService, this._boosterService, this._tileService));
+        this._endGameSignal.subscribe(EndGameHandler.handle.bind(this._sceneService));
+        this._appCycleService = new AppCycleService(new AppStateStore(), this._beginGameSignal, this._endGameSignal);
     }
 }

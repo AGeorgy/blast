@@ -2,16 +2,17 @@ import { AppCycle } from "./AppCycle";
 import { IAppCycleService } from "./IAppCycleService";
 import { IAppStateStore } from "./IAppStateStore";
 import { AppState } from "./Model/AppState";
-import { BeginGameEvent } from "./BeginGameEvent";
-import { EndGameEvent } from "./EndGameEvent";
+import { BeginGameSignal } from "./BeginGameSignal";
+import { EndGameSignal } from "./EndGameSignal";
+import { Signal } from "../../Signal/Signal";
 
 export class AppCycleService implements IAppCycleService {
     private _appStateStore: IAppStateStore;
-    private _beginGameDispatcher: (event: BeginGameEvent) => void;
-    private _endGameDispatcher: (event: EndGameEvent) => void;
+    private _beginGameDispatcher: Signal<BeginGameSignal>;
+    private _endGameDispatcher: Signal<EndGameSignal>;
 
     constructor(appStateStore: IAppStateStore,
-        beginGameDispatcher: (event: BeginGameEvent) => void, endGameDispatcher: (event: EndGameEvent) => void,) {
+        beginGameDispatcher: Signal<BeginGameSignal>, endGameDispatcher: Signal<EndGameSignal>) {
         this._appStateStore = appStateStore;
         this._beginGameDispatcher = beginGameDispatcher;
         this._endGameDispatcher = endGameDispatcher;
@@ -24,12 +25,12 @@ export class AppCycleService implements IAppCycleService {
     beginGame(): void {
         console.log("beginGame");
         AppCycle.setStateToGame(this._appStateStore);
-        this._beginGameDispatcher(new BeginGameEvent());
+        this._beginGameDispatcher.trigger(new BeginGameSignal());
     }
 
     endGame(): void {
         console.log("endGame");
         AppCycle.setStateToGameOver(this._appStateStore);
-        this._endGameDispatcher(new EndGameEvent());
+        this._endGameDispatcher.trigger(new EndGameSignal());
     }
 }
