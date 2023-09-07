@@ -1,3 +1,3 @@
 export interface ITileService {
-    resetTiles(): void;
+    // resetTiles(): void;
 }

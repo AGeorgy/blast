@@ -13,7 +13,7 @@ export class BoardService implements IBoardService {
         this._slotStore = slotStore;
     }
 
-    resetBoard(): void {
+    clearBoard(): void {
         this._slotStore.getAllSlotIds().forEach(slotId => {
             let slot = this._slotStore.getSlot(slotId);
             slot.state = SlotState.Empty;
@@ -75,14 +75,16 @@ export class BoardService implements IBoardService {
     }
 
     shuffle(): string[] {
-        let currentIndex = this._slotStore.length;
+        let allSlotIds = this._slotStore.getAllSlotIds();
+
+        let currentIndex = allSlotIds.length;
 
         while (currentIndex != 0) {
             const randomIndex = Math.floor(Math.random() * currentIndex);
             currentIndex--;
 
-            let slotId1 = this._slotStore.getSlotIdByIndex(currentIndex);
-            let slotId2 = this._slotStore.getSlotIdByIndex(randomIndex);
+            let slotId1 = allSlotIds[currentIndex];
+            let slotId2 = allSlotIds[randomIndex];
             let slot1 = this._slotStore.getSlot(slotId1);
             let slot2 = this._slotStore.getSlot(slotId2);
 

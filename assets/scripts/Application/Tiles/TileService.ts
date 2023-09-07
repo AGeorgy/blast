@@ -18,13 +18,13 @@ export class TileService implements ITileService {
         this._inputModeStore = inputModeStore;
     }
 
-    resetTiles(): void {
-        this._tileStore.clearTiles();
-        this._slotStore.getAllSlotIds().forEach(slotId => {
-            let colorId = this._colorService.getRandomColor().id;
-            let inputModeId = this._inputModeStore.getInputMode().id;
-            let tile = new Tile(crypto.randomUUID(), slotId, colorId, inputModeId);
-            this._tileStore.addTile(tile);
-        });
-    }
+    // resetTiles(): void {
+    //     this._tileStore.clearTiles();
+    //     this._slotStore.getAllSlotIds().forEach(slotId => {
+    //         let colorId = this._colorService.getRandomColor().id;
+    //         let inputModeId = this._inputModeStore.getInputMode().id;
+    //         let tile = new Tile(crypto.randomUUID(), slotId, colorId, inputModeId);
+    //         this._tileStore.addTile(tile);
+    //     });
+    // }
 }
