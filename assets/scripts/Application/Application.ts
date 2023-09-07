@@ -27,6 +27,8 @@ import { Signal } from "../Signal/Signal";
 import { EndGameSignal } from "./Infrastructure/Modules/AppCycle/EndGameSignal";
 import { GameStageService } from "./Infrastructure/GameStageService";
 import { GameStageStore } from "./Infrastructure/GameStageStore";
+import { EndGameStageSignal } from "./Infrastructure/Modules/GameStage/EndGameStageSignal";
+import { EndGameStagesHandler } from "./EndGameStagesHandler";
 
 export class Application {
     static endGameSignal: Signal<EndGameSignal>;
@@ -45,12 +47,14 @@ export class Application {
     private _colorService: ColorPaletteService;
     private _tileService: TileService;
     private _gameStageService: GameStageService;
+    private _endGameStagesSignal: Signal<EndGameStageSignal>;
 
     constructor(settings: IGameSettings) {
         console.log('Application created');
         this._settings = settings;
 
         this._beginGameSignal = new Signal<BeginGameSignal>();
+        this._endGameStagesSignal = new Signal<EndGameStageSignal>();
         Application.endGameSignal = new Signal<EndGameSignal>();
 
         this._colorService = new ColorPaletteService(new ColorStore(), this._settings.tileColors);
@@ -68,7 +72,8 @@ export class Application {
         Application.endGameSignal.subscribe(EndGameHandler.handle.bind(this._sceneService));
         this._appCycleService = new AppCycleService(new AppStateStore(), this._beginGameSignal, Application.endGameSignal);
 
-        this._gameStageService = new GameStageService(new GameStageStore());
+        this._endGameStagesSignal.subscribe(EndGameStagesHandler.handle.bind(this._appCycleService));
+        this._gameStageService = new GameStageService(new GameStageStore(), this._endGameStagesSignal);
         this.addStages();
     }
 

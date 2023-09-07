@@ -1,4 +1,4 @@
-export class Signal<T = void> implements ISignal<T>{
+export class Signal<T = void> implements ISignalSubscribe<T>, ISignalTrigger<T>{
     private handlers: Set<(data: T) => void> = new Set<(data: T) => void>();
 
     subscribe(handler: (data?: T) => void): void {
@@ -14,7 +14,11 @@ export class Signal<T = void> implements ISignal<T>{
     }
 }
 
-export interface ISignal<T = void> {
+export interface ISignalSubscribe<T = void> {
     subscribe(handler: (data?: T) => void): void;
     unSubscribe(handler: (data?: T) => void): void;
+}
+
+export interface ISignalTrigger<T = void> {
+    trigger(data: T): void;
 }

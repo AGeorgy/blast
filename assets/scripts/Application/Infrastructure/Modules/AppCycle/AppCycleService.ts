@@ -4,15 +4,15 @@ import { IAppStateStore } from "./IAppStateStore";
 import { AppState } from "./Model/AppState";
 import { BeginGameSignal } from "./BeginGameSignal";
 import { EndGameSignal } from "./EndGameSignal";
-import { Signal } from "../../../../Signal/Signal";
+import { ISignalTrigger } from "../../../../Signal/Signal";
 
 export class AppCycleService implements IAppCycleService {
     private _appStateStore: IAppStateStore;
-    private _beginGameDispatcher: Signal<BeginGameSignal>;
-    private _endGameDispatcher: Signal<EndGameSignal>;
+    private _beginGameDispatcher: ISignalTrigger<BeginGameSignal>;
+    private _endGameDispatcher: ISignalTrigger<EndGameSignal>;
 
     constructor(appStateStore: IAppStateStore,
-        beginGameDispatcher: Signal<BeginGameSignal>, endGameDispatcher: Signal<EndGameSignal>) {
+        beginGameDispatcher: ISignalTrigger<BeginGameSignal>, endGameDispatcher: ISignalTrigger<EndGameSignal>) {
         this._appStateStore = appStateStore;
         this._beginGameDispatcher = beginGameDispatcher;
         this._endGameDispatcher = endGameDispatcher;
