@@ -25,7 +25,7 @@ export class Action {
         return this._scoreReward;
     }
 
-    applyAction(): void {
-        this._effect.applyEffect();
+    applyAction(tileIds: string[]): void {
+        this._effect.applyEffect(tileIds);
     }
 }

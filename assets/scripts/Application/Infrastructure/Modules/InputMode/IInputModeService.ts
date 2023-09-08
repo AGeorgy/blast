@@ -1,5 +1,7 @@
-import { IInputModeType } from "./Model/IInputModeType";
+import { IInputMode } from "./Model/IInputMode";
 
 export interface IInputModeService {
-    addInputMode(modeType: IInputModeType): string
+    getValidInputMode(): IInputMode;
+    registerInput(inputModeId: string, tileId: string): void;
+    addInputMode(modeType: IInputMode): string
 }

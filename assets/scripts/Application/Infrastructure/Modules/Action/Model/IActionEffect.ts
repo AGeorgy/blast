@@ -1,3 +1,3 @@
 export interface IActionEffect {
-    applyEffect(): void;
+    applyEffect(tileIds: string[]): void;
 }

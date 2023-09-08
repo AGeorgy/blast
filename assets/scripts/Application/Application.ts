@@ -35,9 +35,14 @@ import { IfLostOrWonStage } from "./Infrastructure/GameSages/IfLostOrWonStage";
 import { ShuffleIfCantContinueStage } from "./Infrastructure/GameSages/ShuffleIfCantContinueStage";
 import { ShiftDownStage } from "./Infrastructure/GameSages/ShiftDownStage";
 import { WaitForActionStage } from "./Infrastructure/GameSages/WaitForActionStage";
+import { TileClickSignal } from "./TileClickHandler";
+import { BoosterClickSignal } from "./BoosterClickHandler";
+import { ApplyActionHandler } from "./ApplyActionHandler";
 
 export class Application {
     static endGameSignal: Signal<EndGameSignal>;
+    static tileClickSignal: Signal<TileClickSignal>;
+    static boosterClickSignal: Signal<BoosterClickSignal>;
 
     private _settings: IGameSettings;
 
@@ -64,12 +69,17 @@ export class Application {
         this._beginGameSignal = new Signal<BeginGameSignal>();
         this._endGameStagesSignal = new Signal<EndGameStageSignal>();
         Application.endGameSignal = new Signal<EndGameSignal>();
+        Application.tileClickSignal = new Signal<TileClickSignal>();
+        Application.boosterClickSignal = new Signal<BoosterClickSignal>();
 
         this._colorService = new ColorPaletteService(new ColorStore(), this._settings.tileColors);
         this._gameStatsService = new GameStatsService(new GameStatsStore());
         let inputModeStore = new InputModeStore();
         this._inputModeService = new InputModeService(inputModeStore);
-        this._actionService = new ActionService(new ActionStore(), this._gameStatsService, this._applyActionSignal);
+
+        this._applyActionSignal.subscribe(ApplyActionHandler.handle.bind(this._gameStatsService));
+        this._actionService = new ActionService(new ActionStore(), this._applyActionSignal);
+
         this._sceneService = new SceneService(new SceneStore());
         let slotStore = new SlotStore();
         this._boardService = new BoardService(new BoardStore(), slotStore);

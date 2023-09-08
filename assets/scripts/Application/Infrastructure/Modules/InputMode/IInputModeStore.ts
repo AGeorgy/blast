@@ -1,8 +1,8 @@
-import { InputMode } from "./Model/InputMode";
+import { InputModeRegestry } from "./Model/InputModeRegestry";
 
 export interface IInputModeStore {
-    addInputMode(inputMode: InputMode): void;
-    getInputMode(id: string): InputMode;
-    getCurrentInputMode(id: string): InputMode;
+    addInputMode(inputMode: InputModeRegestry): void;
+    getInputMode(id: string): InputModeRegestry;
+    getCurrentInputMode(): InputModeRegestry;
     setCurrentInputMode(id: string): void
 }

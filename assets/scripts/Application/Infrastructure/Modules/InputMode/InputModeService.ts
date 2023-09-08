@@ -1,7 +1,7 @@
 import { IInputModeService } from "./IInputModeService";
 import { IInputModeStore } from "./IInputModeStore";
-import { IInputModeType } from "./Model/IInputModeType";
-import { InputMode } from "./Model/InputMode";
+import { IInputMode } from "./Model/IInputMode";
+import { InputModeRegestry } from "./Model/InputModeRegestry";
 
 export class InputModeService implements IInputModeService {
     private _inputModeStore: IInputModeStore;
@@ -10,9 +10,28 @@ export class InputModeService implements IInputModeService {
         this._inputModeStore = inputModeStore;
     }
 
-    addInputMode(modeType: IInputModeType): string {
+    getValidInputMode(): IInputMode {
+        let currentInputMode = this._inputModeStore.getCurrentInputMode();
+        if (!currentInputMode || !currentInputMode.mode.isValid) {
+            return null;
+        }
+
+        return currentInputMode.mode;
+    }
+
+    registerInput(inputModeId: string, tileId: string): void {
+        let currentInputMode = this._inputModeStore.getCurrentInputMode();
+        if (!currentInputMode) {
+            this._inputModeStore.setCurrentInputMode(inputModeId);
+            currentInputMode = this._inputModeStore.getCurrentInputMode();
+        }
+
+        currentInputMode.mode.registerInput(tileId);
+    }
+
+    addInputMode(modeType: IInputMode): string {
         let id = crypto.randomUUID();
-        this._inputModeStore.addInputMode(new InputMode(id, modeType));
+        this._inputModeStore.addInputMode(new InputModeRegestry(id, modeType));
         return id;
     }
 }
