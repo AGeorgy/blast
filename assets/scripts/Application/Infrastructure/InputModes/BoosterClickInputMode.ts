@@ -1,6 +1,6 @@
 import { IInputMode } from "../Modules/InputMode/Model/IInputMode";
 
-export class TileClickInputMode implements IInputMode {
+export class BoosterClickInputMode implements IInputMode {
     private _tileIds: string[];
 
     constructor() {
@@ -12,7 +12,7 @@ export class TileClickInputMode implements IInputMode {
     }
 
     get rank(): number {
-        return 1;
+        return 2;
     }
 
     get isValid(): boolean {
