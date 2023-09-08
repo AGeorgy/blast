@@ -7,14 +7,17 @@ export class TileClickHandler {
         console.log("handle TileClickSignal");
 
         let tile = tileService.getTileById(signal.tileId);
-        inputModeService.trySetCurrentInputMode(tile.inputModeId);
+        if (inputModeService.trySetCurrentInputMode(tile.inputModeId)) {
+            actionService.setCurrentActionId(tile.actionId);
+        }
+
         inputModeService.registerInputInCurrentMode(tile.id);
         let inputMode = inputModeService.getValidInputMode();
         if (!inputMode) {
             return;
         }
 
-        actionService.applyAction(inputMode.actionId, inputMode.tileIds);
+        actionService.applyAction(actionService.getCurrentActionId(), inputMode.tileIds);
     }
 }
 

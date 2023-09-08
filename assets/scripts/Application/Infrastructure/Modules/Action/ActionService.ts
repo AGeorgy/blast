@@ -23,6 +23,14 @@ export class ActionService implements IActionService {
         return "";
     }
 
+    getCurrentActionId(): string {
+        return this._actionStore.getCurrentActionId();
+    }
+
+    setCurrentActionId(actionId: string): void {
+        this._actionStore.setCurrentActionId(actionId);
+    }
+
     applyAction(actionId: string, tileIds: string[]): void {
         if (!this._actionStore.isActionApplianceAllowed) {
             return;

@@ -19,12 +19,15 @@ export class InputModeService implements IInputModeService {
         return currentInputMode.mode;
     }
 
-    trySetCurrentInputMode(inputModeId: string): void {
+    trySetCurrentInputMode(inputModeId: string): boolean {
         let currentInputMode = this._inputModeStore.getCurrentInputMode();
         let newInputMode = this._inputModeStore.getInputMode(inputModeId);
         if (!currentInputMode || currentInputMode.mode.rank <= newInputMode.mode.rank) {
             this._inputModeStore.setCurrentInputMode(inputModeId);
+            return true;
         }
+
+        return false;
     }
 
     registerInputInCurrentMode(tileId: string): void {

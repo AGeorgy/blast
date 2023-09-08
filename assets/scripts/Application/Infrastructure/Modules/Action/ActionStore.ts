@@ -4,10 +4,19 @@ import { Action } from "./Model/Action";
 
 export class ActionStore implements IActionStore {
     private _isActionApplianceAllowed: boolean;
+    private _currentActionId: string;
     private _actions: Map<string, Action>;
 
     constructor() {
         this._actions = new Map<string, Action>();
+    }
+
+    getCurrentActionId(): string {
+        return this._currentActionId;
+    }
+
+    setCurrentActionId(actionId: string): void {
+        this._currentActionId = actionId;
     }
 
     updateAction(action: Action): string {
