@@ -36,9 +36,13 @@ import { ShuffleIfCantContinueStage } from "./Infrastructure/GameSages/ShuffleIf
 import { ShiftDownStage } from "./Infrastructure/GameSages/ShiftDownStage";
 import { WaitForActionStage } from "./Infrastructure/GameSages/WaitForActionStage";
 import { TileClickHandler, TileClickSignal } from "./TileClickHandler";
-import { BoosterClickSignal } from "./BoosterClickHandler";
+import { BoosterClickHandler, BoosterClickSignal } from "./BoosterClickHandler";
 import { ApplyActionHandler } from "./ApplyActionHandler";
 import { IApplication } from "./IApplication";
+import { FilledBoardSignal } from "./Infrastructure/Modules/Board/FilledBoardSignal";
+import { FilledBoardHandler } from "./FilledBoardHandler";
+import { TileClickInputMode } from "./Infrastructure/InputModes/TileClickInputMode";
+import { RemoveBatchSameColor } from "./Infrastructure/ActionEffects/RemoveBatchSameColor";
 
 export class Application implements IApplication {
     private static _instance: IApplication;
@@ -77,40 +81,47 @@ export class Application implements IApplication {
     private _gameStageService: GameStageService;
     private _endGameStagesSignal: Signal<EndGameStageSignal>;
     private _applyActionSignal: Signal<ApplyActionSignal>;
+    private _filledBoardSignal: Signal<FilledBoardSignal>;
 
     create(settings: IGameSettings) {
         console.log('Application created');
         this._settings = settings;
 
+        this.tileClickSignal = new Signal<TileClickSignal>();
+        this.boosterClickSignal = new Signal<BoosterClickSignal>();
+
         this._applyActionSignal = new Signal<ApplyActionSignal>();
         this._beginGameSignal = new Signal<BeginGameSignal>();
         this._endGameStagesSignal = new Signal<EndGameStageSignal>();
         this._endGameSignal = new Signal<EndGameSignal>();
-        this.tileClickSignal = new Signal<TileClickSignal>();
-        this.tileClickSignal.subscribe(TileClickHandler.handle.bind(this._tileService, this._inputModeService, this._actionService));
-        this.boosterClickSignal = new Signal<BoosterClickSignal>();
+        this._filledBoardSignal = new Signal<FilledBoardSignal>();
 
         this._colorService = new ColorPaletteService(new ColorStore(), this._settings.tileColors);
         this._gameStatsService = new GameStatsService(new GameStatsStore());
         let inputModeStore = new InputModeStore();
         this._inputModeService = new InputModeService(inputModeStore);
-
-        this._applyActionSignal.subscribe(ApplyActionHandler.handle.bind(this._gameStatsService));
         this._actionService = new ActionService(new ActionStore(), this._applyActionSignal);
-
         this._sceneService = new SceneService(new SceneStore());
         let slotStore = new SlotStore();
-        this._boardService = new BoardService(new BoardStore(), slotStore);
+        this._boardService = new BoardService(new BoardStore(), slotStore, this._filledBoardSignal);
         this._boosterService = new BoosterService(new BoosterStore());
-        this._tileService = new TileService(new TileStore(), this._colorService, slotStore, inputModeStore);
-
-        this._beginGameSignal.subscribe(BeginGameHandler.handle.bind(this._sceneService, this._gameStatsService, this._boardService, this._boosterService));
-        this._endGameSignal.subscribe(EndGameHandler.handle.bind(this._sceneService));
+        this._tileService = new TileService(new TileStore());
         this._appCycleService = new AppCycleService(new AppStateStore(), this._beginGameSignal, this._endGameSignal);
-
-        this._endGameStagesSignal.subscribe(EndGameStagesHandler.handle.bind(this._appCycleService));
         this._gameStageService = new GameStageService(new GameStageStore(), this._endGameStagesSignal);
         this.addStages();
+
+        let tileInputModeId = this._inputModeService.addInputMode(new TileClickInputMode());
+        let tileActionEffect = new RemoveBatchSameColor(this._tileService, this._boardService, this._settings.groupSizeForDefaultAction);
+        let tileActionId = this._actionService.createDefaultAction(tileActionEffect);
+
+        this.tileClickSignal.subscribe(TileClickHandler.handle.bind(this._tileService, this._inputModeService, this._actionService));
+        this.boosterClickSignal.subscribe(BoosterClickHandler.handle.bind(this._boosterService, this._inputModeService, this._actionService));
+
+        this._applyActionSignal.subscribe(ApplyActionHandler.handle.bind(this._gameStatsService));
+        this._filledBoardSignal.subscribe(FilledBoardHandler.handle.bind(this._tileService, this._colorService, tileInputModeId, tileActionId));
+        this._beginGameSignal.subscribe(BeginGameHandler.handle.bind(this._sceneService, this._gameStatsService, this._boardService, this._boosterService, this._tileService));
+        this._endGameSignal.subscribe(EndGameHandler.handle.bind(this._sceneService));
+        this._endGameStagesSignal.subscribe(EndGameStagesHandler.handle.bind(this._appCycleService));
     }
 
     beginGame(): void {

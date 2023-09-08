@@ -1,16 +1,64 @@
+import { ISignalTrigger } from "../../../../Signal/Signal";
+import { FilledBoardSignal as FilledBoardSignal } from "./FilledBoardSignal";
 import { IBoardService } from "./IBoardService";
 import { IBoardStore } from "./IBoardStore";
 import { ISlotStore } from "./ISlotStore";
 import { Board } from "./Model/Board";
+import { Slot } from "./Model/Slot";
 import { SlotState } from "./Model/SlotState";
 
 export class BoardService implements IBoardService {
     private _boardStore: IBoardStore;
     private _slotStore: ISlotStore;
+    private _fillBoardDispatcher: ISignalTrigger<FilledBoardSignal>;
 
-    constructor(boardStore: IBoardStore, slotStore: ISlotStore) {
+    constructor(boardStore: IBoardStore, slotStore: ISlotStore, fillBoardDispatcher: ISignalTrigger<FilledBoardSignal>) {
         this._boardStore = boardStore;
         this._slotStore = slotStore;
+        this._fillBoardDispatcher = fillBoardDispatcher;
+    }
+
+    removeRowSlots(slotId: string): void {
+        let slot = this._slotStore.getSlot(slotId);
+        let y = slot.y;
+        let board = this._boardStore.getBoard();
+
+        for (let x = 0; x < board.xMax; x++) {
+            let slotId = this._slotStore.getSlotId(x, y);
+            let slot = this._slotStore.getSlot(slotId);
+            slot.state = SlotState.Empty;
+            this._slotStore.updateSlot(slot);
+        }
+    }
+
+    removeColumnSlots(slotId: string): void {
+        let slot = this._slotStore.getSlot(slotId);
+        let x = slot.x;
+        let board = this._boardStore.getBoard();
+
+        for (let y = 0; y < board.yMax; y++) {
+            let slotId = this._slotStore.getSlotId(x, y);
+            let slot = this._slotStore.getSlot(slotId);
+            slot.state = SlotState.Empty;
+            this._slotStore.updateSlot(slot);
+        }
+    }
+
+    removeSlotsById(slotIdsToRemove: string[]): void {
+        slotIdsToRemove.forEach(slotId => {
+            let slot = this._slotStore.getSlot(slotId);
+            slot.state = SlotState.Empty;
+            this._slotStore.updateSlot(slot);
+        });
+    }
+
+    getSlotByPos(x: number, y: number): Slot {
+        let slotId = this._slotStore.getSlotId(x, y);
+        return this._slotStore.getSlot(slotId);
+    }
+
+    getBoard(): Board {
+        return this._boardStore.getBoard();
     }
 
     clearBoard(): void {
@@ -24,10 +72,17 @@ export class BoardService implements IBoardService {
     createBoard(xMax: number, yMax: number): void {
         let board = new Board(xMax, yMax);
         this._boardStore.updateBoard(board);
+
+        for (let y = 0; y < yMax; y++) {
+            for (let x = 0; x < xMax; x++) {
+                let slot = new Slot(crypto.randomUUID(), x, y, SlotState.Empty)
+                this._slotStore.createSlot(slot, x, y);
+            }
+        }
     }
 
-    getSlotId(x: number, y: number): string {
-        return this._slotStore.getSlotId(x, y);
+    getSlotById(slotId: string): Slot {
+        return this._slotStore.getSlot(slotId);
     }
 
     removeSlots(slotsToRemove: { x: number; y: number; }[]): string[] {
@@ -42,7 +97,7 @@ export class BoardService implements IBoardService {
         return removedSlotIds;
     }
 
-    fillBoard(): string[] {
+    fillBoard(): void {
         let filledSlotIds: string[] = [];
         let board = this._boardStore.getBoard();
 
@@ -58,7 +113,7 @@ export class BoardService implements IBoardService {
             }
         }
 
-        return filledSlotIds;
+        this._fillBoardDispatcher.trigger(new FilledBoardSignal(filledSlotIds));
     }
 
     exchangeTiles(slotId1: string, slotId2: string): string[] {

@@ -11,6 +11,10 @@ export class ActionStore implements IActionStore {
         this._actions = new Map<string, Action>();
     }
 
+    removeAction(actionId: string): void {
+        this._actions.delete(actionId);
+    }
+
     getCurrentActionId(): string {
         return this._currentActionId;
     }

@@ -32,4 +32,9 @@ export class Tile {
     get actionId(): string {
         return this._actionId;
     }
+
+    setColorAndActionEffect(colorId: string, actionId: string) {
+        this._colorId = colorId;
+        this._actionId = actionId;
+    }
 }

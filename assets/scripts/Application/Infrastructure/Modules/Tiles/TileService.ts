@@ -1,30 +1,36 @@
-import { ISlotStore } from "../Board/ISlotStore";
-import { IInputModeStore } from "../InputMode/IInputModeStore";
+import { IActionEffect } from "../Action/Model/IActionEffect";
+import { ColorRegistry } from "../Color/Model/ColorRegistry";
 import { ITileService } from "./ITileService";
 import { ITileStore } from "./ITileStore";
 import { Tile } from "./Model/Tile";
-import { ColorPaletteService } from "../Color/ColorPaletteService";
 
 export class TileService implements ITileService {
     private _tileStore: ITileStore;
-    private _colorService: ColorPaletteService;
-    private _slotStore: ISlotStore;
-    private _inputModeStore: IInputModeStore;
 
-    constructor(tileStore: ITileStore, colorService: ColorPaletteService, slotStore: ISlotStore, inputModeStore: IInputModeStore) {
+    constructor(tileStore: ITileStore) {
         this._tileStore = tileStore;
-        this._colorService = colorService;
-        this._slotStore = slotStore;
-        this._inputModeStore = inputModeStore;
     }
 
-    // resetTiles(): void {
-    //     this._tileStore.clearTiles();
-    //     this._slotStore.getAllSlotIds().forEach(slotId => {
-    //         let colorId = this._colorService.getRandomColor().id;
-    //         let inputModeId = this._inputModeStore.getInputMode().id;
-    //         let tile = new Tile(crypto.randomUUID(), slotId, colorId, inputModeId);
-    //         this._tileStore.addTile(tile);
-    //     });
-    // }
+    setColorAndActionEffect(tileId: string, colorId: string, actionId: string): void {
+        let tile = this._tileStore.getTileById(tileId);
+        tile.setColorAndActionEffect(colorId, actionId);
+        this._tileStore.updateTile(tile);
+    }
+
+    getTileBySlotId(id: string): Tile {
+        return this._tileStore.getTileByCellId(id);
+    }
+
+    createTile(id: string, colorId: string, slotId: string, tileInputModeId: string, actionId: string): void {
+        let tile = new Tile(id, colorId, slotId, tileInputModeId, actionId);
+        this._tileStore.addTile(tile);
+    }
+
+    clearTiles(): void {
+        this._tileStore.clearTiles();
+    }
+
+    getTileById(tileId: string): Tile {
+        return this._tileStore.getTileById(tileId);
+    }
 }

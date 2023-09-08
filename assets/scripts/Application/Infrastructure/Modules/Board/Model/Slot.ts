@@ -37,4 +37,8 @@ export class Slot {
     set state(value: SlotState) {
         this._state = value;
     }
+
+    get isEmpty(): boolean {
+        return this._state === SlotState.Empty;
+    }
 }

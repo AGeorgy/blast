@@ -1,6 +1,7 @@
 import { Action } from "./Model/Action";
 
 export interface IActionStore {
+    removeAction(actionId: string): void;
     getCurrentActionId(): string;
     setCurrentActionId(actionId: string): void;
     isActionApplianceAllowed: boolean;

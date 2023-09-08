@@ -2,6 +2,8 @@ import { IActionService } from "./IActionService";
 import { IActionStore } from "./IActionStore";
 import { ISignalTrigger } from "../../../../Signal/Signal";
 import { ApplyActionSignal } from "./ApplyActionSignal";
+import { Action } from "./Model/Action";
+import { IActionEffect } from "./Model/IActionEffect";
 
 export class ActionService implements IActionService {
     private _actionStore: IActionStore;
@@ -12,15 +14,14 @@ export class ActionService implements IActionService {
         this._applyActionDispatcher = applyActionDispatcher;
     }
 
-    get canDoDefaultAction(): boolean {
-        return true;
-
+    createDefaultAction(effect: IActionEffect): string {
+        let id = this.createAction(Number.MAX_SAFE_INTEGER, 1, 1, effect);
+        return id;
     }
 
-    createDefaultAction(): string {
-        // let action = new Action(crypto.randomUUID(), "Default", Number.MAX_SAFE_INTEGER, 1, 1, new ActionEffectRemoveBatchSameColor());
-        // return actionStore.updateAction(action);
-        return "";
+    createAction(applyLimit: number, cost: number, scoreReward: number, effect: IActionEffect): string {
+        let action = new Action(crypto.randomUUID(), applyLimit, cost, scoreReward, effect);
+        return this._actionStore.updateAction(action);
     }
 
     getCurrentActionId(): string {
@@ -37,9 +38,12 @@ export class ActionService implements IActionService {
         }
         let action = this._actionStore.getAction(actionId);
         action.applyAction(tileIds);
+        let signal = new ApplyActionSignal(action.costTurn, action.scoreReward);
+        if (action.isEmpty) {
+            this._actionStore.removeAction(actionId);
+        }
 
-        action = this._actionStore.getAction(actionId);
-        this._applyActionDispatcher.trigger(new ApplyActionSignal(action.costTurn, action.scoreReward));
+        this._applyActionDispatcher.trigger(signal);
     }
 
     allowActionAppliance(isAllowed: boolean): void {
