@@ -19,7 +19,7 @@ export class Main extends Component {
         console.log("Main onLoad");
         director.addPersistRootNode(this.node);
 
-        this._app = new Application(this.gameSettings);
+        this._app = Application.create(this.gameSettings);
         // this._gameController = new GameController(this.gameSettings);
     }
 

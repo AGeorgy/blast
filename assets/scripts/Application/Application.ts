@@ -38,16 +38,32 @@ import { WaitForActionStage } from "./Infrastructure/GameSages/WaitForActionStag
 import { TileClickHandler, TileClickSignal } from "./TileClickHandler";
 import { BoosterClickSignal } from "./BoosterClickHandler";
 import { ApplyActionHandler } from "./ApplyActionHandler";
-import { Tile } from "../Game/Board/Tile";
+import { IApplication } from "./IApplication";
 
-export class Application {
-    static endGameSignal: Signal<EndGameSignal>;
-    static tileClickSignal: Signal<TileClickSignal>;
-    static boosterClickSignal: Signal<BoosterClickSignal>;
+export class Application implements IApplication {
+    private static _instance: IApplication;
+
+    public get instance(): IApplication {
+        if (!Application._instance) {
+            Application._instance = new Application();
+        }
+
+        return Application._instance;
+    }
+
+    static create(settings: IGameSettings) {
+        let app = new Application();
+        app.create(settings);
+        return app;
+    }
+    private constructor() { }
+
+    tileClickSignal: Signal<TileClickSignal>;
+    boosterClickSignal: Signal<BoosterClickSignal>;
 
     private _settings: IGameSettings;
-
     private _beginGameSignal: Signal<BeginGameSignal>;
+    private _endGameSignal: Signal<EndGameSignal>;
 
     private _inputModeService: InputModeService;
     private _gameStatsService: GameStatsService;
@@ -62,17 +78,17 @@ export class Application {
     private _endGameStagesSignal: Signal<EndGameStageSignal>;
     private _applyActionSignal: Signal<ApplyActionSignal>;
 
-    constructor(settings: IGameSettings) {
+    create(settings: IGameSettings) {
         console.log('Application created');
         this._settings = settings;
 
         this._applyActionSignal = new Signal<ApplyActionSignal>();
         this._beginGameSignal = new Signal<BeginGameSignal>();
         this._endGameStagesSignal = new Signal<EndGameStageSignal>();
-        Application.endGameSignal = new Signal<EndGameSignal>();
-        Application.tileClickSignal = new Signal<TileClickSignal>();
-        Application.tileClickSignal.subscribe(TileClickHandler.handle.bind(this._tileService, this._inputModeService, this._actionService));
-        Application.boosterClickSignal = new Signal<BoosterClickSignal>();
+        this._endGameSignal = new Signal<EndGameSignal>();
+        this.tileClickSignal = new Signal<TileClickSignal>();
+        this.tileClickSignal.subscribe(TileClickHandler.handle.bind(this._tileService, this._inputModeService, this._actionService));
+        this.boosterClickSignal = new Signal<BoosterClickSignal>();
 
         this._colorService = new ColorPaletteService(new ColorStore(), this._settings.tileColors);
         this._gameStatsService = new GameStatsService(new GameStatsStore());
@@ -89,8 +105,8 @@ export class Application {
         this._tileService = new TileService(new TileStore(), this._colorService, slotStore, inputModeStore);
 
         this._beginGameSignal.subscribe(BeginGameHandler.handle.bind(this._sceneService, this._gameStatsService, this._boardService, this._boosterService));
-        Application.endGameSignal.subscribe(EndGameHandler.handle.bind(this._sceneService));
-        this._appCycleService = new AppCycleService(new AppStateStore(), this._beginGameSignal, Application.endGameSignal);
+        this._endGameSignal.subscribe(EndGameHandler.handle.bind(this._sceneService));
+        this._appCycleService = new AppCycleService(new AppStateStore(), this._beginGameSignal, this._endGameSignal);
 
         this._endGameStagesSignal.subscribe(EndGameStagesHandler.handle.bind(this._appCycleService));
         this._gameStageService = new GameStageService(new GameStageStore(), this._endGameStagesSignal);
@@ -102,7 +118,7 @@ export class Application {
     }
 
     update() {
-
+        this._gameStageService.update();
     }
 
     private addStages() {
