@@ -1,5 +1,5 @@
-import { IBoosterStore } from "./Modules/Booster/IBoosterStore";
-import { Booster } from "./Modules/Booster/Model/Booster";
+import { IBoosterStore } from "./IBoosterStore";
+import { Booster } from "./Model/Booster";
 
 export class BoosterStore implements IBoosterStore {
     private _boosters: Map<string, Booster>
@@ -18,5 +18,4 @@ export class BoosterStore implements IBoosterStore {
     getAllBoosterIds(): string[] {
         return Array.from(this._boosters.keys());
     }
-
 }

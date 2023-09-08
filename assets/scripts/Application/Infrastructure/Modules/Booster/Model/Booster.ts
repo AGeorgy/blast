@@ -2,13 +2,13 @@ export class Booster {
     private _id: string;
     private _name: string;
     private _amount: number;
-    private _actionId: string;
+    private _inputModeId: string;
 
-    constructor(id: string, name: string, amount: number, actionId: string) {
+    constructor(id: string, name: string, amount: number, inputModeId: string) {
         this._id = id;
         this._name = name;
         this._amount = amount;
-        this._actionId = actionId;
+        this._inputModeId = inputModeId;
     }
 
     get id(): string {
@@ -23,8 +23,8 @@ export class Booster {
         return this._amount;
     }
 
-    get actionId(): string {
-        return this._actionId;
+    get inputModeId(): string {
+        return this._inputModeId;
     }
 
     resetAmount(): void {

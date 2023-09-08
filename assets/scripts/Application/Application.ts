@@ -35,9 +35,10 @@ import { IfLostOrWonStage } from "./Infrastructure/GameSages/IfLostOrWonStage";
 import { ShuffleIfCantContinueStage } from "./Infrastructure/GameSages/ShuffleIfCantContinueStage";
 import { ShiftDownStage } from "./Infrastructure/GameSages/ShiftDownStage";
 import { WaitForActionStage } from "./Infrastructure/GameSages/WaitForActionStage";
-import { TileClickSignal } from "./TileClickHandler";
+import { TileClickHandler, TileClickSignal } from "./TileClickHandler";
 import { BoosterClickSignal } from "./BoosterClickHandler";
 import { ApplyActionHandler } from "./ApplyActionHandler";
+import { Tile } from "../Game/Board/Tile";
 
 export class Application {
     static endGameSignal: Signal<EndGameSignal>;
@@ -70,6 +71,7 @@ export class Application {
         this._endGameStagesSignal = new Signal<EndGameStageSignal>();
         Application.endGameSignal = new Signal<EndGameSignal>();
         Application.tileClickSignal = new Signal<TileClickSignal>();
+        Application.tileClickSignal.subscribe(TileClickHandler.handle.bind(this._tileService, this._inputModeService, this._actionService));
         Application.boosterClickSignal = new Signal<BoosterClickSignal>();
 
         this._colorService = new ColorPaletteService(new ColorStore(), this._settings.tileColors);

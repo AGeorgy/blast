@@ -7,7 +7,8 @@ export class TileClickHandler {
         console.log("handle TileClickSignal");
 
         let tile = tileService.getTileById(signal.tileId);
-        inputModeService.registerInput(tile.inputModeId, tile.id);
+        inputModeService.trySetCurrentInputMode(tile.inputModeId);
+        inputModeService.registerInputInCurrentMode(tile.id);
         let inputMode = inputModeService.getValidInputMode();
         if (!inputMode) {
             return;
