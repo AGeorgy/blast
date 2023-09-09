@@ -3,6 +3,7 @@ import { IGameStageService } from "./IGameStageService";
 import { IGameStageStore } from "./IGameStageStore";
 import { IStage } from "./Model/IStage";
 import { EndGameStageSignal } from "./EndGameStageSignal";
+import { GameStages } from "./Model/GameStages";
 
 export class GameStageService implements IGameStageService {
     private _stagesStore: IGameStageStore;
@@ -11,6 +12,7 @@ export class GameStageService implements IGameStageService {
     constructor(stagesStore: IGameStageStore, endGameStagesDispatcher: ISignalTrigger<EndGameStageSignal>) {
         this._stagesStore = stagesStore;
         this._endGameStagesDispatcher = endGameStagesDispatcher;
+        this._stagesStore.addGameStages(new GameStages());
     }
 
     switchToEndStages(): void {
@@ -51,9 +53,13 @@ export class GameStageService implements IGameStageService {
         }
 
         let currentStage = gameStages.getStage();
+        if (currentStage == null) {
+            return;
+        }
         if (currentStage.isDone) {
-            gameStages.nextStage();
+            console.log("GameStageService update");
             currentStage.reset();
+            gameStages.nextStage();
         }
         else if (currentStage.isStarted) {
             return;

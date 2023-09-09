@@ -7,7 +7,6 @@ export interface IBoardService {
     removeSlotsById(slotIdsToRemove: string[]): void;
     getSlotByPos(x: number, y: number): Slot;
     clearBoard(): void;
-    createBoard(xMax: number, yMax: number): void;
     getSlotById(slotId: string): Slot;
     getBoard(): Board;
     removeSlots(slotsToRemove: { x: number, y: number }[]): string[];

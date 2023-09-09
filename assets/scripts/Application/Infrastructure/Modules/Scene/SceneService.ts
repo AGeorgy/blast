@@ -25,7 +25,7 @@ export class SceneService implements ISceneService {
         this._store.updateScenes(scenes);
     }
 
-    switchSceneTo(sceneType: SceneType, callback: () => void = () => { }): void {
+    private switchSceneTo(sceneType: SceneType, callback: () => void = () => { }): void {
         let scenes = this._store.getScenes();
 
         this.loadScene(SceneType.Loading, scenes, () => {

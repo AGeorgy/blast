@@ -11,6 +11,7 @@ export class InputModeService implements IInputModeService {
     }
 
     getValidInputMode(): IInputMode {
+        console.log("getValidInputMode");
         let currentInputMode = this._inputModeStore.getCurrentInputMode();
         if (!currentInputMode || !currentInputMode.mode.isValid) {
             return null;
@@ -20,6 +21,7 @@ export class InputModeService implements IInputModeService {
     }
 
     trySetCurrentInputMode(inputModeId: string): boolean {
+        console.log("trySetCurrentInputMode", inputModeId);
         let currentInputMode = this._inputModeStore.getCurrentInputMode();
         let newInputMode = this._inputModeStore.getInputMode(inputModeId);
         if (!currentInputMode || currentInputMode.mode.rank <= newInputMode.mode.rank) {
@@ -32,7 +34,7 @@ export class InputModeService implements IInputModeService {
 
     registerInputInCurrentMode(tileId: string): void {
         let currentInputMode = this._inputModeStore.getCurrentInputMode();
-        if (!currentInputMode) {
+        if (currentInputMode) {
             currentInputMode.mode.registerInput(tileId);
         }
     }

@@ -1,6 +1,5 @@
-import { IColorStore } from "./Modules/Color/IColorStore";
-import { ColorRegistry } from "./Modules/Color/Model/ColorRegistry";
-
+import { IColorStore } from "./IColorStore";
+import { ColorRegistry } from "./Model/ColorRegistry";
 
 export class ColorStore implements IColorStore {
     private _colors: Map<string, ColorRegistry> = new Map<string, ColorRegistry>();

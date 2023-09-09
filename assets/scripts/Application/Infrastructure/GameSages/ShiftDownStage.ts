@@ -24,7 +24,7 @@ export class ShiftDownStage implements IStage {
     }
 
     execute(): void {
-        console.log("ShiftDownAndFillStage execute");
+        console.log("ShiftDownStage execute");
         this._isStarted = true;
         this._boardService.shiftDown();
         this._isDone = true;

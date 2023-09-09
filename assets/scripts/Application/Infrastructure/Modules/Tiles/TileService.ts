@@ -1,5 +1,3 @@
-import { IActionEffect } from "../Action/Model/IActionEffect";
-import { ColorRegistry } from "../Color/Model/ColorRegistry";
 import { ITileService } from "./ITileService";
 import { ITileStore } from "./ITileStore";
 import { Tile } from "./Model/Tile";

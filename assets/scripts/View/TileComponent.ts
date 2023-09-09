@@ -1,10 +1,12 @@
-import { _decorator, CCFloat, Component, Sprite, tween, Vec3 } from 'cc';
-import { IReadTile } from '../Game/Board/IReadTile';
-import { Binder } from '../Game/Binder';
+import { _decorator, CCFloat, Color, Component, Sprite, tween, Vec3 } from 'cc';
+// import { IReadTile } from '../Game/Board/IReadTile';
+// import { Binder } from '../Game/Binder';
 import { IReturn } from './ObjectPool/IReturn';
-import { ITileClick } from '../Game/InputMode/ITileClick';
-import { ISetInputMode } from '../Game/InputMode/ISetInputMode';
-import { TileClickInputMode } from '../Game/InputMode/TileClickInputMode';
+// import { ITileClick } from '../Game/InputMode/ITileClick';
+// import { ISetInputMode } from '../Game/InputMode/ISetInputMode';
+// import { TileClickInputMode } from '../Game/InputMode/TileClickInputMode';
+import { Application } from '../Application/Application';
+import { TileClickSignal } from '../Application/TileClickHandler';
 const { ccclass, property } = _decorator;
 
 @ccclass('TileComponent')
@@ -14,10 +16,11 @@ export class TileComponent extends Component {
     @property(CCFloat)
     destroyDuration: number = 0.2;
 
-    private _model: IReadTile;
+    // private _model: IReadTile;
     private _sprite: Sprite;
-    private _tileClick: ITileClick;
-    private _setInputMode: ISetInputMode;
+    private _tileId: string;
+    // private _tileClick: ITileClick;
+    // private _setInputMode: ISetInputMode;
 
     onLoad() {
         const sprite = this.getComponent(Sprite);
@@ -27,15 +30,16 @@ export class TileComponent extends Component {
             console.error('TileComponent init: Sprite component not found');
         }
 
-        const binder = Binder.getInstance();
-        this._tileClick = binder.resolve<ITileClick>("ITileClick");
-        this._setInputMode = binder.resolve<ISetInputMode>("ISetInputMode");
+        // const binder = Binder.getInstance();
+        // this._tileClick = binder.resolve<ITileClick>("ITileClick");
+        // this._setInputMode = binder.resolve<ISetInputMode>("ISetInputMode");
     }
 
-    init(model: IReadTile) {
-        this._model = model;
+    init(tileId: string, color: Color/* model: IReadTile */) {
+        // this._model = model;
+        this._tileId = tileId;
         this.node.active = true;
-        this._sprite.color = this._model.color;
+        this._sprite.color = color; //this._model.color;
     }
 
     pool(pool: IReturn<TileComponent>) {
@@ -63,7 +67,8 @@ export class TileComponent extends Component {
 
     onTileClicked() {
         console.log('TileComponent onTileClicked');
-        this._setInputMode.setMode(new TileClickInputMode(this._model.action));
-        this._tileClick.tileClick(this._model.x, this._model.y);
+        Application.instance.tileClickSignal.trigger(new TileClickSignal(this._tileId));
+        // this._setInputMode.setMode(new TileClickInputMode(this._model.action));
+        // this._tileClick.tileClick(this._model.x, this._model.y);
     }
 }

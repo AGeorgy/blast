@@ -1,11 +1,11 @@
-import { IActionService } from "../Modules/Action/IActionService";
+import { ICanApplyDefaultAction } from "../Modules/Action/Model/ICanApplyDefaultAction";
 import { IBoardService } from "../Modules/Board/IBoardService";
 import { IGameStageService } from "../Modules/GameStage/IGameStageService";
 import { IStage } from "../Modules/GameStage/Model/IStage";
 import { IGameStatsService } from "../Modules/GameStats/IGameStatsService";
 
 export class ShuffleIfCantContinueStage implements IStage {
-    private readonly _actionService: IActionService;
+    private readonly _canApplyDefaultAction: ICanApplyDefaultAction;
     private readonly _boardService: IBoardService;
     private readonly _gameStageService: IGameStageService;
     private readonly _gameStatsService: IGameStatsService;
@@ -14,10 +14,10 @@ export class ShuffleIfCantContinueStage implements IStage {
     private _isDone: boolean = false;
 
 
-    constructor(time: number, actionService: IActionService, boardService: IBoardService, gameStageService: IGameStageService,
+    constructor(time: number, canApplyDefaultAction: ICanApplyDefaultAction, boardService: IBoardService, gameStageService: IGameStageService,
         gameStatsService: IGameStatsService) {
         this._time = time;
-        this._actionService = actionService;
+        this._canApplyDefaultAction = canApplyDefaultAction;
         this._boardService = boardService;
         this._gameStageService = gameStageService;
         this._gameStatsService = gameStatsService;
@@ -39,7 +39,7 @@ export class ShuffleIfCantContinueStage implements IStage {
     execute(): void {
         console.log("ShuffleIfCantContinueStage execute");
         this._isStarted = true;
-        if (!this._actionService.canDoDefaultAction) {
+        if (!this._canApplyDefaultAction.canApplyDefaultAction()) {
             if (this._gameStatsService.canShuffle) {
                 this._boardService.shuffle();
                 this._gameStatsService.incrementShuffle();

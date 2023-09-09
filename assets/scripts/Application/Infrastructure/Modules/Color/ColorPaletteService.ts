@@ -1,7 +1,6 @@
 import { Color } from "cc";
 import { ColorRegistry } from "./Model/ColorRegistry";
 import { IColorStore } from "./IColorStore";
-import { RandomColorPalette } from "./RandomColorPalette";
 import { IColorPaletteService } from "./IColorPaletteService";
 
 export class ColorPaletteService implements IColorPaletteService {
@@ -14,7 +13,8 @@ export class ColorPaletteService implements IColorPaletteService {
 
     getRandomColor(): ColorRegistry {
         let colors = this._store.getAllColors();
-        return RandomColorPalette.getRandomColor(colors);
+        let index = Math.floor(Math.random() * colors.length);
+        return colors[index];
     }
 
     private addColors(colors: Color[]): void {

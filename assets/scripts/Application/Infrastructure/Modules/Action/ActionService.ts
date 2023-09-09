@@ -21,7 +21,7 @@ export class ActionService implements IActionService {
 
     createAction(applyLimit: number, cost: number, scoreReward: number, effect: IActionEffect): string {
         let action = new Action(crypto.randomUUID(), applyLimit, cost, scoreReward, effect);
-        return this._actionStore.updateAction(action);
+        return this._actionStore.addAction(action);
     }
 
     getCurrentActionId(): string {

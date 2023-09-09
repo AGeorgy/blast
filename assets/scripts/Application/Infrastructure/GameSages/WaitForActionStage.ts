@@ -13,6 +13,7 @@ export class WaitForActionStage implements IStage {
     constructor(actionService: IActionService, applyActionSubscriber: ISignalSubscribe<ApplyActionSignal>) {
         this._actionService = actionService;
         this._applyActionSubscriber = applyActionSubscriber;
+        this._applyActionSubscriber.subscribe(this.actionApplied.bind(this));
     }
 
     get isStarted(): boolean {
@@ -31,7 +32,6 @@ export class WaitForActionStage implements IStage {
     execute(): void {
         console.log("WaitForActionStage execute");
         this._isStarted = true;
-        this._applyActionSubscriber.subscribe(this.actionApplied);
     }
 
     actionApplied(): void {

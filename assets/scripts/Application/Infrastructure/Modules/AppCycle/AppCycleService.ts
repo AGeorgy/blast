@@ -1,10 +1,10 @@
-import { AppCycle } from "./AppCycle";
 import { IAppCycleService } from "./IAppCycleService";
 import { IAppStateStore } from "./IAppStateStore";
 import { AppState } from "./Model/AppState";
 import { BeginGameSignal } from "./BeginGameSignal";
 import { EndGameSignal } from "./EndGameSignal";
 import { ISignalTrigger } from "../../../../Signal/Signal";
+import { StateType } from "./Model/StateType";
 
 export class AppCycleService implements IAppCycleService {
     private _appStateStore: IAppStateStore;
@@ -16,21 +16,40 @@ export class AppCycleService implements IAppCycleService {
         this._appStateStore = appStateStore;
         this._beginGameDispatcher = beginGameDispatcher;
         this._endGameDispatcher = endGameDispatcher;
+        this.createAppState();
     }
 
-    createAppState(): void {
-        this._appStateStore.addAppState(new AppState());
+    get isInGame(): boolean {
+        let appState = this._appStateStore.getAppState();
+        return appState && appState.state === StateType.Game;
     }
 
     beginGame(): void {
         console.log("beginGame");
-        AppCycle.setStateToGame(this._appStateStore);
+        let appState = this._appStateStore.getAppState();
+
+        if (appState.state === StateType.None
+            || appState.state === StateType.GameOver) {
+            console.log("Game Init");
+            appState.setAppState(StateType.Game);
+            this._appStateStore.updateAppState(appState);
+        }
         this._beginGameDispatcher.trigger(new BeginGameSignal());
     }
 
     endGame(): void {
         console.log("endGame");
-        AppCycle.setStateToGameOver(this._appStateStore);
+        let appState = this._appStateStore.getAppState();
+
+        if (appState.state === StateType.Game) {
+            console.log("Game Over");
+            appState.setAppState(StateType.GameOver);
+            this._appStateStore.updateAppState(appState);
+        }
         this._endGameDispatcher.trigger(new EndGameSignal());
+    }
+
+    private createAppState(): void {
+        this._appStateStore.addAppState(new AppState());
     }
 }

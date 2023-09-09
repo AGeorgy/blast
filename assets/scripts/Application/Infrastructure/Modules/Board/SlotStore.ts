@@ -3,16 +3,16 @@ import { Slot } from "./Model/Slot";
 
 export class SlotStore implements ISlotStore {
     private _slots: Map<string, Slot>;
-    private _posSlotIdMap: Map<{ x: number, y: number }, string>;
+    private _posSlotIdMap: Map<string, string>;
 
     constructor() {
         this._slots = new Map<string, Slot>();
-        this._posSlotIdMap = new Map<{ x: number, y: number }, string>();
+        this._posSlotIdMap = new Map<string, string>();
     }
 
     createSlot(slot: Slot, x: number, y: number): void {
         this._slots.set(slot.id, slot);
-        this._posSlotIdMap.set({ x, y }, slot.id);
+        this._posSlotIdMap.set(this.posToKey(x, y), slot.id);
     }
 
     getAllSlotIds(): string[] {
@@ -29,7 +29,10 @@ export class SlotStore implements ISlotStore {
     }
 
     getSlotId(x: number, y: number): string {
-        return this._posSlotIdMap.get({ x, y });
+        return this._posSlotIdMap.get(this.posToKey(x, y));
     }
 
+    private posToKey(x: number, y: number): string {
+        return x + "_" + y;
+    }
 }

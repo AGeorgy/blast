@@ -1,5 +1,5 @@
-import { ISceneStore } from "../Infrastructure/Modules/Scene/ISceneStore";
-import { SceneRegestry } from "../Infrastructure/Modules/Scene/Model/SceneRegestry";
+import { ISceneStore } from "./ISceneStore";
+import { SceneRegestry } from "./Model/SceneRegestry";
 
 export class SceneStore implements ISceneStore {
     private _scenes: SceneRegestry;

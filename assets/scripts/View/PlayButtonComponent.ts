@@ -1,19 +1,18 @@
-
 import { _decorator, Component } from 'cc';
-import { Binder } from '../Game/Binder';
-import { GameState, ISetState } from '../Game/GameController/ISetState';
+// import { Binder } from '../Game/Binder';
+// import { GameState, ISetState } from '../Game/GameController/ISetState';
 const { ccclass } = _decorator;
 
 @ccclass('PlayButtonComponent')
 export class PlayButtonComponent extends Component {
-    private _setState: ISetState;
+    // private _setState: ISetState;
 
     onLoad() {
-        const binder = Binder.getInstance();
-        this._setState = binder.resolve<ISetState>("ISetState");
+        // const binder = Binder.getInstance();
+        // this._setState = binder.resolve<ISetState>("ISetState");
     }
 
     setGameStateToPlay() {
-        this._setState.setStateTo(GameState.Start);
+        // this._setState.setStateTo(GameState.Start);
     }
 }

@@ -8,7 +8,9 @@ export class BoosterClickInputMode implements IInputMode {
     }
 
     get tileIds(): string[] {
-        return this._tileIds;
+        let tileIds = this._tileIds;
+        this._tileIds = [];
+        return tileIds;
     }
 
     get rank(): number {

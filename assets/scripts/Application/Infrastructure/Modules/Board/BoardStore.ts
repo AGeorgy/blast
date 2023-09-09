@@ -4,13 +4,14 @@ import { Board } from "./Model/Board";
 export class BoardStore implements IBoardStore {
     private _board: Board;
 
-    constructor() {
-        this._board = new Board(0, 0);
+    constructor(xMax: number, yMax: number) {
+        this._board = new Board(xMax, yMax);
     }
 
     updateBoard(board: Board): void {
         this._board = board;
     }
+
     getBoard(): Board {
         return this._board;
     }
