@@ -4,7 +4,7 @@ import { ITileService } from "./Infrastructure/Modules/Tiles/ITileService";
 
 export class TileClickHandler {
     static handle(tileService: ITileService, inputModeService: IInputModeService, actionService: IActionService, signal: TileClickSignal): void {
-        console.log("handle TileClickSignal");
+        console.log("handle TileClickSignal", signal.tileId);
 
         let tile = tileService.getTileById(signal.tileId);
         if (inputModeService.trySetCurrentInputMode(tile.inputModeId)) {

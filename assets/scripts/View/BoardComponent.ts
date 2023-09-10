@@ -10,6 +10,7 @@ import { Application } from '../Application/Application';
 import { TilesFilledSignal } from '../Application/FilledBoardHandler';
 import { BoardReadySignal } from '../Application/Infrastructure/Modules/Board/FilledBoardSignal';
 import { TilesRemovedSignal } from '../Application/SlotsRemovedHandler';
+import { TilesMovedSignal } from '../Application/SlotsMovedHandler';
 const { ccclass, property } = _decorator;
 
 @ccclass('BoardComponent')
@@ -41,8 +42,19 @@ export class BoardComponent extends Component /* implements IObserver */ {
         Application.instance.boardReadySignal.subscribe(this.onBoardReady.bind(this));
         Application.instance.tilesFilledSignal.subscribe(this.onTilesFilled.bind(this));
         Application.instance.tilesRemovedSignal.subscribe(this.onTilesRemoved.bind(this));
+        Application.instance.tilesMovedSignal.subscribe(this.onTilesMoved.bind(this));
 
         // this._board.addObserver(this);
+    }
+
+    private onTilesMoved(data: TilesMovedSignal): void {
+        console.log("BoardComponent onTilesMoved", data);
+
+        data.data.forEach(tileData => {
+            const tileNode = this._tiles.get(tileData.tileId);
+            const position = this.transformGridToUiPosition(tileData.x, tileData.y);
+            tileNode.moveTo(position.x, this.getUiYPosition(position.y));
+        });
     }
 
     private onTilesRemoved(data: TilesRemovedSignal): void {

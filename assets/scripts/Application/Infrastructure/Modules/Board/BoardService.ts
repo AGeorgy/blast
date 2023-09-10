@@ -7,6 +7,7 @@ import { Board } from "./Model/Board";
 import { Slot } from "./Model/Slot";
 import { SlotState } from "./Model/SlotState";
 import { SlotsRemovedSignal } from "./SlotsRemovedSignal";
+import { SlotsMovedSignal } from "./SlotsMovedSignal";
 
 export class BoardService implements IBoardService {
     private _boardStore: IBoardStore;
@@ -14,14 +15,17 @@ export class BoardService implements IBoardService {
     private _fillBoardDispatcher: ISignalTrigger<FilledBoardSignal>;
     private _boardReadyDispatcher: ISignalTrigger<BoardReadySignal>;
     private _slotsRemovedDispatcher: ISignalTrigger<SlotsRemovedSignal>;
+    private _slotsMovedDispatcher: ISignalTrigger<SlotsMovedSignal>;
 
     constructor(boardStore: IBoardStore, slotStore: ISlotStore, fillBoardDispatcher: ISignalTrigger<FilledBoardSignal>,
-        boardReadyDispatcher: ISignalTrigger<BoardReadySignal>, slotsRemovedDispatcher: ISignalTrigger<SlotsRemovedSignal>) {
+        boardReadyDispatcher: ISignalTrigger<BoardReadySignal>, slotsRemovedDispatcher: ISignalTrigger<SlotsRemovedSignal>,
+        slotsMovedDispatcher: ISignalTrigger<SlotsMovedSignal>) {
         this._boardStore = boardStore;
         this._slotStore = slotStore;
         this._fillBoardDispatcher = fillBoardDispatcher;
         this._boardReadyDispatcher = boardReadyDispatcher;
         this._slotsRemovedDispatcher = slotsRemovedDispatcher;
+        this._slotsMovedDispatcher = slotsMovedDispatcher;
         this.createSlots();
     }
 
@@ -175,7 +179,25 @@ export class BoardService implements IBoardService {
         return this._slotStore.getAllSlotIds();
     }
 
-    shiftDown(): string[] {
+    // shiftDown(): void {
+    //     console.log("Board shiftDown");
+    //     const movedTiles = new Map<number, ITile>();
+    //     for (let x = 0; x < this._xMax; x++) {
+    //         let shiftsInRow = 0;
+    //         for (let y = 0; y < this._yMax; y++) {
+    //             const index = this.codePositionToIndex(x, y);
+    //             while (this._tiles[index] === null && shiftsInRow + y < this._yMax) {
+    //                 this.shiftRowDown(x, y, movedTiles);
+    //                 shiftsInRow++;
+    //             }
+    //         }
+    //     }
+
+    //     this._lastChangedTiles = { change: TilesChange.Moved, tiles: Array.from(movedTiles.values()) };
+    //     this.notifyObservers();
+    // }
+
+    shiftDown(): void {
         let movedSlotIds: Set<string> = new Set<string>();
         let board = this._boardStore.getBoard();
 
@@ -191,10 +213,15 @@ export class BoardService implements IBoardService {
             }
         }
 
-        return Array.from(movedSlotIds);
+        let positions = Array.from(movedSlotIds).map(slotId => {
+            let slot = this._slotStore.getSlot(slotId);
+            return { x: slot.x, y: slot.y };
+        });
+        console.log("shiftDown", movedSlotIds, positions);
+        this._slotsMovedDispatcher.trigger(new SlotsMovedSignal(Array.from(movedSlotIds)));
     }
 
-    private shiftRowDown(xPos: number, yPos: number, yMax: number, movedTiles: Set<string>): void {
+    private shiftRowDown(xPos: number, yPos: number, yMax: number, movedSlots: Set<string>): void {
         for (let y = yPos; y < yMax - 1; y++) {
             let slotId = this._slotStore.getSlotId(xPos, y);
             let slot = this._slotStore.getSlot(slotId);
@@ -202,12 +229,31 @@ export class BoardService implements IBoardService {
             let upSlotId = this._slotStore.getSlotId(xPos, y + 1);
             let upSlot = this._slotStore.getSlot(upSlotId);
 
-            if (upSlot.state === SlotState.Filled) {
-                upSlot.changePosition(xPos, y);
-                slot.changePosition(xPos, y + 1);
+            upSlot.changePosition(xPos, y);
+            slot.changePosition(xPos, y + 1);
+            this._slotStore.updateSlotPos(upSlotId, xPos, y);
+            this._slotStore.updateSlotPos(slotId, xPos, y + 1);
 
-                movedTiles.add(upSlotId);
+            if (upSlot.state === SlotState.Filled) {
+                movedSlots.add(upSlotId);
             }
         }
     }
+
+    // private shiftRowDown(xPos: number, yPos: number, movedTiles: Map<number, ITile>): void {
+    //     for (let y = yPos; y < this._yMax - 1; y++) {
+    //         const index = this.codePositionToIndex(xPos, y);
+    //         const currentTile = this._tiles[index];
+
+    //         const upIndex = this.codePositionToIndex(xPos, y + 1);
+    //         const upTile = this._tiles[upIndex];
+
+    //         this._tiles[upIndex] = currentTile;
+    //         this._tiles[index] = upTile;
+    //         if (upTile) {
+    //             movedTiles.set(upTile.id, upTile);
+    //             upTile.setPosition({ x: xPos, y: y });
+    //         }
+    //     }
+    // }
 }

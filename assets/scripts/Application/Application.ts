@@ -47,6 +47,8 @@ import { SceneType } from "./Infrastructure/Modules/Scene/Model/SceneType";
 import { ICanApplyDefaultAction } from "./Infrastructure/Modules/Action/Model/ICanApplyDefaultAction";
 import { SlotsRemovedSignal } from "./Infrastructure/Modules/Board/SlotsRemovedSignal";
 import { SlotsRemovedHandler, TilesRemovedSignal } from "./SlotsRemovedHandler";
+import { SlotsMovedSignal } from "./Infrastructure/Modules/Board/SlotsMovedSignal";
+import { SlotsMovedHandler, TilesMovedSignal } from "./SlotsMovedHandler";
 
 export class Application implements IApplication {
     private static _instance: IApplication;
@@ -71,6 +73,7 @@ export class Application implements IApplication {
     tilesFilledSignal: Signal<TilesFilledSignal>
     boardReadySignal: Signal<BoardReadySignal>;
     tilesRemovedSignal: Signal<TilesRemovedSignal>;
+    tilesMovedSignal: Signal<TilesMovedSignal>;
 
     private _settings: IGameSettings;
     private _beginGameSignal: Signal<BeginGameSignal>;
@@ -90,6 +93,7 @@ export class Application implements IApplication {
     private _applyActionSignal: Signal<ApplyActionSignal>;
     private _filledBoardSignal: Signal<FilledBoardSignal>;
     private _slotsRemovedSignal: Signal<SlotsRemovedSignal>;
+    private _slotsMovedSignal: Signal<SlotsMovedSignal>;
 
     private constructor() {
         this.tileClickSignal = new Signal<TileClickSignal>();
@@ -97,6 +101,7 @@ export class Application implements IApplication {
         this.tilesFilledSignal = new Signal<TilesFilledSignal>();
         this.boardReadySignal = new Signal<BoardReadySignal>();
         this.tilesRemovedSignal = new Signal<TilesRemovedSignal>;
+        this.tilesMovedSignal = new Signal<TilesMovedSignal>();
 
         this._filledBoardSignal = new Signal<FilledBoardSignal>();
         this._applyActionSignal = new Signal<ApplyActionSignal>();
@@ -104,6 +109,7 @@ export class Application implements IApplication {
         this._endGameStagesSignal = new Signal<EndGameStageSignal>();
         this._endGameSignal = new Signal<EndGameSignal>();
         this._slotsRemovedSignal = new Signal<SlotsRemovedSignal>();
+        this._slotsMovedSignal = new Signal<SlotsMovedSignal>();
     }
 
     create(settings: IGameSettings) {
@@ -118,7 +124,7 @@ export class Application implements IApplication {
         this._sceneService = new SceneService(new SceneStore());
         let slotStore = new SlotStore();
         let boardStore = new BoardStore(this._settings.boardMaxX, this._settings.boardMaxY);
-        this._boardService = new BoardService(boardStore, slotStore, this._filledBoardSignal, this.boardReadySignal, this._slotsRemovedSignal);
+        this._boardService = new BoardService(boardStore, slotStore, this._filledBoardSignal, this.boardReadySignal, this._slotsRemovedSignal, this._slotsMovedSignal);
         this._boosterService = new BoosterService(new BoosterStore());
         this._tileService = new TileService(new TileStore());
         this._appCycleService = new AppCycleService(new AppStateStore(), this._beginGameSignal, this._endGameSignal);
@@ -138,6 +144,7 @@ export class Application implements IApplication {
         this._endGameSignal.subscribe(EndGameHandler.handle.bind(this, this._sceneService));
         this._endGameStagesSignal.subscribe(EndGameStagesHandler.handle.bind(this, this._appCycleService));
         this._slotsRemovedSignal.subscribe(SlotsRemovedHandler.handle.bind(this, this._tileService, this.tilesRemovedSignal));
+        this._slotsMovedSignal.subscribe(SlotsMovedHandler.handle.bind(this, this._tileService, this._boardService, this.tilesMovedSignal));
 
         this.addStages(tileActionEffect);
     }
@@ -171,7 +178,7 @@ export class Application implements IApplication {
             new WaitForActionStage(this._actionService, this._applyActionSignal),
             new AllowActionStage(false, this._actionService),
             new ShiftDownStage(this._boardService),
-            new FillingStage(this._boardService),
+            // new FillingStage(this._boardService),
             new WaitForTimeStage(1),
         ];
 

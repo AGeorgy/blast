@@ -4,12 +4,14 @@ import { BoosterClickSignal } from "./BoosterClickHandler";
 import { TilesFilledSignal } from "./FilledBoardHandler";
 import { BoardReadySignal } from "./Infrastructure/Modules/Board/FilledBoardSignal";
 import { TilesRemovedSignal } from "./SlotsRemovedHandler";
+import { TilesMovedSignal } from "./SlotsMovedHandler";
 
 export interface IApplication {
-    tileClickSignal: ISignalTrigger<TileClickSignal>;
-    boosterClickSignal: ISignalTrigger<BoosterClickSignal>;
+    readonly tileClickSignal: ISignalTrigger<TileClickSignal>;
+    readonly boosterClickSignal: ISignalTrigger<BoosterClickSignal>;
 
-    tilesFilledSignal: ISignalSubscribe<TilesFilledSignal>
-    boardReadySignal: ISignalSubscribe<BoardReadySignal>
-    tilesRemovedSignal: ISignalSubscribe<TilesRemovedSignal>
+    readonly tilesFilledSignal: ISignalSubscribe<TilesFilledSignal>
+    readonly boardReadySignal: ISignalSubscribe<BoardReadySignal>
+    readonly tilesRemovedSignal: ISignalSubscribe<TilesRemovedSignal>
+    readonly tilesMovedSignal: ISignalSubscribe<TilesMovedSignal>
 }

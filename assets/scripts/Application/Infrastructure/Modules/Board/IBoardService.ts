@@ -13,5 +13,5 @@ export interface IBoardService {
     fillBoard(): void;
     exchangeTiles(slotId1: string, slotId2: string): string[];
     shuffle(): string[];
-    shiftDown(): string[];
+    shiftDown(): void;
 }

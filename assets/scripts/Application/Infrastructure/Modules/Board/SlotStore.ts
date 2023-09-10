@@ -24,6 +24,10 @@ export class SlotStore implements ISlotStore {
         return slot.id;
     }
 
+    updateSlotPos(slotId: string, x: number, y: number): void {
+        this._posSlotIdMap.set(this.posToKey(x, y), slotId);
+    }
+
     getSlot(slotId: string): Slot {
         return this._slots.get(slotId);
     }
